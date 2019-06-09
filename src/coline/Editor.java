@@ -37,6 +37,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import analizador.*;
+import analizador.ast.Ast;
+import java.awt.HeadlessException;
 
 /**
  *
@@ -44,11 +46,12 @@ import analizador.*;
  */
 public class Editor extends javax.swing.JFrame {
 
-    int pestañas;
-    int nuevoArchivo;
+    private int pestañas;
+    private int nuevoArchivo;
 
-    Lexico lexico;
-    Sintactico sintactico;
+    private Lexico lexico;
+    private Sintactico sintactico;
+    private ArrayList<ErrorC> errores;
 
     /**
      * Creates new form Editor
@@ -57,6 +60,7 @@ public class Editor extends javax.swing.JFrame {
         initComponents();
         pestañas = 0;
         nuevoArchivo = 0;
+        errores = new ArrayList<>();
 
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(900, 600));
@@ -525,70 +529,78 @@ public class Editor extends javax.swing.JFrame {
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         // TODO add your handling code here:
-        reporteErrores();
+        if (this.errores.isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "No se econtraron errores.",
+                    "Mensaje de Información",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else
+            reporteErrores();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     public void reporteErrores() {
-        try {
-            ArrayList lexicos = new ArrayList<>();
+        if (!this.errores.isEmpty()) {
+            FileWriter archivo;
+            PrintWriter pw;
 
-            if (lexicos.size() != 0) {
-                FileWriter archivo = null;
-                PrintWriter pw = null;
+            try {
+                archivo = new FileWriter("Errores.html");
+                pw = new PrintWriter(archivo);
 
-                try {
-                    archivo = new FileWriter("Errores.html");
-                    pw = new PrintWriter(archivo);
+                pw.println("<!DOCTYPE html PUBLIC \" -//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+                pw.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+                pw.println("<head>");
+                pw.println("<meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" />");
+                pw.println("<title>Errores</title>");
+                pw.println("<style type=\"text/css\">");
+                pw.println("  p { color: white; font-family: Arial; text-align:center; font-size:28px; }");
+                pw.println("  h1 {color: white; font-family: Arial; color:#C00; font-size:36px; text-align:center;}");
+                pw.println("  h2 {color:#FF0; font-family:Arial; font-size:36px; text-align:center;}");
+                pw.println("  table{color:#FFF; font-family:Arial; border-color:#9F3;}");
+                pw.println("</style>");
+                pw.println("</head>");
+                pw.println("<body bgcolor=\"#000000\">");
+                pw.println("<h1>Errores</h1>");
+                pw.println("</b>");
+                pw.println("</b>");
+                pw.println("</b>");
+                Calendar calendario = new GregorianCalendar();
+                int hora, minutos, segundos;
+                hora = calendario.get(Calendar.HOUR_OF_DAY);
+                minutos = calendario.get(Calendar.MINUTE);
+                segundos = calendario.get(Calendar.SECOND);
+                pw.println("<h2>Hora: " + hora + ":" + minutos + ":" + segundos + "</h2>");
+                int dia, mes, año;
+                dia = calendario.get(Calendar.DAY_OF_MONTH);
+                mes = calendario.get(Calendar.MONTH);
+                año = calendario.get(Calendar.YEAR);
+                pw.println("<h2>Fecha: " + dia + "/" + (mes + 1) + "/" + año + "</h2>");
+                pw.println("</b>");
+                pw.println("</b>");
+                pw.println("</b>");
+                pw.println("<table align=\"center\" border=\"5\">\n");
+                pw.println("<tr>\n<th>Tipo</th>\n<th>Valor</th>\n<th>Linea</th>\n<th>Columna</th>\n<th>Descripcion</th>\n</tr>\n");
 
-                    pw.println("<!DOCTYPE html PUBLIC \" -//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-                    pw.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-                    pw.println("<head>");
-                    pw.println("<meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" />");
-                    pw.println("<title>Errores</title>");
-                    pw.println("<style type=\"text/css\">");
-                    pw.println("  p { color: white; font-family: Arial; text-align:center; font-size:28px; }");
-                    pw.println("  h1 {color: white; font-family: Arial; color:#C00; font-size:36px; text-align:center;}");
-                    pw.println("  h2 {color:#FF0; font-family:Arial; font-size:36px; text-align:center;}");
-                    pw.println("  table{color:#FFF; font-family:Arial; border-color:#9F3;}");
-                    pw.println("</style>");
-                    pw.println("</head>");
-                    pw.println("<body bgcolor=\"#000000\">");
-                    pw.println("<h1>Errores</h1>");
-                    pw.println("</b>");
-                    pw.println("</b>");
-                    pw.println("</b>");
-                    Calendar calendario = new GregorianCalendar();
-                    int hora, minutos, segundos;
-                    hora = calendario.get(Calendar.HOUR_OF_DAY);
-                    minutos = calendario.get(Calendar.MINUTE);
-                    segundos = calendario.get(Calendar.SECOND);
-                    pw.println("<h2>Hora: " + hora + ":" + minutos + ":" + segundos + "</h2>");
-                    int dia, mes, año;
-                    dia = calendario.get(Calendar.DAY_OF_MONTH);
-                    mes = calendario.get(Calendar.MONTH);
-                    año = calendario.get(Calendar.YEAR);
-                    pw.println("<h2>Fecha: " + dia + "/" + (mes + 1) + "/" + año + "</h2>");
-                    pw.println("</b>");
-                    pw.println("</b>");
-                    pw.println("</b>");
-                    pw.println("<table align=\"center\" border=\"5\">\n");
-                    pw.println("<tr>\n<th>Tipo</th>\n<th>Valor</th>\n<th>Linea</th>\n<th>Columna</th>\n<th>Descripcion</th>\n</tr>\n");
-
-                    pw.println("</table>");
-                    pw.println("</body>");
-                    pw.println("</html>");
-                    archivo.close();
-
-                    abrirarchivo("Errores.html");
-
-                } catch (Exception e) {
-                    System.out.println(e + " 1");
+                for (ErrorC error : this.errores) {
+                    pw.println("<tr>\n");
+                    pw.println("<td>" + error.getTipo() + "</td>");
+                    pw.println("<td>" + error.getValor() + "</td>");
+                    pw.println("<td>" + error.getLinea() + "</td>");
+                    pw.println("<td>" + error.getColumna() + "</td>");
+                    pw.println("<td> " + error.getDescripcion() + "</td>");
+                    pw.println("</tr>\n");
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "La entrada no tiene errores!!");
+
+                pw.println("</table>");
+                pw.println("</body>");
+                pw.println("</html>");
+                archivo.close();
+
+                abrirarchivo("Errores.html");
+
+            } catch (IOException e) {
+                System.out.println(e + " 1");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No ha compilado ningún archivo!");
         }
     }
 
@@ -767,9 +779,9 @@ public class Editor extends javax.swing.JFrame {
         JTextArea text = (JTextArea) view.getComponent(0);
 
         if (text.getText().equals("") && text.getName().equals("")) {
-            File archivo = null;
+            File archivo;
             FileReader fr = null;
-            BufferedReader br = null;
+            BufferedReader br;
 
             try {
                 archivo = fileChooser.getSelectedFile();
@@ -1005,25 +1017,26 @@ public class Editor extends javax.swing.JFrame {
             String entrada;
             entrada = text.getText();
 
+            this.errores.clear();
+
             lexico = new Lexico(new BufferedReader(new StringReader(entrada)));
             sintactico = new Sintactico(lexico);
 
-            String ast = null;
+            Ast ast = null;
 
             try {
                 sintactico.parse();
                 ast = sintactico.getAST();
+                
+                lexico.addError();
+                if (!lexico.getErrores().isEmpty()) {
+                    this.errores.addAll(lexico.getErrores());
+                }
 
                 if (ast != null) {
-                    //ast.ejecutar(this.jTextArea1);
-                    System.out.println("Genera ast");
-                } else {
-                    //System.out.println("No se genero el ast.");
-                    JOptionPane.showMessageDialog(null,
-                            "El archivo contiene errores.",
-                            "Mensaje de Error",
-                            JOptionPane.ERROR_MESSAGE);
-
+                    
+                    ast.ejecutar(this.jTextArea1, this.errores);
+                    //System.out.println("Genera ast");
                 }
             } catch (Exception ex) {
                 System.out.println("Exception " + ex);
@@ -1033,13 +1046,19 @@ public class Editor extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
 
+            if (ast == null || !this.errores.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "El archivo contiene errores.",
+                        "Mensaje de Error",
+                        JOptionPane.ERROR_MESSAGE);
+                this.reporteErrores();
+            }
         } else {
             JOptionPane.showMessageDialog(null,
                     "No se ha seleccionado un archivo",
                     "Mensaje de Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     public void abrirarchivo(String archivo) {

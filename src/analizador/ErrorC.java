@@ -12,14 +12,13 @@ package analizador;
  */
 public class ErrorC {
     private String tipo;
-    private String error; 
     private int linea;
     private int columna;
     private String valor;
     private String descripcion;
 
     public ErrorC() {
-        error = "";
+        tipo = "";
         linea = 0;
         columna = 0;
         valor = "";
@@ -38,20 +37,6 @@ public class ErrorC {
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    /**
-     * @return the error
-     */
-    public String getError() {
-        return error;
-    }
-
-    /**
-     * @param error the error to set
-     */
-    public void setError(String error) {
-        this.error = error;
     }
 
     /**

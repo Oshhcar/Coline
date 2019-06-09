@@ -1,0 +1,65 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package analizador.ast.instruccion;
+
+import analizador.ErrorC;
+import analizador.ast.entorno.Entorno;
+import analizador.ast.expresion.Expresion;
+import analizador.ast.expresion.Identificador;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author oscar
+ */
+public class Asignacion extends Instruccion{
+    private final Identificador id;
+    private final Expresion valor;
+
+    public Asignacion(Identificador id) {
+        super(id.getLinea(), id.getColumna());
+        this.id = id;
+        this.valor = null;
+    }
+
+    public Asignacion(Identificador id, Expresion valor) {
+        super(id.getLinea(), id.getColumna());
+        this.id = id;
+        this.valor = valor;
+    }
+    
+    public Asignacion(Identificador id, int linea, int columna) {
+        super(linea, columna);
+        this.id = id;
+        this.valor = null;
+    }
+    
+    public Asignacion(Identificador id, Expresion valor, int linea, int columna) {
+        super(linea, columna);
+        this.id = id;
+        this.valor = valor;
+    }
+
+    @Override
+    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+        return null;
+    }
+
+    /**
+     * @return the id
+     */
+    public Identificador getId() {
+        return id;
+    }
+
+    /**
+     * @return the valor
+     */
+    public Expresion getValor() {
+        return valor;
+    }
+    
+}

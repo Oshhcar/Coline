@@ -13,20 +13,47 @@ import java.util.ArrayList;
 %line
 %char
 %column
-%ignorecase
 
 
 %{
 	
 	StringBuffer string = new StringBuffer();
 	boolean blancos = false;
-	
+        
+        private String valorError = "";
+        private int columnaError = 0;
+        private boolean isError = false;
+
+        private ArrayList<ErrorC> errores = new ArrayList<>();
+
+        public ArrayList<ErrorC> getErrores(){
+            return this.errores;
+        }
+
+        public void addError(){
+            if(this.isError){
+                ErrorC error = new ErrorC();
+                error.setTipo("Léxico");
+                error.setLinea(yyline+1);
+                error.setColumna(this.columnaError);
+                error.setValor(this.valorError);
+                error.setDescripcion("Carácter no reconocido.");
+                this.errores.add(error);
+                this.isError = false;
+                this.columnaError = 0;
+                this.valorError = "";
+            }
+            
+        }
+        
 	private Symbol symbol(int type) {
-		return new Symbol(type, yyline, yycolumn);
+                this.addError();
+		return new Symbol(type, yyline+1, yycolumn+1);
 	}	
   
 	private Symbol symbol(int type, Object value) {
-		return new Symbol(type, yyline, yycolumn, value);
+                this.addError();
+		return new Symbol(type, yyline+1, yycolumn+1, value);
 	}
 %}
 
@@ -50,22 +77,23 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 {COMENT_SIMPLE} 	{/* se ignora */} 
 {COMENT_MULTI} 		{/* se ignora */} 
 
+/* Palabras Reservadas*/
+<YYINITIAL> "public"			{ return symbol(Sym.public_);}
+<YYINITIAL> "protected"			{ return symbol(Sym.protected_);}
+<YYINITIAL> "private"			{ return symbol(Sym.private_);}
+<YYINITIAL> "abstract"			{ return symbol(Sym.abstract_);}
+<YYINITIAL> "static"			{ return symbol(Sym.static_);}
+<YYINITIAL> "final"			{ return symbol(Sym.final_);}
+<YYINITIAL> "extends"			{ return symbol(Sym.extends_);}
+<YYINITIAL> "class"			{ return symbol(Sym.class_);}
+<YYINITIAL> "int"			{ return symbol(Sym.int_);}
+<YYINITIAL> "double"			{ return symbol(Sym.double_);}
+<YYINITIAL> "char"			{ return symbol(Sym.char_);}
+<YYINITIAL> "boolean"			{ return symbol(Sym.boolean_);}
 
-<YYINITIAL> "var"			{return symbol(Sym.var_);}
-<YYINITIAL> "imprimir"			{return symbol(Sym.imprimir_);}
-<YYINITIAL> "importar"			{return symbol(Sym.importar_);}
-<YYINITIAL> "detener"			{return symbol(Sym.detener_);}
-<YYINITIAL> "retornar"			{return symbol(Sym.retornar_);}
-<YYINITIAL> "si"			{return symbol(Sym.si_);}
-<YYINITIAL> "sino"			{return symbol(Sym.sino_);}
-<YYINITIAL> "selecciona"		{return symbol(Sym.selecciona_);}
-<YYINITIAL> "caso"			{return symbol(Sym.caso_);}
-<YYINITIAL> "defecto"			{return symbol(Sym.defecto_);}
-<YYINITIAL> "funcion"			{return symbol(Sym.funcion_);}
-
-<YYINITIAL> "nulo"			{ return symbol(Sym.nulo_, yytext());}
-<YYINITIAL> "verdadero"			{ return symbol(Sym.verdadero_, yytext());}
-<YYINITIAL> "falso"			{ return symbol(Sym.falso_, yytext());}
+<YYINITIAL> "null"			{ return symbol(Sym.null_);}
+<YYINITIAL> "true"			{ return symbol(Sym.true_);}
+<YYINITIAL> "false"			{ return symbol(Sym.false_);}
 
 
 <YYINITIAL>{
@@ -91,7 +119,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 "-"                 {return symbol(Sym.menos);}
 "*"                 {return symbol(Sym.asterisco);}  
 "/"                 {return symbol(Sym.diagonal);}
-"^"                 {return symbol(Sym.potencia);}
+"%"                 {return symbol(Sym.porcentaje);}
 
 "++"                {return symbol(Sym.masmas);}
 "--"                {return symbol(Sym.menosmenos);}
@@ -108,20 +136,21 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 "&&"                {return symbol(Sym.and);}
 "||"                {return symbol(Sym.or);}
 "!"                 {return symbol(Sym.not);}
+"^"                 {return symbol(Sym.xor);}
 
 //Operador Asignacion
-"="                {return symbol(Sym.igual);}
+"="                 {return symbol(Sym.igual);}
 "+="                {return symbol(Sym.masigual);}
 "-="                {return symbol(Sym.menosigual);}
-"*="                 {return symbol(Sym.porigual);}
-"/="                 {return symbol(Sym.diagonaligual);}
+"*="                {return symbol(Sym.porigual);}
+"/="                {return symbol(Sym.diagonaligual);}
 
 {entero}       		{ return symbol(Sym.entero, yytext());}
 {decimal}		{ return symbol(Sym.decimal, yytext());}
-{identificador}		{ return symbol(Sym.identificador, yytext());}
+{identificador}         { return symbol(Sym.id, yytext());}
 
 /* Espacios en Blanco */
-{espacioBlanco}			{ /* se ignora */ }
+{espacioBlanco}         { if(this.isError){this.valorError += " ";} }
 
 }
 
@@ -148,7 +177,13 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 }
 
 /* ERRORES LEXICOS */
-.		{ System.out.println("Error lexico: "+yytext() + " Linea: "+(yyline+1) + " Columna: "+(yycolumn+1));}
+.		{ 
+                    if(!this.isError){
+                        this.isError = true;
+                        this.columnaError = yycolumn+1;
+                    }
+                    this.valorError += yytext(); 
+                }
 
 
 

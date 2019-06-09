@@ -1,15 +1,20 @@
 package analizador;
 
 import java_cup.runtime.Symbol;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import analizador.ast.*;
+import analizador.ast.entorno.*;
+import analizador.ast.expresion.*;
+import analizador.ast.instruccion.*;
+
 parser code
 {:
-	private String ast;
+	private Ast ast;
 	
-	public String getAST(){
+	public Ast getAST(){
 		return ast;
 	}
 	
@@ -37,16 +42,33 @@ action code
 
 :}
 
-terminal String tstring, tchar, entero, decimal, identificador, nulo_, verdadero_, falso_;
+terminal String tstring, tchar, entero, decimal, id, null_, true_, false_;
 terminal llaveIzquierda, llaveDerecha, parIzquierda, parDerecha, corcheteIzquierda, corcheteDerecha, puntoycoma, coma, punto;
 terminal dospuntos, interrogacion;
-terminal mas, menos, asterisco, diagonal, potencia, umenos, umas, masmas, menosmenos;
+terminal mas, menos, asterisco, diagonal, porcentaje, umenos, umas, masmas, menosmenos;
 terminal mayorque, menorque, mayorigual, menorigual, igualigual, diferente;
-terminal and, or, not;
+terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
-terminal var_, imprimir_, importar_, detener_, retornar_, si_, sino_, selecciona_, caso_, defecto_, funcion_;
+terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
+terminal int_, double_, char_, boolean_;
 
 non terminal INICIO;
+
+non terminal Clase CLASE;
+non terminal ArrayList<String> MODIFICADORES;
+non terminal String MODIFICADOR;
+non terminal ArrayList<Instruccion> CUERPO_CLASE;
+non terminal ArrayList<Instruccion> CUERPO_CLASE_LISTA;
+non terminal Instruccion CUERPO_CLASE_DEC;
+non terminal Instruccion CUERPO_CLASE_DEC_MOD;
+non terminal Declaracion DECLARACION_CAMPO;
+non terminal ArrayList<Asignacion> DECLARACION_VARIABLES;
+non terminal Asignacion DECLARACION_VARIABLE;
+non terminal Identificador DECLARACION_VARIABLE_ID;
+non terminal Tipo TIPO; 
+non terminal Expresion VALOR_VARIABLE;
+
+non terminal Expresion E;
 
 precedence left interrogacion;
 precedence left or;
@@ -57,17 +79,70 @@ precedence left diferente;
 precedence left mayorque, menorque, mayorigual, menorigual;
 precedence left mas, menos;
 precedence left asterisco, diagonal;
-precedence right potencia;
+precedence right porcentaje;
 precedence right masmas, menosmenos;
 precedence right umenos, umas;
 
 start with INICIO;
 
-INICIO ::= identificador igual entero puntoycoma
+INICIO ::= CLASE:c
         {: 
-            parser.ast = "hola";
+            parser.ast = new Ast(c);
             System.out.println("COLINE OK"); 
         :};
+
+CLASE ::=  class_ id:i llaveIzquierda CUERPO_CLASE:c llaveDerecha 
+            {: RESULT = new Clase(i, c, ileft, iright); :}
+        | class_ id:i extends_ id:i2 llaveIzquierda CUERPO_CLASE:c llaveDerecha 
+            {: RESULT = new Clase(i, i2, c, ileft, iright); :};
+
+MODIFICADORES ::= MODIFICADORES:a MODIFICADOR:b {:RESULT = a; RESULT.add(b); :}
+                | MODIFICADOR:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
+
+MODIFICADOR ::= public_ {: RESULT = "public"; :}
+                | protected_ {: RESULT = "protected"; :}
+                | private_ {: RESULT = "private"; :}
+                | abstract_ {: RESULT = "abstract"; :}
+                | static_ {: RESULT = "static"; :}
+                | final_ {: RESULT = "final"; :};
+
+CUERPO_CLASE ::= {: RESULT = null; :}
+                | CUERPO_CLASE_LISTA:l {: RESULT = l; :};
+
+CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:l CUERPO_CLASE_DEC_MOD:d {: RESULT = l; RESULT.add(d); :}
+                    | CUERPO_CLASE_DEC_MOD:d {: RESULT = new ArrayList<>(); RESULT.add(d); :};
+
+CUERPO_CLASE_DEC_MOD ::= MODIFICADORES:m CUERPO_CLASE_DEC:i {: RESULT = i; :}
+                        | CUERPO_CLASE_DEC:i {: RESULT = i; :};
+
+CUERPO_CLASE_DEC ::= CLASE:c {: RESULT = c; :}
+                    |DECLARACION_CAMPO:c {: RESULT = c; :};
+
+DECLARACION_CAMPO ::= TIPO:t DECLARACION_VARIABLES:d puntoycoma {: RESULT = new Declaracion(t, d, tleft, tright); :};
+
+DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:dv coma DECLARACION_VARIABLE:d {: RESULT = dv; RESULT.add(d); :}
+                        |DECLARACION_VARIABLE:d {: RESULT = new ArrayList<>(); RESULT.add(d); :};
+
+DECLARACION_VARIABLE ::= DECLARACION_VARIABLE_ID:i igual VALOR_VARIABLE:v {: RESULT = new Asignacion(i,v); :}
+                        | DECLARACION_VARIABLE_ID:i {: RESULT = new Asignacion(i); :};
+
+DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:i corcheteIzquierda corcheteDerecha{: RESULT = i; RESULT.masDimension(); :}
+                            |id:i {: RESULT = new Identificador(i, ileft, iright); :};
+
+TIPO ::= int_ {: RESULT = Tipo.INT; :}
+        |double_ {: RESULT = Tipo.DOUBLE; :}
+        |char_ {: RESULT = Tipo.CHAR; :}
+        |boolean_ {: RESULT = Tipo.BOOLEAN; :};
+
+VALOR_VARIABLE ::= E:e {: RESULT = e; :};
+
+E ::= entero:a {: RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright); :}
+    | decimal:a {: RESULT = new Literal(Tipo.DOUBLE, new Double(a), aleft, aright); :}
+    | tstring:a {: System.out.println(a); :}
+    | tchar:a {: RESULT = new Literal(Tipo.CHAR, a.charAt(0), aleft, aright); :}
+    | true_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(true), aleft, aright); :}
+    | false_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(false), aleft, aright); :}
+    | id:a {: RESULT = new Identificador(a, aleft, aright); :};
 
 		
 		
