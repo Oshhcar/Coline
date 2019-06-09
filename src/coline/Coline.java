@@ -16,6 +16,8 @@ public class Coline {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Editor editor = new Editor();
+        editor.show();
     }
     
 }
