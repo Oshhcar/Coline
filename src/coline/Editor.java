@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import analizador.*;
+
 /**
  *
  * @author oscar
@@ -44,6 +46,9 @@ public class Editor extends javax.swing.JFrame {
 
     int pestañas;
     int nuevoArchivo;
+
+    Lexico lexico;
+    Sintactico sintactico;
 
     /**
      * Creates new form Editor
@@ -523,10 +528,10 @@ public class Editor extends javax.swing.JFrame {
         reporteErrores();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
-        public void reporteErrores() {
+    public void reporteErrores() {
         try {
             ArrayList lexicos = new ArrayList<>();
-            
+
             if (lexicos.size() != 0) {
                 FileWriter archivo = null;
                 PrintWriter pw = null;
@@ -568,8 +573,7 @@ public class Editor extends javax.swing.JFrame {
                     pw.println("</b>");
                     pw.println("<table align=\"center\" border=\"5\">\n");
                     pw.println("<tr>\n<th>Tipo</th>\n<th>Valor</th>\n<th>Linea</th>\n<th>Columna</th>\n<th>Descripcion</th>\n</tr>\n");
-                    
-                    
+
                     pw.println("</table>");
                     pw.println("</body>");
                     pw.println("</html>");
@@ -587,7 +591,7 @@ public class Editor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No ha compilado ningún archivo!");
         }
     }
-        
+
     protected Component makeTextPanel(File archivo) {
         //JPanel panel = new JPanel(false);
         JTextArea filler = new JTextArea();
@@ -732,7 +736,7 @@ public class Editor extends javax.swing.JFrame {
         JFileChooser fileChooser = new JFileChooser();
         File f = new File("arbol.png");
         fileChooser.setCurrentDirectory(f);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos fs y gxml", "fs", "gxml", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos Coline", "coline", "txt");
         fileChooser.setFileFilter(filter);
         int seleccion = fileChooser.showOpenDialog(this);
 
@@ -876,7 +880,7 @@ public class Editor extends javax.swing.JFrame {
             JFileChooser fileChooser = new JFileChooser();
             File f = new File("arbol.png");
             fileChooser.setCurrentDirectory(f);
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos fs y gxml", "fs", "gxml", "txt");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos Coline", "coline", "txt");
             fileChooser.setFileFilter(filter);
             int seleccion = fileChooser.showSaveDialog(this);
 
@@ -1000,6 +1004,34 @@ public class Editor extends javax.swing.JFrame {
 
             String entrada;
             entrada = text.getText();
+
+            lexico = new Lexico(new BufferedReader(new StringReader(entrada)));
+            sintactico = new Sintactico(lexico);
+
+            String ast = null;
+
+            try {
+                sintactico.parse();
+                ast = sintactico.getAST();
+
+                if (ast != null) {
+                    //ast.ejecutar(this.jTextArea1);
+                    System.out.println("Genera ast");
+                } else {
+                    //System.out.println("No se genero el ast.");
+                    JOptionPane.showMessageDialog(null,
+                            "El archivo contiene errores.",
+                            "Mensaje de Error",
+                            JOptionPane.ERROR_MESSAGE);
+
+                }
+            } catch (Exception ex) {
+                System.out.println("Exception " + ex);
+                JOptionPane.showMessageDialog(null,
+                        "El archivo contiene errores.",
+                        "Mensaje de Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
 
         } else {
             JOptionPane.showMessageDialog(null,
