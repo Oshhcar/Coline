@@ -61,7 +61,7 @@ non terminal ArrayList<Instruccion> CUERPO_CLASE;
 non terminal ArrayList<Instruccion> CUERPO_CLASE_LISTA;
 non terminal Instruccion CUERPO_CLASE_DEC;
 non terminal Instruccion CUERPO_CLASE_DEC_MOD;
-non terminal Declaracion DECLARACION_CAMPO;
+non terminal Campo DECLARACION_CAMPO;
 non terminal ArrayList<Asignacion> DECLARACION_VARIABLES;
 non terminal Asignacion DECLARACION_VARIABLE;
 non terminal Identificador DECLARACION_VARIABLE_ID;
@@ -118,7 +118,7 @@ CUERPO_CLASE_DEC_MOD ::= MODIFICADORES:m CUERPO_CLASE_DEC:i {: RESULT = i; :}
 CUERPO_CLASE_DEC ::= CLASE:c {: RESULT = c; :}
                     |DECLARACION_CAMPO:c {: RESULT = c; :};
 
-DECLARACION_CAMPO ::= TIPO:t DECLARACION_VARIABLES:d puntoycoma {: RESULT = new Declaracion(t, d, tleft, tright); :};
+DECLARACION_CAMPO ::= TIPO:t DECLARACION_VARIABLES:d puntoycoma {: RESULT = new Campo(t, d, tleft, tright); :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:dv coma DECLARACION_VARIABLE:d {: RESULT = dv; RESULT.add(d); :}
                         |DECLARACION_VARIABLE:d {: RESULT = new ArrayList<>(); RESULT.add(d); :};

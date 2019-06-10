@@ -445,7 +445,6 @@ class CUP$Sintactico$actions {
 		int iright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Instruccion i = (Instruccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		 RESULT = i; 
-                 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("CUERPO_CLASE_DEC_MOD",7, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -480,7 +479,7 @@ class CUP$Sintactico$actions {
               Instruccion RESULT =null;
 		int cleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
-		Declaracion c = (Declaracion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
+		Campo c = (Campo)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		 RESULT = c; 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("CUERPO_CLASE_DEC",6, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
@@ -489,14 +488,14 @@ class CUP$Sintactico$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 20: // DECLARACION_CAMPO ::= TIPO DECLARACION_VARIABLES puntoycoma 
             {
-              Declaracion RESULT =null;
+              Campo RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-2)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-2)).right;
 		Tipo t = (Tipo)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-2)).value;
 		int dleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).right;
 		ArrayList<Asignacion> d = (ArrayList<Asignacion>)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).value;
-		 RESULT = new Declaracion(t, d, tleft, tright); 
+		 RESULT = new Campo(t, d, tleft, tright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("DECLARACION_CAMPO",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-2)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
