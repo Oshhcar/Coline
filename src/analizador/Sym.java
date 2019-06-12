@@ -11,6 +11,7 @@ public class Sym {
   public static final int igualigual = 34;
   public static final int porigual = 43;
   public static final int menosigual = 42;
+  public static final int print_ = 57;
   public static final int protected_ = 46;
   public static final int false_ = 9;
   public static final int char_ = 55;
@@ -20,6 +21,7 @@ public class Sym {
   public static final int double_ = 54;
   public static final int mayorque = 30;
   public static final int masigual = 41;
+  public static final int println_ = 58;
   public static final int menosmenos = 29;
   public static final int private_ = 47;
   public static final int puntoycoma = 16;
@@ -122,7 +124,9 @@ public class Sym {
   "int_",
   "double_",
   "char_",
-  "boolean_"
+  "boolean_",
+  "print_",
+  "println_"
   };
 }
 

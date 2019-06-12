@@ -51,6 +51,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
+terminal print_, println_;
 
 non terminal INICIO;
 
@@ -119,8 +120,9 @@ CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC_MOD:b {: RESULT = a
 CUERPO_CLASE_DEC_MOD ::= MODIFICADORES:a CUERPO_CLASE_DEC:b {: RESULT = b; RESULT.setModificadores(a); :}
                         | CUERPO_CLASE_DEC:a {: RESULT = a; :};
 
-CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
+CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :} /*CONSTRUCTOR*/
                     |CAMPO:a {: RESULT = a; :};
+
 
 CAMPO ::= TIPO:a DECLARACION_VARIABLES:b puntoycoma {: RESULT = new Campo(a, b, aleft, aright); :};
 
