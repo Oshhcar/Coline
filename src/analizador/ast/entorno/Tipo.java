@@ -43,7 +43,15 @@ public enum Tipo {
             return false;
         }
     
+    },
+    VOID {
+        @Override
+        public boolean isNumero() {
+            return false;
+        }
+        
     };
+    
     public abstract boolean isNumero();
     
     private String object = null;

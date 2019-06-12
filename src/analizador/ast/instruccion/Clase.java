@@ -6,40 +6,57 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Modificador;
 import java.util.ArrayList;
 
 /**
  *
  * @author oscar
  */
-public class Clase extends Declaracion {
-    private final ArrayList<Declaracion> declaraciones;
+public class Clase extends Instruccion {
+
+    private final ArrayList<Modificador> modificadores;
     private final String id;
     private final String extiende;
+    private final ArrayList<NodoAst> declaraciones;
 
-    public Clase(String id, ArrayList<Declaracion> declaraciones, int linea, int columna) {
+    public Clase(ArrayList<Modificador> modificadores, String id, ArrayList<NodoAst> declaraciones, int linea, int columna) {
         super(linea, columna);
-        this.declaraciones = declaraciones;
+        this.modificadores = modificadores;
         this.id = id;
         this.extiende = null;
+        this.declaraciones = declaraciones;
     }
 
-    public Clase(String id, String extiende, ArrayList<Declaracion> declaraciones, int linea, int columna) {
+    public Clase(ArrayList<Modificador> modificadores, String id, String extiende, ArrayList<NodoAst> declaraciones, int linea, int columna) {
         super(linea, columna);
-        this.declaraciones = declaraciones;
+        this.modificadores = modificadores;
         this.id = id;
         this.extiende = extiende;
+        this.declaraciones = declaraciones;
     }
 
     @Override
     public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         if (this.declaraciones != null) {
             Entorno local = new Entorno(e);
-            
-            for (Declaracion inst : this.declaraciones) {
-                inst.ejecutar(local, salida, errores);
-            }local.recorrer();
+
+            for (NodoAst inst : this.declaraciones) {
+                if (inst instanceof Instruccion) {
+                    ((Instruccion) inst).ejecutar(local, salida, errores);
+                    if (inst instanceof MetodoDec) {
+                        ArrayList<NodoAst> bloques = ((MetodoDec) inst).bloques;
+                        for (NodoAst bloque : bloques) {
+                            if (bloque instanceof Instruccion) {
+                                ((Instruccion) bloque).ejecutar(e, salida, errores);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         return null;
     }

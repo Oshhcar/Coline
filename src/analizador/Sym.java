@@ -29,6 +29,7 @@ public class Sym {
   public static final int masmas = 28;
   public static final int menos = 22;
   public static final int abstract_ = 48;
+  public static final int void_ = 59;
   public static final int porcentaje = 25;
   public static final int extends_ = 51;
   public static final int EOF = 0;
@@ -126,7 +127,8 @@ public class Sym {
   "char_",
   "boolean_",
   "print_",
-  "println_"
+  "println_",
+  "void_"
   };
 }
 

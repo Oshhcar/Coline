@@ -6,21 +6,28 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Modificador;
+import analizador.ast.entorno.Tipo;
 import java.util.ArrayList;
 
 /**
  *
  * @author oscar
  */
-public class Declaracion extends Instruccion {
+public class MetodoDec extends Instruccion{
+    private final ArrayList<Modificador> modificadores;
+    private final Tipo tipo;
+    private final String id;
+    public final ArrayList<NodoAst> bloques;
 
-    private ArrayList<Modificador> modificadores;
-
-    public Declaracion(int linea, int columna) {
+    public MetodoDec(ArrayList<Modificador> modificadores, Tipo tipo, String id, ArrayList<NodoAst> bloques, int linea, int columna) {
         super(linea, columna);
-        this.modificadores = null;
+        this.modificadores = modificadores;
+        this.tipo = tipo;
+        this.id = id;
+        this.bloques = bloques;
     }
     
     @Override
@@ -28,17 +35,4 @@ public class Declaracion extends Instruccion {
         return null;
     }
 
-    /**
-     * @return the modificadores
-     */
-    public ArrayList<Modificador> getModificadores() {
-        return modificadores;
-    }
-
-    /**
-     * @param modificadores the modificadores to set
-     */
-    public void setModificadores(ArrayList<Modificador> modificadores) {
-        this.modificadores = modificadores;
-    }
 }

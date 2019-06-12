@@ -27,8 +27,6 @@ public class Simbolo {
         this.valor = valor;
     }
     
-    
-
     /**
      * @return the tipo
      */

@@ -16,12 +16,14 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class Campo extends Declaracion {
+public class Campo extends Instruccion {
+    private final ArrayList<Modificador> modificadores;
     private final Tipo tipo;
     private final ArrayList<Asignacion> asignaciones;
 
-    public Campo(Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
+    public Campo(ArrayList<Modificador> modificadores, Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
         super(linea, columna);
+        this.modificadores = modificadores;
         this.tipo = tipo;
         this.asignaciones = asignaciones;
     }

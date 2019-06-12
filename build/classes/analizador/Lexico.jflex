@@ -90,6 +90,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "double"			{ return symbol(Sym.double_);}
 <YYINITIAL> "char"			{ return symbol(Sym.char_);}
 <YYINITIAL> "boolean"			{ return symbol(Sym.boolean_);}
+<YYINITIAL> "void"			{ return symbol(Sym.void_);}
 
 <YYINITIAL> "null"			{ return symbol(Sym.null_);}
 <YYINITIAL> "true"			{ return symbol(Sym.true_);}
