@@ -7,6 +7,7 @@ package analizador.ast.instruccion;
 
 import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Modificador;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import java.util.ArrayList;
@@ -15,22 +16,12 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class Campo extends Instruccion {
-
-    private ArrayList<String> modificadores;
+public class Campo extends Declaracion {
     private final Tipo tipo;
     private final ArrayList<Asignacion> asignaciones;
 
     public Campo(Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
         super(linea, columna);
-        this.modificadores = null;
-        this.tipo = tipo;
-        this.asignaciones = asignaciones;
-    }
-
-    public Campo(ArrayList<String> modificadores, Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
-        super(linea, columna);
-        this.modificadores = modificadores;
         this.tipo = tipo;
         this.asignaciones = asignaciones;
     }

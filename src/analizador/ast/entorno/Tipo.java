@@ -23,13 +23,6 @@ public enum Tipo {
         }
     
     },
-    STRING {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-    
-    },
     CHAR {
         @Override
         public boolean isNumero() {
@@ -43,8 +36,31 @@ public enum Tipo {
             return false;
         }
     
+    },
+    OBJECT {
+        @Override
+        public boolean isNumero() {
+            return false;
+        }
+    
     };
-    
-    
     public abstract boolean isNumero();
+    
+    private String object = null;
+
+    /**
+     * @return the objeto
+     */
+    public String getObject() {
+        return object;
+    }
+
+    /**
+     * @param objeto the objeto to set
+     */
+    public void setObject(String object) {
+        this.object = object;
+    }
+    
+    
 }

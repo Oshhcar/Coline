@@ -58,7 +58,7 @@ public class Identificador extends Expresion {
         this.dimesiones = dimesiones;
     }
 
-    public void masDimension(){
+    public void addDimension(){
         this.dimesiones++;
     }
     

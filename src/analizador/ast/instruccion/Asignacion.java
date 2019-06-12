@@ -30,18 +30,6 @@ public class Asignacion extends Instruccion{
         this.id = id;
         this.valor = valor;
     }
-    
-    public Asignacion(Identificador id, int linea, int columna) {
-        super(linea, columna);
-        this.id = id;
-        this.valor = null;
-    }
-    
-    public Asignacion(Identificador id, Expresion valor, int linea, int columna) {
-        super(linea, columna);
-        this.id = id;
-        this.valor = valor;
-    }
 
     @Override
     public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {

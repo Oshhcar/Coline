@@ -63,6 +63,8 @@ public class Entorno {
             System.out.println("Entorno " + i++);
             actual.tabla.forEach((id,s)->{
                 System.out.print(id + " : " + s.getTipo().toString());
+                if(s.getTipo() == Tipo.OBJECT)
+                    System.out.print(":"+s.getTipo().getObject());
                 if(s.getValor() != null)
                     System.out.println(" -> "+s.getValor());
                 else 

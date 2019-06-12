@@ -54,19 +54,20 @@ terminal int_, double_, char_, boolean_;
 
 non terminal INICIO;
 
+non terminal Clase CLASE_DECLA;
 non terminal Clase CLASE;
-non terminal ArrayList<String> MODIFICADORES;
-non terminal String MODIFICADOR;
-non terminal ArrayList<Instruccion> CUERPO_CLASE;
-non terminal ArrayList<Instruccion> CUERPO_CLASE_LISTA;
-non terminal Instruccion CUERPO_CLASE_DEC;
-non terminal Instruccion CUERPO_CLASE_DEC_MOD;
-non terminal Campo DECLARACION_CAMPO;
+non terminal ArrayList<Modificador> MODIFICADORES;
+non terminal Modificador MODIFICADOR;
+non terminal ArrayList<Declaracion> CUERPO_CLASE;
+non terminal ArrayList<Declaracion> CUERPO_CLASE_LISTA;
+non terminal Declaracion CUERPO_CLASE_DEC;
+non terminal Declaracion CUERPO_CLASE_DEC_MOD;
+non terminal Campo CAMPO;
 non terminal ArrayList<Asignacion> DECLARACION_VARIABLES;
 non terminal Asignacion DECLARACION_VARIABLE;
 non terminal Identificador DECLARACION_VARIABLE_ID;
 non terminal Tipo TIPO; 
-non terminal Expresion VALOR_VARIABLE;
+non terminal Expresion VALOR;
 
 non terminal Expresion E;
 
@@ -85,60 +86,64 @@ precedence right umenos, umas;
 
 start with INICIO;
 
-INICIO ::= CLASE:c
+INICIO ::= CLASE_DECLA:a
         {: 
-            parser.ast = new Ast(c);
+            parser.ast = new Ast(a);
             System.out.println("COLINE OK"); 
         :};
 
-CLASE ::=  class_ id:i llaveIzquierda CUERPO_CLASE:c llaveDerecha 
-            {: RESULT = new Clase(i, c, ileft, iright); :}
-        | class_ id:i extends_ id:i2 llaveIzquierda CUERPO_CLASE:c llaveDerecha 
-            {: RESULT = new Clase(i, i2, c, ileft, iright); :};
+CLASE_DECLA ::= MODIFICADORES:a CLASE:b {: RESULT = b; RESULT.setModificadores(a); :}
+                | CLASE:a {: RESULT = a; :};
+
+CLASE ::=  class_ id:a llaveIzquierda CUERPO_CLASE:b llaveDerecha 
+            {: RESULT = new Clase(a, b, aleft, bright); :}
+        | class_ id:a extends_ id:b llaveIzquierda CUERPO_CLASE:c llaveDerecha 
+            {: RESULT = new Clase(a, b, c, aleft, aright); :};
 
 MODIFICADORES ::= MODIFICADORES:a MODIFICADOR:b {:RESULT = a; RESULT.add(b); :}
                 | MODIFICADOR:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
-MODIFICADOR ::= public_ {: RESULT = "public"; :}
-                | protected_ {: RESULT = "protected"; :}
-                | private_ {: RESULT = "private"; :}
-                | abstract_ {: RESULT = "abstract"; :}
-                | static_ {: RESULT = "static"; :}
-                | final_ {: RESULT = "final"; :};
+MODIFICADOR ::= public_ {: RESULT = Modificador.PUBLIC; :}
+                | protected_ {: RESULT = Modificador.PROTECTED; :}
+                | private_ {: RESULT = Modificador.PRIVATE; :}
+                | abstract_ {: RESULT = Modificador.ABSTRACT; :}
+                | static_ {: RESULT = Modificador.STATIC; :}
+                | final_ {: RESULT = Modificador.FINAL; :};
 
 CUERPO_CLASE ::= {: RESULT = null; :}
-                | CUERPO_CLASE_LISTA:l {: RESULT = l; :};
+                | CUERPO_CLASE_LISTA:a {: RESULT = a; :};
 
-CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:l CUERPO_CLASE_DEC_MOD:d {: RESULT = l; RESULT.add(d); :}
-                    | CUERPO_CLASE_DEC_MOD:d {: RESULT = new ArrayList<>(); RESULT.add(d); :};
+CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC_MOD:b {: RESULT = a; RESULT.add(b); :}
+                    | CUERPO_CLASE_DEC_MOD:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
-CUERPO_CLASE_DEC_MOD ::= MODIFICADORES:m CUERPO_CLASE_DEC:i {: RESULT = i; :}
-                        | CUERPO_CLASE_DEC:i {: RESULT = i; :};
+CUERPO_CLASE_DEC_MOD ::= MODIFICADORES:a CUERPO_CLASE_DEC:b {: RESULT = b; RESULT.setModificadores(a); :}
+                        | CUERPO_CLASE_DEC:a {: RESULT = a; :};
 
-CUERPO_CLASE_DEC ::= CLASE:c {: RESULT = c; :}
-                    |DECLARACION_CAMPO:c {: RESULT = c; :};
+CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
+                    |CAMPO:a {: RESULT = a; :};
 
-DECLARACION_CAMPO ::= TIPO:t DECLARACION_VARIABLES:d puntoycoma {: RESULT = new Campo(t, d, tleft, tright); :};
+CAMPO ::= TIPO:a DECLARACION_VARIABLES:b puntoycoma {: RESULT = new Campo(a, b, aleft, aright); :};
 
-DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:dv coma DECLARACION_VARIABLE:d {: RESULT = dv; RESULT.add(d); :}
-                        |DECLARACION_VARIABLE:d {: RESULT = new ArrayList<>(); RESULT.add(d); :};
+DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; RESULT.add(b); :}
+                        |DECLARACION_VARIABLE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
-DECLARACION_VARIABLE ::= DECLARACION_VARIABLE_ID:i igual VALOR_VARIABLE:v {: RESULT = new Asignacion(i,v); :}
-                        | DECLARACION_VARIABLE_ID:i {: RESULT = new Asignacion(i); :};
+DECLARACION_VARIABLE ::= DECLARACION_VARIABLE_ID:a igual VALOR:b {: RESULT = new Asignacion(a,b); :}
+                        | DECLARACION_VARIABLE_ID:a {: RESULT = new Asignacion(a); :};
 
-DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:i corcheteIzquierda corcheteDerecha{: RESULT = i; RESULT.masDimension(); :}
-                            |id:i {: RESULT = new Identificador(i, ileft, iright); :};
+DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:a corcheteIzquierda corcheteDerecha{: RESULT = a; RESULT.addDimension(); :}
+                            |id:a {: RESULT = new Identificador(a, aleft, aright); :};
 
 TIPO ::= int_ {: RESULT = Tipo.INT; :}
         |double_ {: RESULT = Tipo.DOUBLE; :}
         |char_ {: RESULT = Tipo.CHAR; :}
-        |boolean_ {: RESULT = Tipo.BOOLEAN; :};
+        |boolean_ {: RESULT = Tipo.BOOLEAN; :}
+        |id:a {: RESULT = Tipo.OBJECT; RESULT.setObject(a); :};
 
-VALOR_VARIABLE ::= E:e {: RESULT = e; :};
+VALOR ::= E:e {: RESULT = e; :};
 
 E ::= entero:a {: RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(Tipo.DOUBLE, new Double(a), aleft, aright); :}
-    | tstring:a {: System.out.println(a); :}
+    | tstring:a {: RESULT = new Literal(Tipo.OBJECT, a, aleft, aright);  :}
     | tchar:a {: RESULT = new Literal(Tipo.CHAR, a.charAt(0), aleft, aright); :}
     | true_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(true), aleft, aright); :}
     | false_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(false), aleft, aright); :}
