@@ -27,19 +27,20 @@ public class Identificador extends Expresion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(getId());
-        if(tmp != null){
-            return tmp.getValor();
+        if (tmp != null) {
+            return tmp.getTipo();
         }
         return null;
     }
 
     @Override
-    public Tipo getTipo(Entorno e, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(getId());
-        if(tmp != null){
-            return tmp.getTipo();
+        e.recorrer();
+        if (tmp != null) {
+            return tmp.getValor();
         }
         return null;
     }
@@ -58,10 +59,10 @@ public class Identificador extends Expresion {
         this.dimesiones = dimesiones;
     }
 
-    public void addDimension(){
+    public void addDimension() {
         this.dimesiones++;
     }
-    
+
     /**
      * @return the id
      */

@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * @author oscar
  */
 public class Campo extends Instruccion {
+
     private final ArrayList<Modificador> modificadores;
     private final Tipo tipo;
     private final ArrayList<Asignacion> asignaciones;
@@ -35,10 +36,28 @@ public class Campo extends Instruccion {
                 if (asigna.getValor() != null) {
                     Tipo tipValor = asigna.getValor().getTipo(e, errores);
                     if (this.tipo == tipValor) {
+                        if (this.tipo == Tipo.OBJECT) {
+                            if (this.tipo.getObject() == null || tipValor.getObject() == null) {
+                                System.err.println("error tipo object");
+                                return null;
+                            }
+                            if (this.tipo.getObject() != tipValor.getObject()) {
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(asigna.getId().getId());
+                                error.setDescripcion("El tipo object no es el mismo.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
+                            }
+                        }
+                        
                         Object valor = asigna.getValor().getValor(e, salida, errores);
+                        
                         if (valor != null) {
                             e.add(asigna.getId().getId(), new Simbolo(this.tipo, asigna.getId().getId(), valor));
                         }
+                        
                     } else {
                         ErrorC error = new ErrorC();
                         error.setTipo("Semántico");

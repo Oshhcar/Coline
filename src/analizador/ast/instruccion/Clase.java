@@ -50,7 +50,7 @@ public class Clase extends Instruccion {
                         ArrayList<NodoAst> bloques = ((MetodoDec) inst).bloques;
                         for (NodoAst bloque : bloques) {
                             if (bloque instanceof Instruccion) {
-                                ((Instruccion) bloque).ejecutar(e, salida, errores);
+                                ((Instruccion) bloque).ejecutar(local, salida, errores);
                             }
                         }
                     }

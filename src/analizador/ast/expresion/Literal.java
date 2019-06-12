@@ -27,15 +27,14 @@ public class Literal extends Expresion{
         if(tipo == Tipo.OBJECT)
             this.tipo.setObject("String");
     }
-
-    @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        return this.valor;
-    }
-
+    
     @Override
     public Tipo getTipo(Entorno e, ArrayList<ErrorC> errores) {
         return this.tipo;
     }
     
+    @Override
+    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+        return this.valor;
+    }
 }
