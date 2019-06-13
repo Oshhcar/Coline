@@ -51,7 +51,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
-terminal print_, println_, void_;
+terminal print_, println_, void_, return_;
 
 non terminal INICIO;
 
@@ -162,6 +162,8 @@ BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; RESULT.add(b); :}
 
 BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print(b, aleft, aright); :}
           |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
+          |return_:a puntoycoma {: RESULT = new Return(aleft, aright); :}
+          |return_:a VALOR:b puntoycoma {: RESULT = new Return(b, aleft, aright); :}
           |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :};
 
 PARAMETROS ::= {: RESULT = null; :}
@@ -178,7 +180,8 @@ E ::= entero:a {: RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright);
     | tchar:a {: RESULT = new Literal(Tipo.CHAR, a.charAt(0), aleft, aright); :}
     | true_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(true), aleft, aright); :}
     | false_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(false), aleft, aright); :}
-    | id:a {: RESULT = new Identificador(a, aleft, aright); :};
+    | id:a {: RESULT = new Identificador(a, aleft, aright); :}
+    | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(a, b, aleft, aright); :};
 
 		
 		

@@ -21,6 +21,6 @@ public abstract class Expresion extends NodoAst{
         super(linea, columna);
     }
     
-    public abstract Tipo getTipo(Entorno e, ArrayList<ErrorC> errores);
+    public abstract Tipo getTipo(Entorno e,  Object salida, ArrayList<ErrorC> errores);
     public abstract Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores);
 }

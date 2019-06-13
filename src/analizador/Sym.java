@@ -46,6 +46,7 @@ public class Sym {
   public static final int parIzquierda = 12;
   public static final int final_ = 50;
   public static final int menorigual = 33;
+  public static final int return_ = 60;
   public static final int punto = 18;
   public static final int corcheteDerecha = 15;
   public static final int dospuntos = 19;
@@ -128,7 +129,8 @@ public class Sym {
   "boolean_",
   "print_",
   "println_",
-  "void_"
+  "void_",
+  "return_"
   };
 }
 

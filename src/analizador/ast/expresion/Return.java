@@ -14,27 +14,34 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class Literal extends Expresion{
-    private final Tipo tipo;
-    private final Object valor;
-    
-    public Literal(Tipo tipo, Object valor, int linea, int columna) {
+public class Return extends Expresion{
+    private final Expresion toReturn;
+
+    public Return(Expresion toReturn, int linea, int columna) {
         super(linea, columna);
-        this.tipo = tipo;
-        this.valor = valor;
-        
-        
-        if(tipo == Tipo.OBJECT)
-            this.tipo.setObject("String");
+        this.toReturn = toReturn;
     }
+
+    public Return(int linea, int columna) {
+        super(linea, columna);
+        this.toReturn = null;
+    }
+
     
     @Override
     public Tipo getTipo(Entorno e,  Object salida, ArrayList<ErrorC> errores) {
-        return this.tipo;
+        if(toReturn != null){
+            return toReturn.getTipo(e, salida, errores);
+        }
+        return null;
     }
-    
+
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        return this.valor;
+        if(toReturn != null){
+            return toReturn.getValor(e, salida, errores);
+        }
+        return null;
     }
+    
 }

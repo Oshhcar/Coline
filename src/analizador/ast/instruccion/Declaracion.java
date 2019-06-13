@@ -34,7 +34,7 @@ public class Declaracion extends Instruccion {
         for (Asignacion asigna : this.asignaciones) {
             if (e.getLocal(asigna.getId().getId()) == null) {
                 if (asigna.getValor() != null) {
-                    Tipo tipValor = asigna.getValor().getTipo(e, errores);
+                    Tipo tipValor = asigna.getValor().getTipo(e, salida, errores);
                     if (this.tipo == tipValor) {
                         if (this.tipo == Tipo.OBJECT) {
                             if (this.tipo.getObject() == null || tipValor.getObject() == null) {

@@ -12,6 +12,7 @@ import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
+import analizador.ast.expresion.Return;
 import java.util.ArrayList;
 
 /**
@@ -31,34 +32,14 @@ public class LlamadaMetodo extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+        Metodo m = null;
+        Entorno local = new Entorno(e.getGlobal());
         if (this.parametros == null) {
-            Metodo m = e.getMetodo(this.id, null);
-            if (m != null) {
-                if (m.getBloques() != null) {
-                    Entorno local = new Entorno(e.getGlobal());
-                    for (NodoAst bloque : m.getBloques()) {
-                        if (bloque instanceof Instruccion) {
-                            ((Instruccion) bloque).ejecutar(local, salida, errores);
-                        } else {
-                            ((Expresion) bloque).getValor(e, salida, errores);
-                        }
-                    }
-                }
-            } else {
-                ErrorC error = new ErrorC();
-                error.setTipo("Semántico");
-                error.setValor(this.id);
-                error.setDescripcion("El metodo no se ha declarado.");
-                error.setLinea(this.getLinea());
-                error.setColumna(this.getColumna());
-                errores.add(error);
-            }
+            m = e.getMetodo(this.id, null);
         } else {
-            Entorno local = new Entorno(e.getGlobal());
-
             ArrayList<Simbolo> parm = new ArrayList<>();
             for (Expresion parametro : this.parametros) {
-                Tipo tipo = parametro.getTipo(e, errores);
+                Tipo tipo = parametro.getTipo(e, salida, errores);
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, errores);
                     if (valor != null) {
@@ -69,33 +50,40 @@ public class LlamadaMetodo extends Instruccion {
                 System.err.println("error en parametros");
                 return null;
             }
-
-            Metodo m = e.getMetodo(this.id, parm);
+            m = e.getMetodo(this.id, parm);
 
             if (m != null) {
                 for (int i = 0; i <= parm.size() - 1; i++) {
                     local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
                 }
-                if (m.getBloques() != null) {
-                    for (NodoAst bloque : m.getBloques()) {
-                        if (bloque instanceof Instruccion) {
-                            ((Instruccion) bloque).ejecutar(local, salida, errores);
-                        } else {
-                            ((Expresion) bloque).getValor(e, salida, errores);
+            }
+        }
+
+        if (m != null) {
+            if (m.getBloques() != null) {
+                for (NodoAst bloque : m.getBloques()) {
+                    if (bloque instanceof Instruccion) {
+                        Object obj = ((Instruccion) bloque).ejecutar(local, salida, errores);
+                        if(obj instanceof Return){
+                            return null;
                         }
+                    } else {
+                        if(bloque instanceof Return ){
+                            return null;
+                        }
+                        
+                        ((Expresion) bloque).getValor(e, salida, errores);
                     }
                 }
-
-            } else {
-                ErrorC error = new ErrorC();
-                error.setTipo("Semántico");
-                error.setValor(this.id);
-                error.setDescripcion("El metodo no se ha declarado.");
-                error.setLinea(this.getLinea());
-                error.setColumna(this.getColumna());
-                errores.add(error);
             }
-
+        } else {
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            error.setValor(this.id);
+            error.setDescripcion("El metodo no se ha declarado.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
         }
         return null;
     }
