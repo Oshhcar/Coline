@@ -60,8 +60,8 @@ public class LlamadaMetodo extends Instruccion {
         }
 
         if (m != null) {
-            if (m.getBloques() != null) {
-                for (NodoAst bloque : m.getBloques()) {
+            if (m.getBloque().getBloques()!= null) {
+                for (NodoAst bloque : m.getBloque().getBloques()) {
                     if (bloque instanceof Instruccion) {
                         Object obj = ((Instruccion) bloque).ejecutar(local, salida, errores);
                         if(obj instanceof Return){

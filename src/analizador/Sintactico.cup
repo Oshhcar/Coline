@@ -64,13 +64,12 @@ non terminal ArrayList<Modificador> MOD;
 non terminal ArrayList<NodoAst> CUERPO_CLASE;
 non terminal ArrayList<NodoAst> CUERPO_CLASE_LISTA;
 non terminal NodoAst CUERPO_CLASE_DEC;
-non terminal NodoAst CUERPO_CLASE_DEC_MOD;
 non terminal ArrayList<Asignacion> DECLARACION_VARIABLES;
 non terminal Asignacion DECLARACION_VARIABLE;
 non terminal Identificador DECLARACION_VARIABLE_ID;
 non terminal Tipo TIPO; 
 non terminal Expresion VALOR;
-non terminal ArrayList<NodoAst> BLOQUES;
+non terminal Bloque BLOQUES;
 non terminal ArrayList<NodoAst> BLOQUES_L;
 non terminal NodoAst BLOQUE;
 non terminal ArrayList<Simbolo> PARAMETROS_DEC;
@@ -131,7 +130,7 @@ CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC:b {: RESULT = a; RE
 
 CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
                     |MOD:a TIPO:b DECLARACION_VARIABLES:c puntoycoma {: RESULT = new Declaracion(a, b, c, aleft, aright); :}
-                    |MOD:a TIPO:b id:c parIzquierda PARAMETROS_DEC:d parDerecha llaveIzquierda BLOQUES:e llaveDerecha 
+                    |MOD:a TIPO:b id:c parIzquierda PARAMETROS_DEC:d parDerecha llaveIzquierda BLOQUES:e llaveDerecha
                         {: RESULT = new MetodoDec(a, b, c, d, e, aleft, aright); :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; RESULT.add(b); :}
@@ -160,7 +159,7 @@ TIPO ::= int_ {: RESULT = Tipo.INT; :}
         |id:a {: RESULT = Tipo.OBJECT; RESULT.setObject(a); :};
 
 BLOQUES ::= {: RESULT = null; :}
-        | BLOQUES_L:a {: RESULT = a; :};
+        |BLOQUES_L:a {: RESULT = new Bloque(a, aleft, aright); :};
 
 BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; RESULT.add(b); :}
             | BLOQUE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
