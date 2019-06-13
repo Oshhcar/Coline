@@ -8,6 +8,7 @@ import java.util.HashMap;
 import analizador.ast.*;
 import analizador.ast.entorno.*;
 import analizador.ast.expresion.*;
+import analizador.ast.expresion.operacion.*;
 import analizador.ast.instruccion.*;
 
 parser code
@@ -45,7 +46,7 @@ action code
 terminal String tstring, tchar, entero, decimal, id, null_, true_, false_;
 terminal llaveIzquierda, llaveDerecha, parIzquierda, parDerecha, corcheteIzquierda, corcheteDerecha, puntoycoma, coma, punto;
 terminal dospuntos, interrogacion;
-terminal mas, menos, asterisco, diagonal, porcentaje, umenos, umas, masmas, menosmenos;
+terminal mas, menos, asterisco, diagonal, modulo, umenos, umas, masmas, menosmenos, umasmas, umenosmenos;
 terminal mayorque, menorque, mayorigual, menorigual, igualigual, diferente;
 terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
@@ -82,14 +83,15 @@ non terminal Expresion E;
 precedence left interrogacion;
 precedence left or;
 precedence left and;
+precedence left xor;
 precedence right not;
 precedence left igualigual;
 precedence left diferente;
 precedence left mayorque, menorque, mayorigual, menorigual;
 precedence left mas, menos;
-precedence left asterisco, diagonal;
-precedence right porcentaje;
+precedence left asterisco, diagonal, modulo;
 precedence right masmas, menosmenos;
+precedence right umasmas, umenosmenos;
 precedence right umenos, umas;
 
 start with INICIO;
@@ -174,7 +176,36 @@ PARAMETRO ::= PARAMETRO:a coma VALOR:b {: RESULT = a; RESULT.add(b); :}
 
 VALOR ::= E:e {: RESULT = e; :};
 
-E ::= entero:a {: RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright); :}
+E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xleft, xright); :}
+    | E:a menos:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.RESTA, xleft, xright); :}
+    | E:a asterisco:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.MULTIPLICACION, xleft, xright); :}
+    | E:a diagonal:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.DIVISION, xleft, xright); :}
+    | E:a modulo:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.MODULO, xleft, xright); :}
+    | menos:x E:a {:RESULT = new Aritmetica(a, new Literal(Tipo.INT, -1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);:} %prec umenos
+    | mas:x E:a {: RESULT = new Aritmetica(a, new Literal(Tipo.INT, 1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);:} %prec umas
+
+    | E:a masmas:x {: RESULT = new PostFijo(a, Operacion.Operador.AUMENTO, xleft, xright); :}
+    | E:a menosmenos:x {: RESULT = new PostFijo(a, Operacion.Operador.DECREMENTO, xleft, xright); :}
+    | masmas:x E:a {: RESULT = new PreFijo(a, Operacion.Operador.AUMENTO, xleft+1, xright); :} %prec umasmas
+    | menosmenos:x E:a {: RESULT = new PreFijo(a, Operacion.Operador.DECREMENTO, xleft, xright); :} %prec umenosmenos
+
+    | E:a mayorque:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.MAYORQUE, xleft, xright); :}
+    | E:a menorque:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.MENORQUE, xleft, xright); :}
+    | E:a mayorigual:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.MAYORIGUAL, xleft, xright); :}
+    | E:a menorigual:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.MENORIGUAL, xleft, xright); :}
+    | E:a igualigual:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.IGUAL, xleft, xright); :}
+    | E:a diferente:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.DIFERENTE, xleft, xright); :}
+
+    | E:a and:x E:b {: RESULT = new Logica(a, b, Operacion.Operador.AND, xleft, xright); :}
+    | E:a or:x E:b {: RESULT = new Logica(a, b, Operacion.Operador.OR, xleft, xright); :}
+    | not:x E:b {: RESULT = new Logica(b, Operacion.Operador.NOT, xleft, xright); :}
+    | E:a xor:x E:b {: RESULT = new Logica(a, b, Operacion.Operador.XOR, xleft, xright); :}
+
+    | E:a interrogacion:x E:b dospuntos E:c{:RESULT = new Ternario(a, b, c, xleft, xright);:}
+
+    | parIzquierda E:a parDerecha {: RESULT = a; :}
+
+    | entero:a {: RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(Tipo.DOUBLE, new Double(a), aleft, aright); :}
     | tstring:a {: RESULT = new Literal(Tipo.OBJECT, a, aleft, aright);  :}
     | tchar:a {: RESULT = new Literal(Tipo.CHAR, a.charAt(0), aleft, aright); :}

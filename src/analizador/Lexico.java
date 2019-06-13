@@ -899,7 +899,7 @@ public class Lexico implements java_cup.runtime.Scanner {
             }
           case 90: break;
           case 22: 
-            { return symbol(Sym.porcentaje);
+            { return symbol(Sym.modulo);
             }
           case 91: break;
           case 23: 

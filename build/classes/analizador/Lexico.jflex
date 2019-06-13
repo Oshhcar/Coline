@@ -124,7 +124,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 "-"                 {return symbol(Sym.menos);}
 "*"                 {return symbol(Sym.asterisco);}  
 "/"                 {return symbol(Sym.diagonal);}
-"%"                 {return symbol(Sym.porcentaje);}
+"%"                 {return symbol(Sym.modulo);}
 
 "++"                {return symbol(Sym.masmas);}
 "--"                {return symbol(Sym.menosmenos);}
