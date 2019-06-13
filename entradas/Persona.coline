@@ -1,12 +1,27 @@
 public class Persona {
-	int edad;
+	int edad = 17;
 
 	public static void main(){
-		println("hola");
+		println(edad >= 18? "Es mayor de edad" : "Es menor de edad");
 		metodo(45,45.5,'a');
+		if(edad >= 18){
+			println("Puede ver contenido para adultos");
+		} else if(edad == 17) {
+			println("Solo falta un año");
+		} else {
+			println("Contenido no apto");
+		}
 	}
 	
 	public void metodo(int valor, double h, char m){
 		println(h);
+	}
+	
+	public int factorial(int n){
+		if(n == 0){
+			return 1;
+		} else {
+			return n*factorial(n-1);
+		}
 	}
 }

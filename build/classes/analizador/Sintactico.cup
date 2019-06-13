@@ -10,6 +10,7 @@ import analizador.ast.entorno.*;
 import analizador.ast.expresion.*;
 import analizador.ast.expresion.operacion.*;
 import analizador.ast.instruccion.*;
+import analizador.ast.instruccion.condicionales.*;
 
 parser code
 {:
@@ -52,7 +53,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
-terminal print_, println_, void_, return_;
+terminal print_, println_, void_, return_, if_, else_;
 
 non terminal INICIO;
 
@@ -77,6 +78,8 @@ non terminal ArrayList<Simbolo> PARAMETROS_DEC_LISTA;
 non terminal Simbolo PARAMETRO_DEC;
 non terminal ArrayList<Expresion> PARAMETROS;
 non terminal ArrayList<Expresion> PARAMETRO;
+non terminal If IF;
+non terminal ArrayList<SubIf> IF_LISTA;
 
 non terminal Expresion E;
 
@@ -166,13 +169,23 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
           |return_:a puntoycoma {: RESULT = new Return(aleft, aright); :}
           |return_:a VALOR:b puntoycoma {: RESULT = new Return(b, aleft, aright); :}
-          |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :};
+          |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :}
+          | IF:a {: RESULT =a; :};
 
 PARAMETROS ::= {: RESULT = null; :}
             | PARAMETRO:a {: RESULT = a; :};
 
 PARAMETRO ::= PARAMETRO:a coma VALOR:b {: RESULT = a; RESULT.add(b); :}
             | VALOR:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
+
+IF ::= IF_LISTA:a else_:b llaveIzquierda BLOQUES:c llaveDerecha 
+        {: a.add(new SubIf(c, bleft, bright)); RESULT = new If(a, aleft, aright); :}
+      |IF_LISTA:a {: RESULT = new If(a, aleft, aright); :};
+
+IF_LISTA ::= IF_LISTA:a else_:b if_ parIzquierda E:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha 
+                {: RESULT = a; RESULT.add(new SubIf(c, d, bleft, bright)); :}
+            | if_:a parIzquierda E:b parDerecha llaveIzquierda BLOQUES:c llaveDerecha
+                {: RESULT = new ArrayList<>(); RESULT.add(new SubIf(b, c, aleft, aright)); :};
 
 VALOR ::= E:e {: RESULT = e; :};
 

@@ -24,3 +24,4 @@ validar dimensiones positivas;
 VALIDAR variables void;
 
 AGREGAR final  A PARAMETROS
+arreglar getmetodo que recorre todo.

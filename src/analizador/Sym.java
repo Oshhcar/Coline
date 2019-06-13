@@ -25,6 +25,7 @@ public class Sym {
   public static final int menosmenos = 29;
   public static final int private_ = 49;
   public static final int puntoycoma = 16;
+  public static final int else_ = 64;
   public static final int llaveIzquierda = 10;
   public static final int masmas = 28;
   public static final int umenosmenos = 31;
@@ -40,6 +41,7 @@ public class Sym {
   public static final int error = 1;
   public static final int true_ = 8;
   public static final int umas = 27;
+  public static final int if_ = 63;
   public static final int tstring = 2;
   public static final int or = 39;
   public static final int entero = 4;
@@ -134,7 +136,9 @@ public class Sym {
   "print_",
   "println_",
   "void_",
-  "return_"
+  "return_",
+  "if_",
+  "else_"
   };
 }
 
