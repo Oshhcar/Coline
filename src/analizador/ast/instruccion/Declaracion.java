@@ -16,13 +16,13 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class Campo extends Instruccion {
+public class Declaracion extends Instruccion {
 
     private final ArrayList<Modificador> modificadores;
     private final Tipo tipo;
     private final ArrayList<Asignacion> asignaciones;
 
-    public Campo(ArrayList<Modificador> modificadores, Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
+    public Declaracion(ArrayList<Modificador> modificadores, Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
         super(linea, columna);
         this.modificadores = modificadores;
         this.tipo = tipo;
@@ -55,7 +55,7 @@ public class Campo extends Instruccion {
                         Object valor = asigna.getValor().getValor(e, salida, errores);
                         
                         if (valor != null) {
-                            e.add(asigna.getId().getId(), new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                            e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
                         }
                         
                     } else {
@@ -67,8 +67,8 @@ public class Campo extends Instruccion {
                         error.setColumna(this.getColumna());
                         errores.add(error);
                     }
-                } else {
-                    e.add(asigna.getId().getId(), new Simbolo(this.tipo, asigna.getId().getId()));
+                } else {  
+                    e.add(new Simbolo(this.tipo, asigna.getId().getId()));
                 }
             } else {
                 ErrorC error = new ErrorC();

@@ -13,19 +13,31 @@ public class Simbolo {
 
     private final Tipo tipo;
     private final String id;
+    private final int dim;
     private Object valor;
 
     public Simbolo(Tipo tipo, String id) {
         this.tipo = tipo;
         this.id = id;
+        this.dim = 0;
         this.valor = null;
     }
 
     public Simbolo(Tipo tipo, String id, Object valor) {
         this.tipo = tipo;
         this.id = id;
+        this.dim = 0;
         this.valor = valor;
     }
+
+    public Simbolo(Tipo tipo, String id, int dim) {
+        this.tipo = tipo;
+        this.id = id;
+        this.dim = dim;
+        this.valor = null;
+    }
+    
+    
     
     /**
      * @return the tipo

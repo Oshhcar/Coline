@@ -1,4 +1,12 @@
 public class Persona {
 	int edad;
 
+	public static void main(){
+		println("hola");
+		metodo(45,45.5,'a');
+	}
+	
+	public void metodo(int valor, double h, char m){
+		println(h);
+	}
 }

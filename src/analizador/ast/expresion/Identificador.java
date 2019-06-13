@@ -17,12 +17,12 @@ import java.util.ArrayList;
  */
 public class Identificador extends Expresion {
 
-    private int dimesiones;
+    private int dim;
     private String id;
 
     public Identificador(String id, int linea, int columna) {
         super(linea, columna);
-        this.dimesiones = 0;
+        this.dim = 0;
         this.id = id;
     }
 
@@ -38,7 +38,6 @@ public class Identificador extends Expresion {
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(getId());
-        e.recorrer();
         if (tmp != null) {
             return tmp.getValor();
         }
@@ -46,21 +45,21 @@ public class Identificador extends Expresion {
     }
 
     /**
-     * @return the dimesiones
+     * @return the dim
      */
-    public int getDimesiones() {
-        return dimesiones;
+    public int getDim() {
+        return dim;
     }
 
     /**
      * @param dimesiones the dimesiones to set
      */
-    public void setDimesiones(int dimesiones) {
-        this.dimesiones = dimesiones;
+    public void setDim(int dim) {
+        this.dim = dim;
     }
 
-    public void addDimension() {
-        this.dimesiones++;
+    public void addDim() {
+        this.dim++;
     }
 
     /**

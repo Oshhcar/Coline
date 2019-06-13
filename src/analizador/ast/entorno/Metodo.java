@@ -13,10 +13,12 @@ import java.util.ArrayList;
  * @author oscar
  */
 public class Metodo extends Simbolo{
+    private final ArrayList<Simbolo> parametros;
     private final ArrayList<NodoAst> bloques;
-    /*agregar parametros*/
-    public Metodo(Tipo tipo, String id, ArrayList<NodoAst> bloques) {
+
+    public Metodo(Tipo tipo, String id, ArrayList<Simbolo> parametros, ArrayList<NodoAst> bloques) {
         super(tipo, id);
+        this.parametros = parametros;
         this.bloques = bloques;
     }
 
@@ -25,6 +27,13 @@ public class Metodo extends Simbolo{
      */
     public ArrayList<NodoAst> getBloques() {
         return bloques;
+    }
+
+    /**
+     * @return the parametros
+     */
+    public ArrayList<Simbolo> getParametros() {
+        return parametros;
     }
     
 }

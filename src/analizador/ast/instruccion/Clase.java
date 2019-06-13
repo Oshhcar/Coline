@@ -8,7 +8,9 @@ package analizador.ast.instruccion;
 import analizador.ErrorC;
 import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Modificador;
+import analizador.ast.expresion.Expresion;
 import java.util.ArrayList;
 
 /**
@@ -46,17 +48,21 @@ public class Clase extends Instruccion {
             for (NodoAst inst : this.declaraciones) {
                 if (inst instanceof Instruccion) {
                     ((Instruccion) inst).ejecutar(local, salida, errores);
-                    if (inst instanceof MetodoDec) {
-                        ArrayList<NodoAst> bloques = ((MetodoDec) inst).bloques;
-                        for (NodoAst bloque : bloques) {
-                            if (bloque instanceof Instruccion) {
-                                ((Instruccion) bloque).ejecutar(local, salida, errores);
-                            }
-                        }
+                }
+            }
+            
+            Metodo main = local.getMetodo("main", null);
+            if(main != null){
+                for(NodoAst bloque: main.getBloques()){
+                    if(bloque instanceof Instruccion){
+                        ((Instruccion) bloque).ejecutar(local, salida, errores);
+                    } else {
+                        ((Expresion) bloque).getValor(local, salida, errores);
                     }
                 }
             }
-
+            
+            
         }
         return null;
     }

@@ -5,7 +5,8 @@
  */
 package analizador.ast.entorno;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -14,65 +15,119 @@ import java.util.HashMap;
 public class Entorno {
 
     private final Entorno padre;
-    private final HashMap<String, Simbolo> tabla;
+    private final ArrayList<Simbolo> tabla;
 
     public Entorno(Entorno padre) {
         this.padre = padre;
-        this.tabla = new HashMap<>();
+        this.tabla = new ArrayList<>();
     }
 
-    public void add(String id, Simbolo sim) {
-        this.tabla.put(id, sim);
+    public void add(Simbolo sim) {
+        this.getTabla().add(sim);
     }
 
-    public Simbolo getLocal(String id){
-        if(this.tabla.containsKey(id))
-            return this.tabla.get(id);
+    public Simbolo getLocal(String id) {
+        for (int i = this.getTabla().size() - 1; i >= 0; i--) {
+            Simbolo s = this.getTabla().get(i);
+            if (s.getId().equals(id)) {
+                if (!(s instanceof Metodo)) {
+                    return s;
+                }
+            }
+        }
         return null;
     }
-    
+
     public Simbolo get(String id) {
         Entorno actual = this;
 
         while (actual != null) {
-            if (actual.tabla.containsKey(id)) {
-                return actual.tabla.get(id);
-            } else {
-                actual = actual.padre;
+            for (int i = actual.getTabla().size() - 1; i >= 0; i--) {
+                Simbolo s = actual.getTabla().get(i);
+                if (s.getId().equals(id)) {
+                    if (!(s instanceof Metodo)) {
+                        return s;
+                    }
+                }
             }
+            actual = actual.padre;
+        }
+        return null;
+    }
+
+    public Metodo getMetodo(String id, ArrayList<Simbolo> parametros) {
+        Entorno actual = this;
+
+        while (actual != null) {
+            for (int i = actual.getTabla().size() - 1; i >= 0; i--) {
+                Simbolo s = actual.getTabla().get(i);
+                if (s.getId().equals(id)) {
+                    if (s instanceof Metodo) {
+                        Metodo m = (Metodo)s;
+                        if(m.getParametros() == null && parametros == null){
+                            return m;
+                        } else {
+                            if(m.getParametros() == null || parametros == null){
+                                continue;
+                            }
+                            
+                            if(m.getParametros().size() == parametros.size()){
+                                boolean bandera = true;
+                                
+                                for(int j = 0; j <= parametros.size() - 1; j++){
+                                    if(m.getParametros().get(j).getTipo() == parametros.get(j).getTipo()){
+                                        continue;
+                                    }
+                                    bandera = false;
+                                    break;
+                                }
+                                
+                                if(bandera){
+                                    return m;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            actual = actual.padre;
         }
         return null;
     }
     
-    public boolean set(String id, Object valor) {
+    public Entorno getGlobal(){
         Entorno actual = this;
-        
-        while(actual != null){
-            if(actual.tabla.containsKey(id)){
-                actual.tabla.get(id).setValor(valor);
-                return true;
-            }
+        while(actual.padre != null){
+            actual = actual.padre;
         }
-        return false;
+        return actual;
     }
-    
+
     public void recorrer() {
         Entorno actual = this;
         int i = 0;
-        while(actual != null){
+        while (actual != null) {
             System.out.println("Entorno " + i++);
-            actual.tabla.forEach((id,s)->{
-                System.out.print(id + " : " + s.getTipo().toString());
-                if(s.getTipo() == Tipo.OBJECT)
-                    System.out.print(":"+s.getTipo().getObject());
-                if(s.getValor() != null)
-                    System.out.println(" -> "+s.getValor());
-                else 
+            actual.getTabla().forEach(s -> {
+                System.out.print(s.getId() + " : " + s.getTipo().toString());
+                if (s.getTipo() == Tipo.OBJECT) {
+                    System.out.print(":" + s.getTipo().getObject());
+                }
+                if (s.getValor() != null) {
+                    System.out.println(" -> " + s.getValor());
+                } else {
                     System.out.println("");
+                }
             });
-            
             actual = actual.padre;
         }
+    }
+
+    /**
+     * @return the tabla
+     */
+    public ArrayList<Simbolo> getTabla() {
+        return tabla;
     }
 
 }

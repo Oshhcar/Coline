@@ -1,0 +1,26 @@
+errores en print
+casteo implicito
+char con caracteres escape
+
+arreglar aritmetica int id;
+					int v = id +5;
+					
+validaciones en declaracion y asignacion (que no se asigne arreglos a variables);
+
+validar tamños mayores a 0 en arreglos.
+
+comprobar en los getTipo que no hayan nulos...
+
+arreglar tamaño automatico en arreglos...
+
+
+niveles -> dimensiones
+
+int dim;
+int tamaños[];
+
+validar dimensiones positivas;
+
+VALIDAR variables void;
+
+AGREGAR final  A PARAMETROS

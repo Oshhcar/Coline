@@ -71,6 +71,11 @@ non terminal Expresion VALOR;
 non terminal ArrayList<NodoAst> BLOQUES;
 non terminal ArrayList<NodoAst> BLOQUES_L;
 non terminal NodoAst BLOQUE;
+non terminal ArrayList<Simbolo> PARAMETROS_DEC;
+non terminal ArrayList<Simbolo> PARAMETROS_DEC_LISTA;
+non terminal Simbolo PARAMETRO_DEC;
+non terminal ArrayList<Expresion> PARAMETROS;
+non terminal ArrayList<Expresion> PARAMETRO;
 
 non terminal Expresion E;
 
@@ -120,9 +125,9 @@ CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC:b {: RESULT = a; RE
                     | CUERPO_CLASE_DEC:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
 CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
-                    |MOD:a TIPO:b DECLARACION_VARIABLES:c puntoycoma {: RESULT = new Campo(a, b, c, aleft, aright); :}
-                    |MOD:a TIPO:b id:c parIzquierda parDerecha llaveIzquierda BLOQUES:d llaveDerecha 
-                        {: RESULT = new MetodoDec(a, b, c, d, aleft, aright); :};
+                    |MOD:a TIPO:b DECLARACION_VARIABLES:c puntoycoma {: RESULT = new Declaracion(a, b, c, aleft, aright); :}
+                    |MOD:a TIPO:b id:c parIzquierda PARAMETROS_DEC:d parDerecha llaveIzquierda BLOQUES:e llaveDerecha 
+                        {: RESULT = new MetodoDec(a, b, c, d, e, aleft, aright); :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; RESULT.add(b); :}
                         |DECLARACION_VARIABLE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
@@ -130,8 +135,17 @@ DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {:
 DECLARACION_VARIABLE ::= DECLARACION_VARIABLE_ID:a igual VALOR:b {: RESULT = new Asignacion(a,b); :}
                         | DECLARACION_VARIABLE_ID:a {: RESULT = new Asignacion(a); :};
 
-DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:a corcheteIzquierda corcheteDerecha{: RESULT = a; RESULT.addDimension(); :}
+DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:a corcheteIzquierda corcheteDerecha{: RESULT = a; RESULT.addDim(); :}
                             |id:a {: RESULT = new Identificador(a, aleft, aright); :};
+
+PARAMETROS_DEC ::= {: RESULT = null; :}
+                | PARAMETROS_DEC_LISTA:a {: RESULT = a; :};
+
+PARAMETROS_DEC_LISTA ::= PARAMETROS_DEC:a coma PARAMETRO_DEC:b {: RESULT = a; RESULT.add(b); :}
+                | PARAMETRO_DEC:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
+
+PARAMETRO_DEC ::= final_:a TIPO:b DECLARACION_VARIABLE_ID:c {: RESULT = new Simbolo(b, c.getId(), c.getDim()); :}
+            | TIPO:a DECLARACION_VARIABLE_ID:b {: RESULT = new Simbolo(a, b.getId(), b.getDim()); :};
 
 TIPO ::= int_ {: RESULT = Tipo.INT; :}
         |double_ {: RESULT = Tipo.DOUBLE; :}
@@ -147,7 +161,14 @@ BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; RESULT.add(b); :}
             | BLOQUE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
 BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print(b, aleft, aright); :}
-          |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :};
+          |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
+          |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :};
+
+PARAMETROS ::= {: RESULT = null; :}
+            | PARAMETRO:a {: RESULT = a; :};
+
+PARAMETRO ::= PARAMETRO:a coma VALOR:b {: RESULT = a; RESULT.add(b); :}
+            | VALOR:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
 VALOR ::= E:e {: RESULT = e; :};
 
