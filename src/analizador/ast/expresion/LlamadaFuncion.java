@@ -32,8 +32,7 @@ public class LlamadaFuncion extends Expresion {
     @Override
     public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e.getGlobal());
-
+        Entorno local = new Entorno(e); /*verificar que no se pasen todos los entornos*/
         if (this.parametros == null) {
             m = e.getMetodo(this.id, null);
         } else {
@@ -82,7 +81,7 @@ public class LlamadaFuncion extends Expresion {
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e.getGlobal());
+        Entorno local = new Entorno(e); /*verificar que no se pasen todos los entornos*/
 
         if (this.parametros == null) {
             m = e.getMetodo(this.id, null);

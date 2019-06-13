@@ -1,5 +1,7 @@
 public class Persona {
 	int edad = 17;
+	int m = 3;
+	int n = 7;
 
 	public static void main(){
 		println(edad >= 18? "Es mayor de edad" : "Es menor de edad");
@@ -11,6 +13,9 @@ public class Persona {
 		} else {
 			println("Contenido no apto");
 		}
+		
+		println("Ackermann("+m+","+n+") = "+ackermann(m,n));
+
 	}
 	
 	public void metodo(int valor, double h, char m){
@@ -24,4 +29,16 @@ public class Persona {
 			return n*factorial(n-1);
 		}
 	}
+	
+	public int ackermann(int m, int n) {
+		if (m == 0) {
+			return (n + 1);
+		} else if (m > 0 && n == 0) {
+			return ackermann(m - 1, 1);
+		} else {
+			return ackermann(m - 1, ackermann(m, n - 1));
+		}
+	}
+
+
 }
