@@ -31,32 +31,12 @@ public class LlamadaFuncion extends Expresion {
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        if (this.parametros == null) {
-            Metodo m = e.getMetodo(this.id, null);
-            if (m != null) {
-                if (m.getTipo() != Tipo.VOID) {
-                    return m.getTipo();
-                } else {
-                    ErrorC error = new ErrorC();
-                    error.setTipo("Semántico");
-                    error.setValor(this.id);
-                    error.setDescripcion("La función es de tipo void.");
-                    error.setLinea(this.getLinea());
-                    error.setColumna(this.getColumna());
-                    errores.add(error);
-                }
-            } else {
-                ErrorC error = new ErrorC();
-                error.setTipo("Semántico");
-                error.setValor(this.id);
-                error.setDescripcion("La función no se ha declarado.");
-                error.setLinea(this.getLinea());
-                error.setColumna(this.getColumna());
-                errores.add(error);
-            }
-        } else {
-            Entorno local = new Entorno(e.getGlobal());
+        Metodo m = null;
+        Entorno local = new Entorno(e.getGlobal());
 
+        if (this.parametros == null) {
+            m = e.getMetodo(this.id, null);
+        } else {
             ArrayList<Simbolo> parm = new ArrayList<>();
             for (Expresion parametro : this.parametros) {
                 Tipo tipo = parametro.getTipo(e, salida, errores);
@@ -71,31 +51,31 @@ public class LlamadaFuncion extends Expresion {
                 return null;
             }
 
-            Metodo m = e.getMetodo(this.id, parm);
-
-            if (m != null) {
-                if (m.getTipo() != Tipo.VOID) {
-                    return m.getTipo();
-                } else {
-                    ErrorC error = new ErrorC();
-                    error.setTipo("Semántico");
-                    error.setValor(this.id);
-                    error.setDescripcion("La función es de tipo void.");
-                    error.setLinea(this.getLinea());
-                    error.setColumna(this.getColumna());
-                    errores.add(error);
-                }
+            m = e.getMetodo(this.id, parm);
+        }
+        
+        if (m != null) {
+            if (m.getTipo() != Tipo.VOID) {
+                return m.getTipo();
             } else {
                 ErrorC error = new ErrorC();
                 error.setTipo("Semántico");
                 error.setValor(this.id);
-                error.setDescripcion("El metodo no se ha declarado.");
+                error.setDescripcion("La función es de tipo void.");
                 error.setLinea(this.getLinea());
                 error.setColumna(this.getColumna());
                 errores.add(error);
             }
-
+        } else {
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            error.setValor(this.id);
+            error.setDescripcion("La función no se ha declarado.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
         }
+        
         return null;
     }
 
