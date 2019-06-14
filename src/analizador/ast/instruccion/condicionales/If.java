@@ -6,7 +6,6 @@
 package analizador.ast.instruccion.condicionales;
 
 import analizador.ErrorC;
-import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.instruccion.Instruccion;
 import java.util.ArrayList;
@@ -25,9 +24,9 @@ public class If extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         for (SubIf if_ : this.subIfs) {
-            Object r = if_.ejecutar(e, salida, errores);
+            Object r = if_.ejecutar(e, salida, metodo, ciclo, switch_, errores);
             if (r != null)
                 return r;
             

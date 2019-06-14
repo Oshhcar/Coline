@@ -20,7 +20,7 @@ public class Continue extends Instruccion{
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         return null;
     }
     

@@ -31,7 +31,7 @@ public class LlamadaMetodo extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
         if (this.parametros == null) {
@@ -63,7 +63,7 @@ public class LlamadaMetodo extends Instruccion {
             if (m.getBloque().getBloques()!= null) {
                 for (NodoAst bloque : m.getBloque().getBloques()) {
                     if (bloque instanceof Instruccion) {
-                        Object obj = ((Instruccion) bloque).ejecutar(local, salida, errores);
+                        Object obj = ((Instruccion) bloque).ejecutar(local, salida, metodo, ciclo, switch_, errores);
                         if(obj instanceof Return){
                             return null;
                         }

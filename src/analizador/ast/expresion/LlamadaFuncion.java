@@ -114,7 +114,7 @@ public class LlamadaFuncion extends Expresion {
                 if (m.getBloque().getBloques() != null) {
                     for (NodoAst bloque : m.getBloque().getBloques()) {
                         if (bloque instanceof Instruccion) {
-                            Object obj = ((Instruccion) bloque).ejecutar(local, salida, errores);
+                            Object obj = ((Instruccion) bloque).ejecutar(local, salida, true, false, false, errores);
                             if (obj instanceof Return) {
                                 Tipo tipReturn = ((Return) obj).getTipo(e, salida, errores);
                                 if (tipReturn != null) {

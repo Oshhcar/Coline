@@ -13,7 +13,7 @@ public class Persona {
 		} else {
 			println("Contenido no apto");
 		}
-		
+		println("Factorial "+factorial(10));
 		println("Ackermann("+m+","+n+") = "+ackermann(m,n));
 
 	}

@@ -24,7 +24,7 @@ public class Print extends Instruccion{
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Object valor = toPrint.getValor(e, salida, errores);
         if(valor != null){
             ((JTextArea) salida).append(valor.toString());

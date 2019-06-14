@@ -30,7 +30,7 @@ public class Declaracion extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         for (Asignacion asigna : this.asignaciones) {
             if (e.getLocal(asigna.getId().getId()) == null) {
                 if (asigna.getValor() != null) {

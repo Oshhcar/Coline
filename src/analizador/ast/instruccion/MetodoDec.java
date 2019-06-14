@@ -35,7 +35,7 @@ public class MetodoDec extends Instruccion{
     }
     
     @Override
-    public Object ejecutar(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if(e.getMetodo(this.id, this.parametros) == null){
             e.add(new Metodo(this.tipo, this.id, this.parametros, this.bloque));
         } else {
