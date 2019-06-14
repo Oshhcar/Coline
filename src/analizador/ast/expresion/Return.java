@@ -30,18 +30,25 @@ public class Return extends Expresion{
     
     @Override
     public Tipo getTipo(Entorno e,  Object salida, ArrayList<ErrorC> errores) {
-        if(toReturn != null){
-            return toReturn.getTipo(e, salida, errores);
+        if(getToReturn() != null){
+            return getToReturn().getTipo(e, salida, errores);
         }
         return null;
     }
 
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        if(toReturn != null){
-            return toReturn.getValor(e, salida, errores);
+        if(getToReturn() != null){
+            return getToReturn().getValor(e, salida, errores);
         }
         return null;
+    }
+
+    /**
+     * @return the toReturn
+     */
+    public Expresion getToReturn() {
+        return toReturn;
     }
     
 }

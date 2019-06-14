@@ -53,13 +53,7 @@ public class Clase extends Instruccion {
             
             Metodo main = local.getMetodo("main", null);
             if(main != null){
-                for(NodoAst bloque: main.getBloque().getBloques()){
-                    if(bloque instanceof Instruccion){
-                        ((Instruccion) bloque).ejecutar(local, salida, metodo, ciclo, switch_, errores);
-                    } else {
-                        ((Expresion) bloque).getValor(local, salida, errores);
-                    }
-                }
+                main.getBloque().ejecutar(local, salida, true, ciclo, switch_, errores);
             }
             
             

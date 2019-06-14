@@ -60,21 +60,11 @@ public class LlamadaMetodo extends Instruccion {
         }
 
         if (m != null) {
-            if (m.getBloque().getBloques()!= null) {
-                for (NodoAst bloque : m.getBloque().getBloques()) {
-                    if (bloque instanceof Instruccion) {
-                        Object obj = ((Instruccion) bloque).ejecutar(local, salida, metodo, ciclo, switch_, errores);
-                        if(obj instanceof Return){
-                            return null;
-                        }
-                    } else {
-                        if(bloque instanceof Return ){
-                            return null;
-                        }
-                        
-                        ((Expresion) bloque).getValor(e, salida, errores);
-                    }
-                }
+            Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores);
+            if(obj != null){
+                if(obj instanceof Return)
+                    if(((Return) obj).getToReturn() != null)
+                        System.err.println("No debe retornar algo.");
             }
         } else {
             ErrorC error = new ErrorC();

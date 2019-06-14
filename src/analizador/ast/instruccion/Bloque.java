@@ -31,43 +31,36 @@ public class Bloque extends Instruccion {
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if (this.bloques != null) {
             for (NodoAst bloque : this.bloques) {
-                if (bloque instanceof Break) {
-                    return bloque;
-                }
-                if (bloque instanceof Continue) {
-                    return bloque;
-                } else if (bloque instanceof Return) {
-                    Tipo tipReturn = ((Return) bloque).getTipo(e, salida, errores);
-                    if (tipReturn != null) {
-                        Object valReturn = ((Return) bloque).getValor(e, salida, errores);
-                        if (valReturn != null) {
-                            return new Return(new Literal(tipReturn, valReturn, bloque.getLinea(), bloque.getColumna()), bloque.getLinea(), bloque.getColumna());
+                Object obj = null;
+                if (bloque instanceof Instruccion) {
+                    obj = ((Instruccion) bloque).ejecutar(e, salida, metodo, ciclo, switch_, errores);
+
+                    if (obj != null) {
+                        if (obj instanceof Return) {
+                            if (metodo) {
+                                return obj;
+                            }
+                            System.err.println("no esta dentro de metodo");
                         }
                     }
-                    System.err.println("Erro obteniendo return");
-                    return null;
                 } else {
-                    if (bloque instanceof Instruccion) {
-                        Object obj = ((Instruccion) bloque).ejecutar(e, salida, metodo, ciclo, switch_, errores);
-                        if (obj != null) {
-                            if (obj instanceof Break) {
-                                return obj;
-                            } else if (bloque instanceof Continue) {
-                                return obj;
-                            } else if (obj instanceof Return) {
-                                Tipo tipReturn = ((Return) bloque).getTipo(e, salida, errores);
-                                if (tipReturn != null) {
-                                    Object valReturn = ((Return) bloque).getValor(e, salida, errores);
-                                    if (valReturn != null) {
-                                        return new Return(new Literal(tipReturn, valReturn, bloque.getLinea(), bloque.getColumna()), bloque.getLinea(), bloque.getColumna());
+                    if (bloque instanceof Return) {
+                        Return ret = (Return) bloque;
+                        if (metodo) {
+                            if (ret.getToReturn() != null) {
+                                Tipo tipRet = ret.getTipo(e, salida, errores);
+                                if (tipRet != null) {
+                                    Object valRet = ret.getValor(e, salida, errores);
+                                    if (valRet != null) {
+                                        return new Return(new Literal(tipRet, valRet, ret.getLinea(), ret.getColumna()), ret.getLinea(), ret.getColumna());
                                     }
                                 }
-                                System.err.println("Erro obteniendo return");
-                                return null;
+                                System.err.println("Error resolviendo return");
+                                continue;
                             }
+                            return ret; 
                         }
-                    } else {
-                        ((Expresion) bloque).getValor(e, salida, errores);
+                        System.err.println("No esta dentro de un metodo return");
                     }
                 }
             }
