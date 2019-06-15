@@ -28,6 +28,8 @@ public class Println extends Instruccion{
         Object valor = toPrint.getValor(e, salida, errores);
         if(valor != null){
             ((JTextArea) salida).append(valor.toString()+"\n");
+        } else {
+            System.err.println("No se econtro el valor,Println.");
         }
         return null;
     }

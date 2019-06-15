@@ -16,6 +16,7 @@ public class Sym {
   public static final int false_ = 9;
   public static final int char_ = 57;
   public static final int null_ = 7;
+  public static final int do_ = 68;
   public static final int coma = 17;
   public static final int igual = 42;
   public static final int double_ = 56;
@@ -46,6 +47,7 @@ public class Sym {
   public static final int or = 39;
   public static final int entero = 4;
   public static final int parIzquierda = 12;
+  public static final int while_ = 67;
   public static final int final_ = 52;
   public static final int menorigual = 35;
   public static final int return_ = 62;
@@ -56,6 +58,7 @@ public class Sym {
   public static final int parDerecha = 13;
   public static final int xor = 41;
   public static final int id = 6;
+  public static final int break_ = 65;
   public static final int public_ = 47;
   public static final int umasmas = 30;
   public static final int mayorigual = 34;
@@ -67,6 +70,7 @@ public class Sym {
   public static final int and = 38;
   public static final int umenos = 26;
   public static final int asterisco = 23;
+  public static final int continue_ = 66;
   public static final int interrogacion = 20;
   public static final int modulo = 25;
   public static final int decimal = 5;
@@ -138,7 +142,11 @@ public class Sym {
   "void_",
   "return_",
   "if_",
-  "else_"
+  "else_",
+  "break_",
+  "continue_",
+  "while_",
+  "do_"
   };
 }
 

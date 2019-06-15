@@ -11,6 +11,7 @@ import analizador.ast.expresion.*;
 import analizador.ast.expresion.operacion.*;
 import analizador.ast.instruccion.*;
 import analizador.ast.instruccion.condicionales.*;
+import analizador.ast.instruccion.ciclos.*;
 
 parser code
 {:
@@ -53,7 +54,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
-terminal print_, println_, void_, return_, if_, else_;
+terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_;
 
 non terminal INICIO;
 
@@ -75,10 +76,13 @@ non terminal NodoAst BLOQUE;
 non terminal ArrayList<Simbolo> PARAMETROS_DEC;
 non terminal ArrayList<Simbolo> PARAMETROS_DEC_LISTA;
 non terminal Simbolo PARAMETRO_DEC;
+non terminal Expresion UNARIO;
 non terminal ArrayList<Expresion> PARAMETROS;
 non terminal ArrayList<Expresion> PARAMETRO;
 non terminal If IF;
 non terminal ArrayList<SubIf> IF_LISTA;
+non terminal While WHILE;
+non terminal DoWhile DO_WHILE;
 
 non terminal Expresion E;
 
@@ -168,8 +172,20 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
           |return_:a puntoycoma {: RESULT = new Return(aleft, aright); :}
           |return_:a VALOR:b puntoycoma {: RESULT = new Return(b, aleft, aright); :}
+          |break_:a puntoycoma {: RESULT = new Break(aleft, aright); :}
+          |continue_:a puntoycoma {: RESULT = new Continue(aleft, aright); :}
+          |TIPO:a DECLARACION_VARIABLES:b puntoycoma {: RESULT = new Declaracion(a, b, aleft, aright); :}
+          |id:a igual VALOR:b puntoycoma {: RESULT = new Asignacion(new Identificador(a, aleft, aright), b); :}
           |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :}
-          | IF:a {: RESULT =a; :};
+          |UNARIO:a puntoycoma {: RESULT = a; :}
+          |IF:a {: RESULT = a; :}
+          |WHILE:a {: RESULT = a; :}
+          |DO_WHILE:a {: RESULT = a; :};
+
+UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
+           | id:a menosmenos:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :}
+           | masmas:x id:a {: RESULT = new PreFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :} 
+           | menosmenos:x id:a {: RESULT = new PreFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :};
 
 PARAMETROS ::= {: RESULT = null; :}
             | PARAMETRO:a {: RESULT = a; :};
@@ -185,6 +201,10 @@ IF_LISTA ::= IF_LISTA:a else_:b if_ parIzquierda E:c parDerecha llaveIzquierda B
                 {: RESULT = a; RESULT.add(new SubIf(c, d, bleft, bright)); :}
             | if_:a parIzquierda E:b parDerecha llaveIzquierda BLOQUES:c llaveDerecha
                 {: RESULT = new ArrayList<>(); RESULT.add(new SubIf(b, c, aleft, aright)); :};
+
+WHILE ::= while_:x parIzquierda E:a parDerecha llaveIzquierda BLOQUES:b llaveDerecha {: RESULT = new While(a, b, xleft, xright); :};
+
+DO_WHILE ::= do_:x llaveIzquierda BLOQUES:a llaveDerecha while_ parIzquierda E:b parDerecha puntoycoma {: RESULT = new DoWhile(a, b, xleft, xright); :};
 
 VALOR ::= E:e {: RESULT = e; :};
 

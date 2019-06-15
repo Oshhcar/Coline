@@ -28,6 +28,13 @@ public class Declaracion extends Instruccion {
         this.tipo = tipo;
         this.asignaciones = asignaciones;
     }
+    
+    public Declaracion(Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
+        super(linea, columna);
+        this.modificadores = null;
+        this.tipo = tipo;
+        this.asignaciones = asignaciones;
+    }
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {

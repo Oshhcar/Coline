@@ -30,10 +30,11 @@ public class Bloque extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if (this.bloques != null) {
+            Entorno local = new Entorno(e);
             for (NodoAst bloque : this.bloques) {
-                Object obj = null;
+                Object obj;
                 if (bloque instanceof Instruccion) {
-                    obj = ((Instruccion) bloque).ejecutar(e, salida, metodo, ciclo, switch_, errores);
+                    obj = ((Instruccion) bloque).ejecutar(local, salida, metodo, ciclo, switch_, errores);
 
                     if (obj != null) {
                         if (obj instanceof Return) {
@@ -41,6 +42,16 @@ public class Bloque extends Instruccion {
                                 return obj;
                             }
                             System.err.println("no esta dentro de metodo");
+                        } else if (obj instanceof Break) {
+                            if (ciclo || switch_) {
+                                return obj;
+                            }
+                            System.err.println("No esta dentro de un ciclo o swittch, BREAK.");
+                        } else if (obj instanceof Continue) {
+                            if (ciclo) {
+                                return obj;
+                            }
+                            System.err.println("No esta dentro de un ciclo1, CONTINUE.");
                         }
                     }
                 } else {
@@ -48,9 +59,9 @@ public class Bloque extends Instruccion {
                         Return ret = (Return) bloque;
                         if (metodo) {
                             if (ret.getToReturn() != null) {
-                                Tipo tipRet = ret.getTipo(e, salida, errores);
+                                Tipo tipRet = ret.getTipo(local, salida, errores);
                                 if (tipRet != null) {
-                                    Object valRet = ret.getValor(e, salida, errores);
+                                    Object valRet = ret.getValor(local, salida, errores);
                                     if (valRet != null) {
                                         return new Return(new Literal(tipRet, valRet, ret.getLinea(), ret.getColumna()), ret.getLinea(), ret.getColumna());
                                     }
@@ -58,9 +69,21 @@ public class Bloque extends Instruccion {
                                 System.err.println("Error resolviendo return");
                                 continue;
                             }
-                            return ret; 
+                            return ret;
                         }
                         System.err.println("No esta dentro de un metodo return");
+                    } else if (bloque instanceof Break) {
+                        if (ciclo || switch_) {
+                            return bloque;
+                        }
+                        System.err.println("No esta dentro de un ciclo o swittch, BREAK.");
+                    } else if (bloque instanceof Continue) {
+                        if (ciclo) {
+                            return bloque;
+                        }
+                        System.err.println("No esta dentro de un ciclo2, CONTINUE.");
+                    } else {
+                        ((Expresion) bloque).getValor(local, salida, errores);
                     }
                 }
             }
