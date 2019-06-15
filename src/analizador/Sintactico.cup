@@ -55,6 +55,7 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
+terminal switch_, case_, default_;
 
 non terminal INICIO;
 
@@ -86,7 +87,10 @@ non terminal DoWhile DO_WHILE;
 non terminal For FOR;
 non terminal Instruccion FOR_INIT;
 non terminal NodoAst FOR_UPDATE;
-
+non terminal Switch SWITCH;
+non terminal ArrayList<Case> CASES;
+non terminal ArrayList<Case> CASESL;
+non terminal Case CASE;
 non terminal Expresion E;
 
 precedence left interrogacion;
@@ -184,7 +188,8 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |IF:a {: RESULT = a; :}
           |WHILE:a {: RESULT = a; :}
           |DO_WHILE:a {: RESULT = a; :}
-          |FOR:a {: RESULT = a; :};
+          |FOR:a {: RESULT = a; :}
+          |SWITCH:a {: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
            | id:a menosmenos:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :}
@@ -218,6 +223,17 @@ FOR_INIT ::= TIPO:a DECLARACION_VARIABLES:b {: RESULT = new Declaracion(a, b, al
 
 FOR_UPDATE ::= id:a igual VALOR:b {: RESULT = new Asignacion(new Identificador(a, aleft, aright), b); :}
                |UNARIO:a {: RESULT = a; :};
+
+SWITCH ::= switch_:x parIzquierda E:a parDerecha llaveIzquierda CASES:b llaveDerecha {: RESULT = new Switch(a, b, xleft, xright); :};
+
+CASES ::= {: RESULT = null; :}
+        | CASESL:a {: RESULT = a; :};
+
+CASESL ::= CASESL:a CASE:b {: RESULT = a; RESULT.add(b); :}
+          | CASE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
+
+CASE ::= case_:x E:a dospuntos BLOQUES:b {: RESULT = new Case(a, b, xleft, xright); :}
+        |default_:x dospuntos BLOQUES:a {: RESULT = new Case(a, xleft, xright); :};
 
 VALOR ::= E:e {: RESULT = e; :};
 
