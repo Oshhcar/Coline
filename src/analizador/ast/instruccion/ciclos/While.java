@@ -9,6 +9,7 @@ import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
+import analizador.ast.expresion.Return;
 import analizador.ast.instruccion.Bloque;
 import analizador.ast.instruccion.Break;
 import analizador.ast.instruccion.Continue;
@@ -44,9 +45,7 @@ public class While extends Instruccion {
                                 if (obj != null) {
                                     if (obj instanceof Break) {
                                         return null;
-                                    } else if (obj instanceof Continue) {
-                                        continue;
-                                    } else {
+                                    } else if(obj instanceof Return) {
                                         return obj;
                                     }
                                 }
