@@ -43,8 +43,9 @@ public class Clase extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if (this.declaraciones != null) {
-            Entorno local = new Entorno(e);
-
+            Entorno local = new Entorno(null);
+            local.setGlobal(local);
+            
             for (NodoAst inst : this.declaraciones) {
                 if (inst instanceof Instruccion) {
                     ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, errores);

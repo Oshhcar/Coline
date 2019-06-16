@@ -22,8 +22,8 @@ public class Ast {
     }
     
     public void ejecutar(Object salida, ArrayList<ErrorC> errores) {
-        Entorno global = new Entorno(null);
-        this.clase.ejecutar(global, salida, false, false, false, errores);
+        //Entorno global = new Entorno(null);
+        this.clase.ejecutar(null, salida, false, false, false, errores);
     }
     
 }

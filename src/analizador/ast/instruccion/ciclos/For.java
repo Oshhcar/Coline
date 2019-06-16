@@ -49,7 +49,8 @@ public class For extends Instruccion{
                         Object valCondicion = condicion.getValor(local, salida, errores);
                         if(valCondicion != null){
                             if(Boolean.valueOf(valCondicion.toString())){
-                                Object obj = bloque.ejecutar(local, salida, metodo, true, switch_, errores);
+                                Entorno local2 = new Entorno(local);
+                                Object obj = bloque.ejecutar(local2, salida, metodo, true, switch_, errores);
                                 
                                 if(obj != null){
                                     if(obj instanceof Break){

@@ -29,3 +29,7 @@ AGREGAR final  A PARAMETROS
 arreglar getmetodo que recorre todo.
 
 arreglar llamada a funciones(sin copiar toda la tabla);
+
+validar que no hayan mas de un default en switch.
+
+validar que no hayan mas de un main.

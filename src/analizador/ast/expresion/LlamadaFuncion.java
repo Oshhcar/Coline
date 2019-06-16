@@ -31,57 +31,14 @@ public class LlamadaFuncion extends Expresion {
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Metodo m = null;
-        Entorno local = new Entorno(e); /*verificar que no se pasen todos los entornos*/
-        if (this.parametros == null) {
-            m = e.getMetodo(this.id, null);
-        } else {
-            ArrayList<Simbolo> parm = new ArrayList<>();
-            for (Expresion parametro : this.parametros) {
-                Tipo tipo = parametro.getTipo(e, salida, errores);
-                if (tipo != null) {
-                    Object valor = parametro.getValor(e, salida, errores);
-                    if (valor != null) {
-                        parm.add(new Simbolo(tipo, "parm", valor));
-                        continue;
-                    }
-                }
-                System.err.println("error en parametros");
-                return null;
-            }
-
-            m = e.getMetodo(this.id, parm);
-        }
-        
-        if (m != null) {
-            if (m.getTipo() != Tipo.VOID) {
-                return m.getTipo();
-            } else {
-                ErrorC error = new ErrorC();
-                error.setTipo("Semántico");
-                error.setValor(this.id);
-                error.setDescripcion("La función es de tipo void.");
-                error.setLinea(this.getLinea());
-                error.setColumna(this.getColumna());
-                errores.add(error);
-            }
-        } else {
-            ErrorC error = new ErrorC();
-            error.setTipo("Semántico");
-            error.setValor(this.id);
-            error.setDescripcion("La función no se ha declarado.");
-            error.setLinea(this.getLinea());
-            error.setColumna(this.getColumna());
-            errores.add(error);
-        }
-        
-        return null;
+        return Tipo.INT;
     }
 
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e); /*verificar que no se pasen todos los entornos*/
+        Entorno local = new Entorno(e);
+        /*verificar que no se pasen todos los entornos*/
 
         if (this.parametros == null) {
             m = e.getMetodo(this.id, null);
@@ -111,33 +68,15 @@ public class LlamadaFuncion extends Expresion {
 
         if (m != null) {
             if (m.getTipo() != Tipo.VOID) {
-                if (m.getBloque().getBloques() != null) {
-                    for (NodoAst bloque : m.getBloque().getBloques()) {
-                        if (bloque instanceof Instruccion) {
-                            Object obj = ((Instruccion) bloque).ejecutar(local, salida, true, false, false, errores);
-                            if (obj instanceof Return) {
-                                Tipo tipReturn = ((Return) obj).getTipo(e, salida, errores);
-                                if (tipReturn != null) {
-                                    if (tipReturn == m.getTipo()) {
-                                        return ((Return) obj).getValor(e, salida, errores);
-                                    }
-                                }
-                                System.err.println("Error return");
-                                return null;
-                            }
-                        } else {
-                            if (bloque instanceof Return) {
-                                Tipo tipReturn = ((Return) bloque).getTipo(e, salida, errores);
-                                if (tipReturn != null) {
-                                    if (tipReturn == m.getTipo()) {
-                                        return ((Return) bloque).getValor(e, salida, errores);
-                                    }
-                                }
-                                System.err.println("Error return");
-                                return null;
-                            }
+                if (m.getBloque() != null) {
+                    Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores); 
+                    
+                    if(obj != null){
+                        if(obj instanceof Return){
+                            return ((Return) obj).getValor(local, salida, errores);
                         }
                     }
+                    //comprobar que sea del mismo tipo
                 }
             } else {
                 ErrorC error = new ErrorC();

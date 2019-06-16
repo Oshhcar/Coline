@@ -15,10 +15,14 @@ import java.util.LinkedList;
 public class Entorno {
 
     private final Entorno padre;
+    private Entorno global;
     private final ArrayList<Simbolo> tabla;
 
     public Entorno(Entorno padre) {
         this.padre = padre;
+        if(padre != null){
+            global = padre.global;
+        }
         this.tabla = new ArrayList<>();
     }
 
@@ -56,51 +60,38 @@ public class Entorno {
     }
 
     public Metodo getMetodo(String id, ArrayList<Simbolo> parametros) {
-        Entorno actual = this;
+        for (int i = global.getTabla().size() - 1; i >= 0; i--) {
+            Simbolo s = global.getTabla().get(i);
+            if (s.getId().equals(id)) {
+                if (s instanceof Metodo) {
+                    Metodo m = (Metodo) s;
+                    if (m.getParametros() == null && parametros == null) {
+                        return m;
+                    } else {
+                        if (m.getParametros() == null || parametros == null) {
+                            continue;
+                        }
 
-        while (actual != null) {
-            for (int i = actual.getTabla().size() - 1; i >= 0; i--) {
-                Simbolo s = actual.getTabla().get(i);
-                if (s.getId().equals(id)) {
-                    if (s instanceof Metodo) {
-                        Metodo m = (Metodo)s;
-                        if(m.getParametros() == null && parametros == null){
-                            return m;
-                        } else {
-                            if(m.getParametros() == null || parametros == null){
-                                continue;
+                        if (m.getParametros().size() == parametros.size()) {
+                            boolean bandera = true;
+
+                            for (int j = 0; j <= parametros.size() - 1; j++) {
+                                if (m.getParametros().get(j).getTipo() == parametros.get(j).getTipo()) {
+                                    continue;
+                                }
+                                bandera = false;
+                                break;
                             }
-                            
-                            if(m.getParametros().size() == parametros.size()){
-                                boolean bandera = true;
-                                
-                                for(int j = 0; j <= parametros.size() - 1; j++){
-                                    if(m.getParametros().get(j).getTipo() == parametros.get(j).getTipo()){
-                                        continue;
-                                    }
-                                    bandera = false;
-                                    break;
-                                }
-                                
-                                if(bandera){
-                                    return m;
-                                }
+
+                            if (bandera) {
+                                return m;
                             }
                         }
                     }
                 }
             }
-            actual = actual.padre;
         }
         return null;
-    }
-    
-    public Entorno getGlobal(){
-        Entorno actual = this;
-        while(actual.padre != null){
-            actual = actual.padre;
-        }
-        return actual;
     }
 
     public void recorrer() {
@@ -128,6 +119,13 @@ public class Entorno {
      */
     public ArrayList<Simbolo> getTabla() {
         return tabla;
+    }
+
+    /**
+     * @param global the global to set
+     */
+    public void setGlobal(Entorno global) {
+        this.global = global;
     }
 
 }

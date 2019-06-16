@@ -41,7 +41,8 @@ public class While extends Instruccion {
                         Object valCondicion = condicion.getValor(e, salida, errores);
                         if (valCondicion != null) {
                             if (Boolean.valueOf(valCondicion.toString())) {
-                                Object obj = this.bloque.ejecutar(e, salida, metodo, true, switch_, errores);
+                                Entorno local = new Entorno(e);
+                                Object obj = this.bloque.ejecutar(local, salida, metodo, true, switch_, errores);
                                 if (obj != null) {
                                     if (obj instanceof Break) {
                                         return null;

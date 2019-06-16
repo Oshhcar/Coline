@@ -33,7 +33,7 @@ public class LlamadaMetodo extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e.getGlobal());
+        Entorno local = new Entorno(e);
         if (this.parametros == null) {
             m = e.getMetodo(this.id, null);
         } else {

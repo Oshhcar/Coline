@@ -35,7 +35,8 @@ public class DoWhile extends Instruccion {
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if (bloque != null) {
             while (true) {
-                Object obj = this.bloque.ejecutar(e, salida, metodo, true, switch_, errores);
+                Entorno local = new Entorno(e);
+                Object obj = this.bloque.ejecutar(local, salida, metodo, true, switch_, errores);
                 
                 
                 if (obj != null) {

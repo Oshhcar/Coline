@@ -30,11 +30,10 @@ public class Bloque extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         if (this.bloques != null) {
-            Entorno local = new Entorno(e);
             for (NodoAst bloque : this.bloques) {
                 Object obj;
                 if (bloque instanceof Instruccion) {
-                    obj = ((Instruccion) bloque).ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                    obj = ((Instruccion) bloque).ejecutar(e, salida, metodo, ciclo, switch_, errores);
 
                     if (obj != null) {
                         if (obj instanceof Return) {
@@ -59,9 +58,9 @@ public class Bloque extends Instruccion {
                         Return ret = (Return) bloque;
                         if (metodo) {
                             if (ret.getToReturn() != null) {
-                                Tipo tipRet = ret.getTipo(local, salida, errores);
+                                Tipo tipRet = ret.getTipo(e, salida, errores);
                                 if (tipRet != null) {
-                                    Object valRet = ret.getValor(local, salida, errores);
+                                    Object valRet = ret.getValor(e, salida, errores);
                                     if (valRet != null) {
                                         return new Return(new Literal(tipRet, valRet, ret.getLinea(), ret.getColumna()), ret.getLinea(), ret.getColumna());
                                     }
@@ -83,7 +82,7 @@ public class Bloque extends Instruccion {
                         }
                         System.err.println("No esta dentro de un ciclo2, CONTINUE.");
                     } else {
-                        ((Expresion) bloque).getValor(local, salida, errores);
+                        ((Expresion) bloque).getValor(e, salida, errores);
                     }
                 }
             }
