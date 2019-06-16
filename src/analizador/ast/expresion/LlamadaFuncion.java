@@ -21,79 +21,38 @@ import java.util.ArrayList;
  */
 public class LlamadaFuncion extends Expresion {
 
-    private final String id;
-    private final ArrayList<Expresion> parametros;
-
-    public LlamadaFuncion(String id, ArrayList<Expresion> parametros, int linea, int columna) {
-        super(linea, columna);
-        this.id = id;
-        this.parametros = parametros;
+    private final LlamadaMetodo funcion;
+    private Object valor;
+    private Tipo tipo;
+    public LlamadaFuncion(LlamadaMetodo funcion) {
+        super(funcion.getLinea(), funcion.getColumna());
+        this.funcion = funcion;
+        this.funcion.setFuncion(true);
+        this.valor = null;
+        this.tipo = null;
     }
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        return Tipo.INT;
+        Object obj = funcion.ejecutar(e, salida, true, false, false, errores);
+        if (obj != null) {
+            valor = ((Expresion) obj).getValor(e, salida, errores);
+            return ((Expresion) obj).getTipo(e, salida, errores);
+        }
+        return null;
     }
 
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Metodo m = null;
-        Entorno local = new Entorno(e.getGlobal()); /*verificar que no se pasen todos los entornos*/
-        String firma = this.id;
-        if (this.parametros == null) {
-            m = e.getMetodo(firma);
-        } else {
-            ArrayList<Simbolo> parm = new ArrayList<>();
-            for (Expresion parametro : this.parametros) {
-                Tipo tipo = parametro.getTipo(e, salida, errores);
-                if (tipo != null) {
-                    Object valor = parametro.getValor(e, salida, errores);
-                    if (valor != null) {
-                        firma += "_" + tipo.toString();
-                        parm.add(new Simbolo(tipo, "parm", valor));
-                        continue;
-                    }
-                }
-                System.err.println("error en parametros");
-                return null;
-            }
-
-            m = e.getMetodo(firma);
-
-            if (m != null) {
-                for (int i = 0; i <= parm.size() - 1; i++) {
-                    local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
-                }
-            }
-        }
-
-        if (m != null) {
-            if (m.getTipo() != Tipo.VOID) {
-                if (m.getBloque() != null) {
-                    Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores);
-                    
-                    if(obj instanceof Return){
-                        return ((Return)obj).getValor(local, salida, errores);
-                    }
-                }
-            } else {
-                ErrorC error = new ErrorC();
-                error.setTipo("Semántico");
-                error.setValor(this.id);
-                error.setDescripcion("La función es de tipo void.");
-                error.setLinea(this.getLinea());
-                error.setColumna(this.getColumna());
-                errores.add(error);
-            }
-        } else {
-            ErrorC error = new ErrorC();
-            error.setTipo("Semántico");
-            error.setValor(this.id);
-            error.setDescripcion("El metodo no se ha declarado.");
-            error.setLinea(this.getLinea());
-            error.setColumna(this.getColumna());
-            errores.add(error);
+        if(valor != null)
+            return valor;
+        
+        Object obj = funcion.ejecutar(e, salida, true, false, false, errores);
+        if (obj != null) {
+            tipo = ((Expresion) obj).getTipo(e, salida, errores);
+            return ((Expresion) obj).getValor(e, salida, errores);
         }
         return null;
+        
     }
 }

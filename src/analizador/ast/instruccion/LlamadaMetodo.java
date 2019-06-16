@@ -70,8 +70,13 @@ public class LlamadaMetodo extends Instruccion {
             if (obj != null) {
                 if (obj instanceof Return) {
                     if (isFuncion()) {
-                        return obj;
-                    } else if (((Return) obj).getToReturn() != null) {
+                        if(m.getTipo() == ((Return) obj).getTipo(local, salida, errores)){
+                            return obj;
+                        } else {
+                            System.err.println("No son del mismo tipo. LLamada funcion");
+                        }
+                        
+                    } else if (((Return) obj).getToReturn() != null && m.getTipo() == Tipo.VOID) {
                         System.err.println("No debe retornar algo.");
                     }
                 }

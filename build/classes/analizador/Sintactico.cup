@@ -273,7 +273,7 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | true_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(true), aleft, aright); :}
     | false_:a {: RESULT = new Literal(Tipo.BOOLEAN, new Boolean(false), aleft, aright); :}
     | id:a {: RESULT = new Identificador(a, aleft, aright); :}
-    | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(a, b, aleft, aright); :};
+    | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(new LlamadaMetodo(a, b, aleft, aright)); :};
 
 		
 		
