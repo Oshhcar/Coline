@@ -60,7 +60,8 @@ public class SubIf extends Instruccion {
             }
 
             if (this.isElse || isEntra()) {
-                return this.bloque.ejecutar(e, salida, metodo, ciclo, switch_, errores);
+                Entorno local = new Entorno(e);
+                return this.bloque.ejecutar(local, salida, metodo, ciclo, switch_, errores);
             }
         }
         return null;

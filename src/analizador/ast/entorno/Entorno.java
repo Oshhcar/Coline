@@ -6,8 +6,6 @@
 package analizador.ast.entorno;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-
 /**
  *
  * @author oscar

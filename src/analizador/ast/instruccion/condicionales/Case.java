@@ -70,7 +70,8 @@ public class Case extends Instruccion {
 
         if (isContinuar()) {
             if (bloque != null) {
-                return bloque.ejecutar(e, salida, metodo, ciclo, switch_, errores);
+                Entorno local = new Entorno(e);
+                return bloque.ejecutar(local, salida, metodo, ciclo, switch_, errores);
             }
         }
 
