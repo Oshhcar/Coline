@@ -51,8 +51,8 @@ public class Clase extends Instruccion {
                     ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, errores);
                 }
             }
-            
-            Metodo main = local.getMetodo("main", null);
+
+            Metodo main = local.getMetodo("main");
             if(main != null){
                 main.getBloque().ejecutar(local, salida, true, ciclo, switch_, errores);
             }

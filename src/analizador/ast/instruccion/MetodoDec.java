@@ -18,7 +18,8 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class MetodoDec extends Instruccion{
+public class MetodoDec extends Instruccion {
+
     private final ArrayList<Modificador> modificadores;
     private final Tipo tipo;
     private final String id;
@@ -33,11 +34,19 @@ public class MetodoDec extends Instruccion{
         this.parametros = parametros;
         this.bloque = bloque;
     }
-    
+
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        if(e.getMetodo(this.id, this.parametros) == null){
-            e.add(new Metodo(this.tipo, this.id, this.parametros, this.bloque));
+        String firma = this.id;
+
+        if (this.parametros != null) {
+            for (Simbolo parm : this.parametros) {
+                firma += "_" + parm.getTipo().toString();
+            }
+        }
+
+        if (e.getMetodo(firma) == null) {
+            e.add(new Metodo(this.tipo, this.id, firma, this.parametros, this.bloque));
         } else {
             ErrorC error = new ErrorC();
             error.setTipo("Semántico");
@@ -47,7 +56,7 @@ public class MetodoDec extends Instruccion{
             error.setColumna(this.getColumna());
             errores.add(error);
         }
-        
+
         return null;
     }
 

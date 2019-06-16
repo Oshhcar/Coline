@@ -5,7 +5,6 @@
  */
 package analizador.ast.entorno;
 
-import analizador.ast.NodoAst;
 import analizador.ast.instruccion.Bloque;
 import java.util.ArrayList;
 
@@ -14,11 +13,14 @@ import java.util.ArrayList;
  * @author oscar
  */
 public class Metodo extends Simbolo{
+    
+    private final String firma;
     private final ArrayList<Simbolo> parametros;
     private final Bloque bloque;
 
-    public Metodo(Tipo tipo, String id, ArrayList<Simbolo> parametros, Bloque bloque) {
+    public Metodo(Tipo tipo, String id, String firma, ArrayList<Simbolo> parametros, Bloque bloque) {
         super(tipo, id);
+        this.firma = firma;
         this.parametros = parametros;
         this.bloque = bloque;
     }
@@ -35,6 +37,13 @@ public class Metodo extends Simbolo{
      */
     public ArrayList<Simbolo> getParametros() {
         return parametros;
+    }
+
+    /**
+     * @return the firma
+     */
+    public String getFirma() {
+        return firma;
     }
     
 }

@@ -57,35 +57,13 @@ public class Entorno {
         return null;
     }
 
-    public Metodo getMetodo(String id, ArrayList<Simbolo> parametros) {
-        for (int i = global.getTabla().size() - 1; i >= 0; i--) {
-            Simbolo s = global.getTabla().get(i);
-            if (s.getId().equals(id)) {
-                if (s instanceof Metodo) {
-                    Metodo m = (Metodo) s;
-                    if (m.getParametros() == null && parametros == null) {
-                        return m;
-                    } else {
-                        if (m.getParametros() == null || parametros == null) {
-                            continue;
-                        }
-
-                        if (m.getParametros().size() == parametros.size()) {
-                            boolean bandera = true;
-
-                            for (int j = 0; j <= parametros.size() - 1; j++) {
-                                if (m.getParametros().get(j).getTipo() == parametros.get(j).getTipo()) {
-                                    continue;
-                                }
-                                bandera = false;
-                                break;
-                            }
-
-                            if (bandera) {
-                                return m;
-                            }
-                        }
-                    }
+    public Metodo getMetodo(String firma) {
+        for (int i = getGlobal().getTabla().size() - 1; i >= 0; i--) {
+            Simbolo s = getGlobal().getTabla().get(i);
+            if(s instanceof Metodo){
+                Metodo m = (Metodo) s;
+                if(m.getFirma().equals(firma)){
+                    return m;
                 }
             }
         }
@@ -124,6 +102,13 @@ public class Entorno {
      */
     public void setGlobal(Entorno global) {
         this.global = global;
+    }
+
+    /**
+     * @return the global
+     */
+    public Entorno getGlobal() {
+        return global;
     }
 
 }

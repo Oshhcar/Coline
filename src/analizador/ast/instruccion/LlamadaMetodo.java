@@ -23,19 +23,23 @@ public class LlamadaMetodo extends Instruccion {
 
     private final String id;
     private final ArrayList<Expresion> parametros;
+    private boolean funcion;
 
     public LlamadaMetodo(String id, ArrayList<Expresion> parametros, int linea, int columna) {
         super(linea, columna);
         this.id = id;
         this.parametros = parametros;
+        this.funcion = false;
     }
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e);
+        Entorno local = new Entorno(e.getGlobal());
+        String firma = this.id;
+        
         if (this.parametros == null) {
-            m = e.getMetodo(this.id, null);
+            m = e.getMetodo(firma);
         } else {
             ArrayList<Simbolo> parm = new ArrayList<>();
             for (Expresion parametro : this.parametros) {
@@ -43,6 +47,7 @@ public class LlamadaMetodo extends Instruccion {
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, errores);
                     if (valor != null) {
+                        firma += "_" + tipo.toString();
                         parm.add(new Simbolo(tipo, "parm", valor));
                         continue;
                     }
@@ -50,7 +55,8 @@ public class LlamadaMetodo extends Instruccion {
                 System.err.println("error en parametros");
                 return null;
             }
-            m = e.getMetodo(this.id, parm);
+
+            m = e.getMetodo(firma);
 
             if (m != null) {
                 for (int i = 0; i <= parm.size() - 1; i++) {
@@ -61,10 +67,14 @@ public class LlamadaMetodo extends Instruccion {
 
         if (m != null) {
             Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores);
-            if(obj != null){
-                if(obj instanceof Return)
-                    if(((Return) obj).getToReturn() != null)
+            if (obj != null) {
+                if (obj instanceof Return) {
+                    if (isFuncion()) {
+                        return obj;
+                    } else if (((Return) obj).getToReturn() != null) {
                         System.err.println("No debe retornar algo.");
+                    }
+                }
             }
         } else {
             ErrorC error = new ErrorC();
@@ -76,6 +86,20 @@ public class LlamadaMetodo extends Instruccion {
             errores.add(error);
         }
         return null;
+    }
+
+    /**
+     * @return the funcion
+     */
+    public boolean isFuncion() {
+        return funcion;
+    }
+
+    /**
+     * @param funcion the funcion to set
+     */
+    public void setFuncion(boolean funcion) {
+        this.funcion = funcion;
     }
 
 }

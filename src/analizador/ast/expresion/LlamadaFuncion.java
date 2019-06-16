@@ -12,6 +12,7 @@ import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.instruccion.Instruccion;
+import analizador.ast.instruccion.LlamadaMetodo;
 import java.util.ArrayList;
 
 /**
@@ -37,11 +38,10 @@ public class LlamadaFuncion extends Expresion {
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
         Metodo m = null;
-        Entorno local = new Entorno(e);
-        /*verificar que no se pasen todos los entornos*/
-
+        Entorno local = new Entorno(e.getGlobal()); /*verificar que no se pasen todos los entornos*/
+        String firma = this.id;
         if (this.parametros == null) {
-            m = e.getMetodo(this.id, null);
+            m = e.getMetodo(firma);
         } else {
             ArrayList<Simbolo> parm = new ArrayList<>();
             for (Expresion parametro : this.parametros) {
@@ -49,6 +49,7 @@ public class LlamadaFuncion extends Expresion {
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, errores);
                     if (valor != null) {
+                        firma += "_" + tipo.toString();
                         parm.add(new Simbolo(tipo, "parm", valor));
                         continue;
                     }
@@ -57,7 +58,7 @@ public class LlamadaFuncion extends Expresion {
                 return null;
             }
 
-            m = e.getMetodo(this.id, parm);
+            m = e.getMetodo(firma);
 
             if (m != null) {
                 for (int i = 0; i <= parm.size() - 1; i++) {
@@ -69,14 +70,11 @@ public class LlamadaFuncion extends Expresion {
         if (m != null) {
             if (m.getTipo() != Tipo.VOID) {
                 if (m.getBloque() != null) {
-                    Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores); 
+                    Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores);
                     
-                    if(obj != null){
-                        if(obj instanceof Return){
-                            return ((Return) obj).getValor(local, salida, errores);
-                        }
+                    if(obj instanceof Return){
+                        return ((Return)obj).getValor(local, salida, errores);
                     }
-                    //comprobar que sea del mismo tipo
                 }
             } else {
                 ErrorC error = new ErrorC();
