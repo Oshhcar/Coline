@@ -33,3 +33,5 @@ arreglar llamada a funciones(sin copiar toda la tabla);
 validar que no hayan mas de un default en switch.
 
 validar que no hayan mas de un main.
+validar que no este vacía la clase.
+validar que no hayan clases repetidas.
