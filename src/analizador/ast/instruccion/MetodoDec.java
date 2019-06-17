@@ -41,7 +41,7 @@ public class MetodoDec extends Instruccion {
 
         if (this.parametros != null) {
             for (Simbolo parm : this.parametros) {
-                firma += "_" + parm.getTipo().toString();
+                firma += "_" + parm.getTipo().tipo.toString();
             }
         }
 

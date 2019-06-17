@@ -76,9 +76,9 @@ public class Entorno {
         while (actual != null) {
             System.out.println("Entorno " + i++);
             actual.getTabla().forEach(s -> {
-                System.out.print(s.getId() + " : " + s.getTipo().toString());
-                if (s.getTipo() == Tipo.OBJECT) {
-                    System.out.print(":" + s.getTipo().getObject());
+                System.out.print(s.getId() + " : " + s.getTipo().tipo.toString());
+                if (s.getTipo().tipo == Tipo.type.OBJECT) {
+//                    System.out.print(":" + s.getTipo().getObject());
                 }
                 if (s.getValor() != null) {
                     System.out.println(" -> " + s.getValor());

@@ -49,7 +49,7 @@ public class DoWhile extends Instruccion {
                 
                 Tipo tipCondicion = condicion.getTipo(e, salida, errores);
                 if(tipCondicion != null){
-                    if(tipCondicion == Tipo.BOOLEAN){
+                    if(tipCondicion.tipo == Tipo.type.BOOLEAN){
                         Object valCondicion = condicion.getValor(e, salida, errores);
                         if(valCondicion != null){
                             if(Boolean.valueOf(valCondicion.toString())){

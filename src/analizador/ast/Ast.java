@@ -43,7 +43,7 @@ public class Ast {
                 }
             }
         }
-        global.recorrer();
+        //global.recorrer();
         if(claseMain != null){
             if(claseMain.getMain().getBloque() != null){
                 Entorno local = new Entorno(global);

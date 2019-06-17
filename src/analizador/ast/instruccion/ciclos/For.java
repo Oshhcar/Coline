@@ -45,7 +45,7 @@ public class For extends Instruccion{
             while(true){
                 Tipo tipCondicion = condicion.getTipo(local, salida, errores);
                 if(tipCondicion != null){
-                    if(tipCondicion == Tipo.BOOLEAN){
+                    if(tipCondicion.tipo == Tipo.type.BOOLEAN){
                         Object valCondicion = condicion.getValor(local, salida, errores);
                         if(valCondicion != null){
                             if(Boolean.valueOf(valCondicion.toString())){

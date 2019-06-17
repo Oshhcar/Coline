@@ -27,13 +27,13 @@ public class Relacional extends Operacion {
         Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
-            if ((tipOp1.isNumero() || tipOp1 == Tipo.CHAR) && (tipOp2.isNumero() || tipOp2 == Tipo.CHAR)) {
-                return Tipo.BOOLEAN;
-            } else if (tipOp1 == Tipo.OBJECT && tipOp2 == Tipo.OBJECT) {
-                return Tipo.BOOLEAN;
-            } else if (tipOp1 == Tipo.BOOLEAN && tipOp2 == Tipo.BOOLEAN) {
+            if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
+                return new Tipo(Tipo.type.BOOLEAN);
+            } else if (tipOp1.tipo == Tipo.type.OBJECT && tipOp2.tipo == Tipo.type.OBJECT) {
+                return new Tipo(Tipo.type.BOOLEAN);
+            } else if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
                 if (this.getOperador() == Operacion.Operador.IGUAL || this.getOperador() == Operacion.Operador.DIFERENTE) {
-                    return Tipo.BOOLEAN;
+                    return new Tipo(Tipo.type.BOOLEAN);
                 }
             }
         }
@@ -46,7 +46,7 @@ public class Relacional extends Operacion {
         Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
-            if ((tipOp1.isNumero() || tipOp1 == Tipo.CHAR) && (tipOp2.isNumero() || tipOp2 == Tipo.CHAR)) {
+            if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
                 Double valOp1 = this.getDouble(tipOp1, this.getOp1().getValor(e, salida, errores));
                 Double valOp2 = this.getDouble(tipOp2, this.getOp2().getValor(e, salida, errores));
                 if (valOp1 != null && valOp2 != null) {
@@ -65,7 +65,7 @@ public class Relacional extends Operacion {
                             return valOp1.doubleValue() != valOp2.doubleValue();
                     }
                 }
-            } else if (tipOp1 == Tipo.OBJECT && tipOp2 == Tipo.OBJECT) {
+            } else if (tipOp1.tipo == Tipo.type.OBJECT && tipOp2.tipo == Tipo.type.OBJECT) {
                 Integer valOp1 = this.getValorCadena(this.getOp1().getValor(e, salida, errores).toString());
                 Integer valOp2 = this.getValorCadena(this.getOp2().getValor(e, salida, errores).toString());
 
@@ -86,7 +86,7 @@ public class Relacional extends Operacion {
                     }
                 }
 
-            } else if (tipOp1 == Tipo.BOOLEAN && tipOp2 == Tipo.BOOLEAN) {
+            } else if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
                 Object val1 = this.getOp1().getValor(e, salida, errores).toString();
                 Object val2 = this.getOp2().getValor(e, salida, errores).toString();
 
@@ -119,7 +119,7 @@ public class Relacional extends Operacion {
 
     private Double getDouble(Tipo tipo, Object valor) {
         if (tipo != null && valor != null) {
-            switch (tipo) {
+            switch (tipo.tipo) {
                 case INT:
                 case DOUBLE:
                     return new Double(valor.toString());

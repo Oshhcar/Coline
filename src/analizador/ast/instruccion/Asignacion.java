@@ -40,7 +40,7 @@ public class Asignacion extends Instruccion {
         if (tmp != null) {
             Tipo tipValor = this.valor.getTipo(e, salida, errores);
             if (tipValor != null) {
-                if (tmp.getTipo() == tipValor) {
+                if (tmp.getTipo().tipo == tipValor.tipo) {
                     Object valValor = this.valor.getValor(e, salida, errores);
                     if (valValor != null) {
                         tmp.setValor(valValor);

@@ -1089,7 +1089,7 @@ class CUP$Sintactico$actions {
 		int cleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).right;
 		ArrayList<Asignacion> c = (ArrayList<Asignacion>)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).value;
-		 RESULT = new Declaracion(a, b, c, aleft, aright); 
+		 RESULT = new Declaracion(a, b, c, bleft, bright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("CUERPO_CLASE_DEC",9, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-3)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1113,7 +1113,7 @@ class CUP$Sintactico$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).right;
 		Bloque e = (Bloque)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).value;
-		 RESULT = new MetodoDec(a, b, c, d, e, aleft, aright); 
+		 RESULT = new MetodoDec(a, b, c, d, e, bleft, bright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("CUERPO_CLASE_DEC",9, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-8)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1281,7 +1281,7 @@ class CUP$Sintactico$actions {
           case 37: // TIPO ::= int_ 
             {
               Tipo RESULT =null;
-		 RESULT = Tipo.INT; 
+		 RESULT = new Tipo(Tipo.type.INT); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1290,7 +1290,7 @@ class CUP$Sintactico$actions {
           case 38: // TIPO ::= double_ 
             {
               Tipo RESULT =null;
-		 RESULT = Tipo.DOUBLE; 
+		 RESULT = new Tipo(Tipo.type.DOUBLE); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1299,7 +1299,7 @@ class CUP$Sintactico$actions {
           case 39: // TIPO ::= char_ 
             {
               Tipo RESULT =null;
-		 RESULT = Tipo.CHAR; 
+		 RESULT = new Tipo(Tipo.type.CHAR); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1308,7 +1308,7 @@ class CUP$Sintactico$actions {
           case 40: // TIPO ::= boolean_ 
             {
               Tipo RESULT =null;
-		 RESULT = Tipo.BOOLEAN; 
+		 RESULT = new Tipo(Tipo.type.BOOLEAN); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1317,7 +1317,7 @@ class CUP$Sintactico$actions {
           case 41: // TIPO ::= void_ 
             {
               Tipo RESULT =null;
-		 RESULT = Tipo.VOID; 
+		 RESULT = new Tipo(Tipo.type.VOID); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -1329,7 +1329,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = Tipo.OBJECT; RESULT.setObject(a); 
+		 RESULT = new Tipo(Tipo.type.OBJECT, a); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("TIPO",13, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2085,7 +2085,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Expresion a = (Expresion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		RESULT = new Aritmetica(a, new Literal(Tipo.INT, -1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);
+		RESULT = new Aritmetica(a, new Literal(new Tipo(Tipo.type.INT), -1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2100,7 +2100,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Expresion a = (Expresion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Aritmetica(a, new Literal(Tipo.INT, 1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);
+		 RESULT = new Aritmetica(a, new Literal(new Tipo(Tipo.type.INT), 1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2382,7 +2382,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.INT, new Integer(a), aleft, aright); 
+		 RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2394,7 +2394,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.DOUBLE, new Double(a), aleft, aright); 
+		 RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2406,7 +2406,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.OBJECT, a, aleft, aright);  
+		 RESULT = new Literal(new Tipo(Tipo.type.OBJECT, a), a, aleft, aright);  
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2418,7 +2418,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.CHAR, a.charAt(0), aleft, aright); 
+		 RESULT = new Literal(new Tipo(Tipo.type.CHAR), a.charAt(0), aleft, aright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2430,7 +2430,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.BOOLEAN, new Boolean(true), aleft, aright); 
+		 RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(true), aleft, aright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -2442,7 +2442,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 RESULT = new Literal(Tipo.BOOLEAN, new Boolean(false), aleft, aright); 
+		 RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(false), aleft, aright); 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("E",35, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;

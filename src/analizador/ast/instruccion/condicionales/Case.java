@@ -54,7 +54,7 @@ public class Case extends Instruccion {
                 if (tipExp != null) {
                     Object valExp = expresion.getValor(e, salida, errores);
                     if (valExp != null) {
-                        if (tipExp == this.tipExp) {
+                        if (tipExp.tipo == this.tipExp.tipo) {
                             if (valExp.toString().equals(this.valorExp.toString())) {
                                 setContinuar(true);
                             }

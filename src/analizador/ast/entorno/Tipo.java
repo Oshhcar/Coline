@@ -9,73 +9,70 @@ package analizador.ast.entorno;
  *
  * @author oscar
  */
-public enum Tipo {
-    INT {
-        @Override
-        public boolean isNumero() {
-            return true;
-        }
-    }, 
-    DOUBLE {
-        @Override
-        public boolean isNumero() {
-            return true;
-        }
+public class Tipo {
+    public type tipo;
+    public String objeto;
     
-    },
-    CHAR {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-    
-    }, 
-    BOOLEAN {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-    
-    },
-    OBJECT {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-    
-    },
-    VOID {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-        
-    },
-    CLASS {
-        @Override
-        public boolean isNumero() {
-            return false;
-        }
-    
-    };
-    
-    public abstract boolean isNumero();
-    
-    private String object = null;
-
-    /**
-     * @return the objeto
-     */
-    public String getObject() {
-        return object;
+    public Tipo(type tipo){
+        this.tipo = tipo;
+        this.objeto = null;
     }
 
-    /**
-     * @param objeto the objeto to set
-     */
-    public void setObject(String object) {
-        this.object = object;
+    public Tipo(type tipo, String objeto) {
+        this.tipo = tipo;
+        this.objeto = objeto;
     }
     
-    
+    public enum type {
+        INT {
+            @Override
+            public boolean isNumero() {
+                return true;
+            }
+        },
+        DOUBLE {
+            @Override
+            public boolean isNumero() {
+                return true;
+            }
+
+        },
+        CHAR {
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
+
+        },
+        BOOLEAN {
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
+
+        },
+        OBJECT {
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
+
+        },
+        VOID {
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
+
+        },
+        CLASS {
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
+
+        };
+
+        public abstract boolean isNumero();
+    }
 }

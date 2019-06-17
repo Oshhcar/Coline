@@ -41,8 +41,8 @@ public class Import extends Instruccion {
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Tipo tipDir = direccion.getTipo(e, salida, errores);
         if (tipDir != null) {
-            if (tipDir == Tipo.OBJECT) {
-                if (tipDir.getObject().equals("String")) {
+            if (tipDir.tipo == Tipo.type.OBJECT) {
+                if (tipDir.objeto.equals("String")) {
                     Object valDir = direccion.getValor(e, salida, errores);
                     if (valDir != null) {
                         String rutaImport = valDir.toString();
@@ -92,7 +92,7 @@ public class Import extends Instruccion {
                                         //ast.ejecutar(salida, errores, dirActual);
                                         //System.out.println("Genera ast");
                                         Clase clase = ast.getClase();
-                                        
+
                                         clase.setDirActual(dirActual);
                                         clase.ejecutar(e, salida, metodo, ciclo, switch_, errores);
                                     }

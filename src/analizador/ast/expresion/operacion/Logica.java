@@ -32,15 +32,15 @@ public class Logica extends Operacion {
             Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
 
             if (tipOp1 != null && tipOp2 != null) {
-                if (tipOp1 == Tipo.BOOLEAN && tipOp2 == Tipo.BOOLEAN) {
-                    return Tipo.BOOLEAN;
+                if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
+                    return new Tipo(Tipo.type.BOOLEAN);
                 }
             }
         } else {
             Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
             if (tipOp1 != null) {
-                if (tipOp1 == Tipo.BOOLEAN) {
-                    return Tipo.BOOLEAN;
+                if (tipOp1.tipo == Tipo.type.BOOLEAN) {
+                    return new Tipo(Tipo.type.BOOLEAN);
                 }
             }
         }
@@ -49,32 +49,35 @@ public class Logica extends Operacion {
 
     @Override
     public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        if (this.getTipo(e, salida, errores) == Tipo.BOOLEAN) {
-            if (this.getOp2() != null) {
-                Object val1 = this.getOp1().getValor(e, salida, errores);
-                Object val2 = this.getOp2().getValor(e, salida, errores);
+        Tipo tipRes = this.getTipo(e, salida, errores);
+        if (tipRes != null) {
+            if (tipRes.tipo == Tipo.type.BOOLEAN) {
+                if (this.getOp2() != null) {
+                    Object val1 = this.getOp1().getValor(e, salida, errores);
+                    Object val2 = this.getOp2().getValor(e, salida, errores);
 
-                if (val1 != null && val2 != null) {
-                    boolean valOp1 = Boolean.valueOf(val1.toString());
-                    boolean valOp2 = Boolean.valueOf(val2.toString());
+                    if (val1 != null && val2 != null) {
+                        boolean valOp1 = Boolean.valueOf(val1.toString());
+                        boolean valOp2 = Boolean.valueOf(val2.toString());
 
-                    switch (this.getOperador()) {
-                        case AND:
-                            return valOp1 && valOp2;
-                        case OR:
-                            return valOp1 || valOp2;
-                        case XOR:
-                            return valOp1 ^ valOp2;
+                        switch (this.getOperador()) {
+                            case AND:
+                                return valOp1 && valOp2;
+                            case OR:
+                                return valOp1 || valOp2;
+                            case XOR:
+                                return valOp1 ^ valOp2;
+                        }
+
                     }
+                } else {
+                    Object val1 = this.getOp1().getValor(e, salida, errores);
 
-                }
-            } else {
-                Object val1 = this.getOp1().getValor(e, salida, errores);
-
-                if (val1 != null) {
-                    boolean valOp1 = Boolean.valueOf(val1.toString());
-                    if (this.getOperador() == Operacion.Operador.NOT) {
-                        return !valOp1;
+                    if (val1 != null) {
+                        boolean valOp1 = Boolean.valueOf(val1.toString());
+                        if (this.getOperador() == Operacion.Operador.NOT) {
+                            return !valOp1;
+                        }
                     }
                 }
             }

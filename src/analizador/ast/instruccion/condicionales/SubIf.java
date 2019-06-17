@@ -50,7 +50,7 @@ public class SubIf extends Instruccion {
             if (!this.isElse) {
                 Tipo tipCond = this.condicion.getTipo(e, salida, errores);
                 if (tipCond != null) {
-                    if (tipCond == Tipo.BOOLEAN) {
+                    if (tipCond.tipo == Tipo.type.BOOLEAN) {
                         Object valCond = this.condicion.getValor(e, salida, errores);
                         if (valCond != null) {
                             this.entra = Boolean.valueOf(valCond.toString());

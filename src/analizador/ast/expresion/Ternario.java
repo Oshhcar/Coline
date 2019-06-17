@@ -32,7 +32,7 @@ public class Ternario extends Expresion {
         Tipo tipCond = this.condicion.getTipo(e, salida, errores);
 
         if (tipCond != null) {
-            if (tipCond == Tipo.BOOLEAN) {
+            if (tipCond.tipo == Tipo.type.BOOLEAN) {
                 Object valCond = this.condicion.getValor(e, salida, errores);
                 if (valCond != null) {
                     if (Boolean.valueOf(valCond.toString())) {
@@ -51,7 +51,7 @@ public class Ternario extends Expresion {
         Tipo tipCond = this.condicion.getTipo(e, salida, errores);
 
         if (tipCond != null) {
-            if (tipCond == Tipo.BOOLEAN) {
+            if (tipCond.tipo == Tipo.type.BOOLEAN) {
                 Object valCond = this.condicion.getValor(e, salida, errores);
                 if (valCond != null) {
                     if (Boolean.valueOf(valCond.toString())) {

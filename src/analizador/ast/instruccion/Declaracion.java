@@ -42,21 +42,17 @@ public class Declaracion extends Instruccion {
             if (e.getLocal(asigna.getId().getId()) == null) {
                 if (asigna.getValor() != null) {
                     Tipo tipValor = asigna.getValor().getTipo(e, salida, errores);
-                    if (this.tipo == tipValor) {
-                        if (this.tipo == Tipo.OBJECT) {
-                            if (this.tipo.getObject() == null || tipValor.getObject() == null) {
-                                System.err.println("error tipo object");
-                                return null;
-                            }
-                            if (this.tipo.getObject() != tipValor.getObject()) {
-                                ErrorC error = new ErrorC();
-                                error.setTipo("Semántico");
-                                error.setValor(asigna.getId().getId());
-                                error.setDescripcion("El tipo object no es el mismo.");
-                                error.setLinea(this.getLinea());
-                                error.setColumna(this.getColumna());
-                                errores.add(error);
-                            }
+                    if (this.tipo.tipo == tipValor.tipo) {
+                        if (this.tipo.tipo == Tipo.type.OBJECT) {
+//                            if (this.tipo.getObject() != tipValor.getObject()) {
+//                                ErrorC error = new ErrorC();
+//                                error.setTipo("Semántico");
+//                                error.setValor(asigna.getId().getId());
+//                                error.setDescripcion("El tipo object no es el mismo.");
+//                                error.setLinea(this.getLinea());
+//                                error.setColumna(this.getColumna());
+//                                errores.add(error);
+//                            }
                         }
                         
                         Object valor = asigna.getValor().getValor(e, salida, errores);

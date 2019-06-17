@@ -27,17 +27,17 @@ public class Aritmetica extends Operacion {
         Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
-            if (tipOp1 == Tipo.OBJECT || tipOp2 == Tipo.OBJECT) {/*ARREGLAR STRING Y OBJETOS*/
+            if (tipOp1.tipo == Tipo.type.OBJECT || tipOp2.tipo == Tipo.type.OBJECT) {/*ARREGLAR STRING Y OBJETOS*/
                 if (this.getOperador() == Operacion.Operador.SUMA) {
-                    return Tipo.OBJECT;
+                    return new Tipo(Tipo.type.OBJECT);
                 }
-            } else if (tipOp1 != Tipo.BOOLEAN && tipOp2 != Tipo.BOOLEAN) {
-                if (tipOp1 == Tipo.DOUBLE || tipOp2 == Tipo.DOUBLE) {
-                    return Tipo.DOUBLE;
-                } else if (tipOp1 == Tipo.INT || tipOp2 == Tipo.INT) {
-                    return Tipo.INT;
-                } else if (tipOp1 == Tipo.CHAR && tipOp2 == Tipo.CHAR) {
-                    return Tipo.INT;
+            } else if (tipOp1.tipo != Tipo.type.BOOLEAN && tipOp2.tipo != Tipo.type.BOOLEAN) {
+                if (tipOp1.tipo == Tipo.type.DOUBLE || tipOp2.tipo == Tipo.type.DOUBLE) {
+                    return new Tipo(Tipo.type.DOUBLE);
+                } else if (tipOp1.tipo == Tipo.type.INT || tipOp2.tipo == Tipo.type.INT) {
+                    return new Tipo(Tipo.type.INT);
+                } else if (tipOp1.tipo == Tipo.type.CHAR && tipOp2.tipo == Tipo.type.CHAR) {
+                    return new Tipo(Tipo.type.INT);
                 }
             }
         }
@@ -49,7 +49,7 @@ public class Aritmetica extends Operacion {
         Tipo tipDominante = this.getTipo(e, salida, errores);
 
         if (tipDominante != null) {
-            switch (tipDominante) {
+            switch (tipDominante.tipo) {
                 case OBJECT:
                     return this.getOp1().getValor(e, salida, errores).toString() + this.getOp2().getValor(e, salida, errores).toString();
                 case DOUBLE: {
@@ -97,7 +97,7 @@ public class Aritmetica extends Operacion {
 
     private Double getDouble(Tipo tipo, Object valor) {
         if (tipo != null && valor != null) {
-            switch (tipo) {
+            switch (tipo.tipo) {
                 case INT:
                 case DOUBLE:
                     return new Double(valor.toString());
@@ -110,7 +110,7 @@ public class Aritmetica extends Operacion {
 
     private Integer getInt(Tipo tipo, Object valor) {
         if (tipo != null && valor != null) {
-            switch (tipo) {
+            switch (tipo.tipo) {
                 case INT:
                 case DOUBLE:
                     return new Integer(valor.toString());

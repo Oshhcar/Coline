@@ -22,10 +22,6 @@ public class Literal extends Expresion{
         super(linea, columna);
         this.tipo = tipo;
         this.valor = valor;
-        
-        
-        if(tipo == Tipo.OBJECT)
-            this.tipo.setObject("String");
     }
     
     @Override

@@ -47,7 +47,7 @@ public class LlamadaMetodo extends Instruccion {
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, errores);
                     if (valor != null) {
-                        firma += "_" + tipo.toString();
+                        firma += "_" + tipo.tipo.toString();
                         parm.add(new Simbolo(tipo, "parm", valor));
                         continue;
                     }
@@ -70,13 +70,13 @@ public class LlamadaMetodo extends Instruccion {
             if (obj != null) {
                 if (obj instanceof Return) {
                     if (isFuncion()) {
-                        if(m.getTipo() == ((Return) obj).getTipo(local, salida, errores)){
+                        if(m.getTipo().tipo == ((Return) obj).getTipo(local, salida, errores).tipo){
                             return obj;
                         } else {
                             System.err.println("No son del mismo tipo. LLamada funcion");
                         }
                         
-                    } else if (((Return) obj).getToReturn() != null && m.getTipo() == Tipo.VOID) {
+                    } else if (((Return) obj).getToReturn() != null && m.getTipo().tipo == Tipo.type.VOID) {
                         System.err.println("No debe retornar algo.");
                     }
                 }

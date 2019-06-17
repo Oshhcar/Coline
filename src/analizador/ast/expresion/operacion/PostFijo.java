@@ -28,7 +28,7 @@ public class PostFijo extends Operacion{
         if (this.getOp1() instanceof Identificador) {
             Tipo tip = this.getOp1().getTipo(e, salida, errores);
             if (tip != null) {
-                if (tip.isNumero() || tip == Tipo.CHAR) {
+                if (tip.tipo.isNumero() || tip.tipo == Tipo.type.CHAR) {
                     return tip;
                 }
             }
@@ -41,11 +41,11 @@ public class PostFijo extends Operacion{
         if (this.getOp1() instanceof Identificador) {
             Tipo tip = this.getOp1().getTipo(e, salida, errores);
             if (tip != null) {
-                if (tip.isNumero() || tip == Tipo.CHAR) {
+                if (tip.tipo.isNumero() || tip.tipo == Tipo.type.CHAR) {
                     Object valor = this.getOp1().getValor(e, salida, errores);
                     if (valor != null) {
                         Simbolo tmp = e.get(((Identificador) this.getOp1()).getId());
-                        switch (tip) {
+                        switch (tip.tipo) {
                             case INT:
                                 if (this.getOperador() == Operacion.Operador.AUMENTO) {
                                     tmp.setValor(Integer.valueOf(valor.toString()) + 1);

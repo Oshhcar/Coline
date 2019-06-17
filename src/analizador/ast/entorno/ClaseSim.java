@@ -20,7 +20,7 @@ public class ClaseSim extends Simbolo{
     private ArrayList<ClaseSim> padres; 
     
     public ClaseSim(ArrayList<Modificador> modificadores,String id, ArrayList<Simbolo> simbolos) {
-        super(Tipo.CLASS, id);
+        super(new Tipo(Tipo.type.CLASS), id);
         this.modificadores = modificadores;
         this.simbolos = simbolos;
         this.main = null;
