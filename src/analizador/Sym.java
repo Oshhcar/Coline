@@ -23,6 +23,7 @@ public class Sym {
   public static final int porigual = 45;
   public static final int boolean_ = 58;
   public static final int for_ = 69;
+  public static final int import_ = 73;
   public static final int continue_ = 66;
   public static final int mas = 21;
   public static final int dospuntos = 19;
@@ -154,7 +155,8 @@ public class Sym {
   "for_",
   "switch_",
   "case_",
-  "default_"
+  "default_",
+  "import_"
   };
 }
 

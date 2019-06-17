@@ -50,6 +50,13 @@ public enum Tipo {
             return false;
         }
         
+    },
+    CLASE {
+        @Override
+        public boolean isNumero() {
+            return false;
+        }
+    
     };
     
     public abstract boolean isNumero();

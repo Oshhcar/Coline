@@ -1017,42 +1017,68 @@ public class Editor extends javax.swing.JFrame {
             String entrada;
             entrada = text.getText();
 
-            this.errores.clear();
+            File a;
+            if (!text.getName().equals("")) {
+                a = new File(text.getName());
+            } else {
+                a = new File("nuevo" + (i + 1) + ".coline");
+            }
 
-            lexico = new Lexico(new BufferedReader(new StringReader(entrada)));
-            sintactico = new Sintactico(lexico);
+            if (!text.getName().equals("")) {
+                String ext = text.getName().substring(text.getName().lastIndexOf('.'));
 
-            Ast ast = null;
+                if (ext.toLowerCase().equals(".coline")) {
 
-            try {
-                sintactico.parse();
-                ast = sintactico.getAST();
-                
-                lexico.addError();
-                if (!lexico.getErrores().isEmpty()) {
-                    this.errores.addAll(lexico.getErrores());
-                }
-
-                if (ast != null) {
                     
-                    ast.ejecutar(this.jTextArea1, this.errores);
-                    //System.out.println("Genera ast");
+                    this.errores.clear();
+
+                    lexico = new Lexico(new BufferedReader(new StringReader(entrada)));
+                    sintactico = new Sintactico(lexico);
+
+                    Ast ast = null;
+
+                    try {
+                        sintactico.parse();
+                        ast = sintactico.getAST();
+
+                        lexico.addError();
+                        if (!lexico.getErrores().isEmpty()) {
+                            this.errores.addAll(lexico.getErrores());
+                        }
+
+                        if (ast != null) {
+
+                            ast.ejecutar(this.jTextArea1, this.errores, text.getName());
+                            //System.out.println("Genera ast");
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Exception " + ex);
+                        JOptionPane.showMessageDialog(null,
+                                "El archivo contiene errores.",
+                                "Mensaje de Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    if (ast == null || !this.errores.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "El archivo contiene errores.",
+                                "Mensaje de Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        this.reporteErrores();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Solo se pueden ejecutar archivos \".coline\".",
+                            "Mensaje de Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (Exception ex) {
-                System.out.println("Exception " + ex);
+            } else {
                 JOptionPane.showMessageDialog(null,
-                        "El archivo contiene errores.",
+                        "No se ha guardado el archivo, guardelo primero.",
                         "Mensaje de Error",
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            if (ast == null || !this.errores.isEmpty()) {
-                JOptionPane.showMessageDialog(null,
-                        "El archivo contiene errores.",
-                        "Mensaje de Error",
-                        JOptionPane.ERROR_MESSAGE);
-                this.reporteErrores();
-            }
         } else {
             JOptionPane.showMessageDialog(null,
                     "No se ha seleccionado un archivo",

@@ -55,10 +55,12 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_;
+terminal switch_, case_, default_, import_;
 
 non terminal INICIO;
 
+non terminal ArrayList<Import> IMPORTS;
+non terminal ArrayList<Import> IMPORTSL;
 non terminal Clase CLASE;
 non terminal ArrayList<Modificador> MODIFICADORES;
 non terminal Modificador MODIFICADOR;
@@ -109,16 +111,23 @@ precedence right umenos, umas;
 
 start with INICIO;
 
-INICIO ::= CLASE:a
+INICIO ::=IMPORTS:a CLASE:b
         {: 
-            parser.ast = new Ast(a);
+            b.setImports(a);
+            parser.ast = new Ast(b);
             System.out.println("COLINE OK"); 
         :};
 
-CLASE ::= MOD:a  class_ id:b llaveIzquierda CUERPO_CLASE:c llaveDerecha 
-            {: RESULT = new Clase(a, b, c, aleft, bright); :}
-        | MOD:a class_ id:b extends_ id:c llaveIzquierda CUERPO_CLASE:d llaveDerecha 
-            {: RESULT = new Clase(a, b, c, d, aleft, aright); :};
+CLASE ::= MOD:a  class_:x id:b llaveIzquierda CUERPO_CLASE:c llaveDerecha 
+            {: RESULT = new Clase(a, b, c, xleft, xright); :}
+        | MOD:a class_:x id:b extends_ id:c llaveIzquierda CUERPO_CLASE:d llaveDerecha 
+            {: RESULT = new Clase(a, b, c, d, xleft, xright); :};
+
+IMPORTS ::= {: RESULT = null; :}
+            | IMPORTSL:a {: RESULT = a; :};
+
+IMPORTSL ::= IMPORTSL:a import_:x E:b puntoycoma {: RESULT = a; RESULT.add(new Import(b, xleft, xright)); :}
+            |import_:x E:a puntoycoma {: RESULT = new ArrayList<>(); RESULT.add(new Import(a, xleft, xright)); :};
 
 MOD ::= {: RESULT = null; :}
         | MODIFICADORES:a {: RESULT = a; :};

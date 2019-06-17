@@ -1,7 +1,7 @@
 public class Persona {
 	int edad = 17;
 	int m = 3;
-	int n = 7;
+	int n = 6;
 
 	public static void main(){
 		println(edad >= 18? "Es mayor de edad" : "Es menor de edad");
