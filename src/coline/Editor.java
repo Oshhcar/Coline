@@ -38,7 +38,11 @@ import java.util.GregorianCalendar;
 
 import analizador.*;
 import analizador.ast.Ast;
+import java.awt.Color;
 import java.awt.HeadlessException;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
  *
@@ -736,9 +740,82 @@ public class Editor extends javax.swing.JFrame {
         return scrollPane;
     }
 
+    private Component makeRsyntax(File archivo) {
+
+        RSyntaxTextArea filler = new RSyntaxTextArea(20, 60);
+        filler.setTabSize(4);
+
+        filler.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        filler.setCodeFoldingEnabled(false);
+
+        RTextScrollPane sp = new RTextScrollPane(filler);
+
+        filler.addCaretListener(new CaretListener() {
+
+            public void caretUpdate(CaretEvent e) {
+
+                int pos = e.getDot();
+
+                try {
+                    int row = filler.getLineOfOffset(pos) + 1;
+
+                    int col = pos - filler.getLineStartOffset(row - 1) + 1;
+
+                    jLabel1.setText("Ln:" + row + "  Col:" + col);
+
+                } catch (BadLocationException exc) {
+
+                    System.out.println(exc);
+
+                }
+
+            }
+
+        });
+
+        if (archivo == null) {
+            filler.setName("");
+            filler.setText("");
+        } else {
+            FileReader fr = null;
+            BufferedReader br = null;
+
+            try {
+                fr = new FileReader(archivo);
+                br = new BufferedReader(fr);
+
+                String nombre = archivo.getName();
+                filler.setName(archivo.getPath());
+                filler.setName(nombre);
+
+                String texto = "";
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    texto += linea + "\n";
+                }
+
+                filler.setText(texto);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (null != fr) {
+                        fr.close();
+                    }
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+
+        }
+
+        return sp;
+    }
+
     private void nuevoArchivo() {
         ImageIcon icon = new ImageIcon("iconos/archivox16.png");
-        Component panel2 = makeTextPanel(null);
+        Component panel2 = makeRsyntax(null);
         panel2.setName("pestaña" + (++pestañas));
         jTabbedPane1.addTab("nuevo " + nuevoArchivo, icon, panel2, "nuevo " + nuevoArchivo);
         jTabbedPane1.setSelectedComponent(panel2);
@@ -1029,7 +1106,6 @@ public class Editor extends javax.swing.JFrame {
 
                 if (ext.toLowerCase().equals(".coline")) {
 
-                    
                     this.errores.clear();
 
                     lexico = new Lexico(new BufferedReader(new StringReader(entrada)));
