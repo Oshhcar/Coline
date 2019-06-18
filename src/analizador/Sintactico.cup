@@ -55,7 +55,7 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_;
+terminal switch_, case_, default_, import_, new_;
 
 non terminal INICIO;
 
@@ -93,6 +93,9 @@ non terminal Switch SWITCH;
 non terminal ArrayList<Case> CASES;
 non terminal ArrayList<Case> CASESL;
 non terminal Case CASE;
+non terminal AccesoObjeto ACCESO_OBJETO;
+non terminal Expresion ACCESO;
+
 non terminal Expresion E;
 
 precedence left interrogacion;
@@ -198,7 +201,8 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |WHILE:a {: RESULT = a; :}
           |DO_WHILE:a {: RESULT = a; :}
           |FOR:a {: RESULT = a; :}
-          |SWITCH:a {: RESULT = a; :};
+          |SWITCH:a {: RESULT = a; :}
+          |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
            | id:a menosmenos:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :}
@@ -244,7 +248,14 @@ CASESL ::= CASESL:a CASE:b {: RESULT = a; RESULT.add(b); :}
 CASE ::= case_:x E:a dospuntos BLOQUES:b {: RESULT = new Case(a, b, xleft, xright); :}
         |default_:x dospuntos BLOQUES:a {: RESULT = new Case(a, xleft, xright); :};
 
-VALOR ::= E:e {: RESULT = e; :};
+ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; RESULT.getAccesos().add(b); :}
+                | id:a punto ACCESO:b {: RESULT = new AccesoObjeto(a, aleft, aright); RESULT.getAccesos().add(b); :};
+
+ACCESO ::= id:a {: RESULT = new Identificador(a, aleft, aright); :}
+        | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(new LlamadaMetodo(a, b, aleft, aright)); :};
+
+VALOR ::= E:e {: RESULT = e; :}
+        | new_:x id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new Instancia(a, b, xleft, xright); :};
 
 E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xleft, xright); :}
     | E:a menos:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.RESTA, xleft, xright); :}
@@ -277,7 +288,7 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
 
     | entero:a {: RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); :}
-    | tstring:a {: RESULT = new Literal(new Tipo(Tipo.type.OBJECT, a), a, aleft, aright);  :}
+    | tstring:a {: RESULT = new Literal(new Tipo(Tipo.type.OBJECT, "String"), a, aleft, aright);  :}
     | tchar:a {: RESULT = new Literal(new Tipo(Tipo.type.CHAR), a.charAt(0), aleft, aright); :}
     | true_:a {: RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(true), aleft, aright); :}
     | false_:a {: RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(false), aleft, aright); :}

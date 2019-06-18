@@ -52,10 +52,22 @@ public class Clase extends Instruccion {
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Entorno local = new Entorno(null);
         local.setGlobal(local);
+
+        if (this.imports != null) {
+
+            for (Import i : this.imports) {
+                i.setDirActual(dirActual);
+                i.ejecutar(e, salida, metodo, ciclo, switch_, errores);
+            }
+        }
+
+        Entorno padre = new Entorno(null);
+        padre.getTabla().addAll(e.getTabla());
+        local.setPadre(padre);
         
         ArrayList<Simbolo> simbolos = new ArrayList<>();
         Metodo main = null;
-        
+
         if (this.declaraciones != null) {
 
             for (NodoAst inst : this.declaraciones) {
@@ -64,31 +76,26 @@ public class Clase extends Instruccion {
                 }
             }
 
-            for(Simbolo simbolo: local.getTabla()){
-                if(simbolo instanceof Metodo){
+            for (Simbolo simbolo : local.getTabla()) {
+                if (simbolo instanceof Metodo) {
                     Metodo m = (Metodo) simbolo;
-                    if(m.getFirma().equals("main")){
+                    if (m.getFirma().equals("main")) {
                         main = m;
                         continue;
-                    } 
-                } 
+                    }
+                }
                 simbolos.add(simbolo);
             }
 
         }
-        
-        ClaseSim clase = new ClaseSim(this.modificadores, this.id, simbolos);
-        clase.setMain(main);
-        e.add(clase);
-        
-        if (this.imports != null) {
 
-            for(Import i: this.imports){
-                i.setDirActual(dirActual);
-                i.ejecutar(e, salida, metodo, ciclo, switch_, errores);
-            }
+        if (e.getClase(this.id) == null) {
+            ClaseSim clase = new ClaseSim(this.modificadores, this.id, local);
+            clase.setMain(main);
+            e.add(clase);
+        } else {
+            System.err.println("Error, ya se definió una clase con el id: " + this.id);
         }
-        
         return null;
     }
 

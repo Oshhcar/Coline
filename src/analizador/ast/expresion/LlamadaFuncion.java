@@ -34,7 +34,7 @@ public class LlamadaFuncion extends Expresion {
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Object obj = funcion.ejecutar(e, salida, true, false, false, errores);
+        Object obj = getFuncion().ejecutar(e, salida, true, false, false, errores);
         if (obj != null) {
             valor = ((Expresion) obj).getValor(e, salida, errores);
             return ((Expresion) obj).getTipo(e, salida, errores);
@@ -47,12 +47,19 @@ public class LlamadaFuncion extends Expresion {
         if(valor != null)
             return valor;
         
-        Object obj = funcion.ejecutar(e, salida, true, false, false, errores);
+        Object obj = getFuncion().ejecutar(e, salida, true, false, false, errores);
         if (obj != null) {
             tipo = ((Expresion) obj).getTipo(e, salida, errores);
             return ((Expresion) obj).getValor(e, salida, errores);
         }
         return null;
         
+    }
+
+    /**
+     * @return the funcion
+     */
+    public LlamadaMetodo getFuncion() {
+        return funcion;
     }
 }

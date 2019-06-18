@@ -5,18 +5,22 @@
  */
 package analizador.ast.entorno;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author oscar
  */
-public class Objeto extends Simbolo{
+public class Objeto {
 
     private String clase; 
-            
-    public Objeto(String id) {
-        super(new Tipo(Tipo.type.OBJECT), id);
+    private Entorno e;
+    
+    public Objeto(String clase, Entorno e) {
+        this.clase = clase;
+        this.e = e;
     }
-
+    
     /**
      * @return the clase
      */
@@ -29,6 +33,20 @@ public class Objeto extends Simbolo{
      */
     public void setClase(String clase) {
         this.clase = clase;
+    }
+
+    /**
+     * @return the e
+     */
+    public Entorno getE() {
+        return e;
+    }
+
+    /**
+     * @param e the e to set
+     */
+    public void setE(Entorno e) {
+        this.e = e;
     }
 
 }

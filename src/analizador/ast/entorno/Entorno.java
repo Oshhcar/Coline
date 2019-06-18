@@ -12,9 +12,16 @@ import java.util.ArrayList;
  */
 public class Entorno {
 
-    private final Entorno padre;
-    private Entorno global;
-    private final ArrayList<Simbolo> tabla;
+    /**
+     * @param tabla the tabla to set
+     */
+    public void setTabla(ArrayList<Simbolo> tabla) {
+        this.tabla = tabla;
+    }
+
+    private Entorno padre;
+    private Entorno global = null;
+    private ArrayList<Simbolo> tabla;
 
     public Entorno(Entorno padre) {
         this.padre = padre;
@@ -52,7 +59,7 @@ public class Entorno {
                     }
                 }
             }
-            actual = actual.padre;
+            actual = actual.getPadre();
         }
         return null;
     }
@@ -69,6 +76,28 @@ public class Entorno {
         }
         return null;
     }
+    
+    public ClaseSim getClase(String id){
+        Entorno clases = null;
+        
+        if(global != null){
+             clases = global.getPadre();
+        } else {
+            clases = this;
+        }
+        
+        if(clases != null){
+            for(int i = 0; i < clases.getTabla().size(); i++){
+                Simbolo s = clases.getTabla().get(i);
+                if(s.getId().equals(id)){
+                    if(s instanceof ClaseSim){
+                        return (ClaseSim) s;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public void recorrer() {
         Entorno actual = this;
@@ -78,7 +107,7 @@ public class Entorno {
             actual.getTabla().forEach(s -> {
                 System.out.print(s.getId() + " : " + s.getTipo().tipo.toString());
                 if (s.getTipo().tipo == Tipo.type.OBJECT) {
-//                    System.out.print(":" + s.getTipo().getObject());
+                    System.out.print(":" + s.getTipo().objeto);
                 }
                 if (s.getValor() != null) {
                     System.out.println(" -> " + s.getValor());
@@ -86,7 +115,7 @@ public class Entorno {
                     System.out.println("");
                 }
             });
-            actual = actual.padre;
+            actual = actual.getPadre();
         }
     }
 
@@ -109,6 +138,20 @@ public class Entorno {
      */
     public Entorno getGlobal() {
         return global;
+    }
+
+    /**
+     * @return the padre
+     */
+    public Entorno getPadre() {
+        return padre;
+    }
+
+    /**
+     * @param padre the padre to set
+     */
+    public void setPadre(Entorno padre) {
+        this.padre = padre;
     }
 
 }

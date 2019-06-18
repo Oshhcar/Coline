@@ -111,6 +111,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "case"                      { return symbol(Sym.case_);}
 <YYINITIAL> "default"                   { return symbol(Sym.default_);}
 <YYINITIAL> "import"                    { return symbol(Sym.import_);}
+<YYINITIAL> "new"                       { return symbol(Sym.new_);}
 
 <YYINITIAL>{
 

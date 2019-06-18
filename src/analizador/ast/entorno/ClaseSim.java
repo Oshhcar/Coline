@@ -14,15 +14,16 @@ import java.util.ArrayList;
 public class ClaseSim extends Simbolo{
     
     private final ArrayList<Modificador> modificadores;
-    private ArrayList<Simbolo> simbolos;
-    private Metodo main;
+    private Entorno e;
+    private Metodo main;/*Agregar constructores*/
     private ClaseSim padre;
     private ArrayList<ClaseSim> padres; 
     
-    public ClaseSim(ArrayList<Modificador> modificadores,String id, ArrayList<Simbolo> simbolos) {
+    
+    public ClaseSim(ArrayList<Modificador> modificadores,String id, Entorno e) {
         super(new Tipo(Tipo.type.CLASS), id);
         this.modificadores = modificadores;
-        this.simbolos = simbolos;
+        this.e = e;
         this.main = null;
     }
 
@@ -69,20 +70,17 @@ public class ClaseSim extends Simbolo{
     }
 
     /**
-     * @return the simbolos
+     * @return the e
      */
-    public ArrayList<Simbolo> getSimbolos() {
-        return simbolos;
+    public Entorno getE() {
+        return e;
     }
 
     /**
-     * @param simbolos the simbolos to set
+     * @param e the e to set
      */
-    public void setSimbolos(ArrayList<Simbolo> simbolos) {
-        this.simbolos = simbolos;
+    public void setE(Entorno e) {
+        this.e = e;
     }
-
-    
-    
     
 }

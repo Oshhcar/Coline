@@ -70,6 +70,7 @@ public class Sym {
   public static final int class_ = 54;
   public static final int println_ = 60;
   public static final int corcheteIzquierda = 14;
+  public static final int new_ = 74;
   public static final int coma = 17;
   public static final int null_ = 7;
   public static final int modulo = 25;
@@ -156,7 +157,8 @@ public class Sym {
   "switch_",
   "case_",
   "default_",
-  "import_"
+  "import_",
+  "new_"
   };
 }
 

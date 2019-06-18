@@ -31,7 +31,8 @@ public class Ast {
         
         ClaseSim claseMain = null;
         
-        for(Simbolo clase: global.getTabla()){
+        for(int i = global.getTabla().size()-1; i >= 0; i--){
+            Simbolo clase = global.getTabla().get(i);
             if(clase instanceof ClaseSim){
                 ClaseSim c = (ClaseSim) clase;
                 if(c.getMain() != null){
@@ -43,12 +44,12 @@ public class Ast {
                 }
             }
         }
-        //global.recorrer();
+
         if(claseMain != null){
             if(claseMain.getMain().getBloque() != null){
                 Entorno local = new Entorno(global);
                 local.setGlobal(local);
-                local.getTabla().addAll(claseMain.getSimbolos());
+                local.getTabla().addAll(claseMain.getE().getTabla());
                 
                 claseMain.getMain().getBloque().ejecutar(local, salida, true, false, false, errores);
             }

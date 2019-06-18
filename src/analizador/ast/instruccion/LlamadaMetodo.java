@@ -36,13 +36,13 @@ public class LlamadaMetodo extends Instruccion {
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
-        String firma = this.id;
+        String firma = this.getId();
         
-        if (this.parametros == null) {
+        if (this.getParametros() == null) {
             m = e.getMetodo(firma);
         } else {
             ArrayList<Simbolo> parm = new ArrayList<>();
-            for (Expresion parametro : this.parametros) {
+            for (Expresion parametro : this.getParametros()) {
                 Tipo tipo = parametro.getTipo(e, salida, errores);
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, errores);
@@ -84,7 +84,7 @@ public class LlamadaMetodo extends Instruccion {
         } else {
             ErrorC error = new ErrorC();
             error.setTipo("Semántico");
-            error.setValor(this.id);
+            error.setValor(this.getId());
             error.setDescripcion("El metodo no se ha declarado.");
             error.setLinea(this.getLinea());
             error.setColumna(this.getColumna());
@@ -105,6 +105,20 @@ public class LlamadaMetodo extends Instruccion {
      */
     public void setFuncion(boolean funcion) {
         this.funcion = funcion;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return the parametros
+     */
+    public ArrayList<Expresion> getParametros() {
+        return parametros;
     }
 
 }

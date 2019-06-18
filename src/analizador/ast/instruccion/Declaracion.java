@@ -28,7 +28,7 @@ public class Declaracion extends Instruccion {
         this.tipo = tipo;
         this.asignaciones = asignaciones;
     }
-    
+
     public Declaracion(Tipo tipo, ArrayList<Asignacion> asignaciones, int linea, int columna) {
         super(linea, columna);
         this.modificadores = null;
@@ -42,36 +42,50 @@ public class Declaracion extends Instruccion {
             if (e.getLocal(asigna.getId().getId()) == null) {
                 if (asigna.getValor() != null) {
                     Tipo tipValor = asigna.getValor().getTipo(e, salida, errores);
-                    if (this.tipo.tipo == tipValor.tipo) {
-                        if (this.tipo.tipo == Tipo.type.OBJECT) {
-//                            if (this.tipo.getObject() != tipValor.getObject()) {
-//                                ErrorC error = new ErrorC();
-//                                error.setTipo("Semántico");
-//                                error.setValor(asigna.getId().getId());
-//                                error.setDescripcion("El tipo object no es el mismo.");
-//                                error.setLinea(this.getLinea());
-//                                error.setColumna(this.getColumna());
-//                                errores.add(error);
-//                            }
+                    if (tipValor != null) {
+                        if (this.tipo.tipo == tipValor.tipo) {
+                            if (this.tipo.tipo == Tipo.type.OBJECT) {
+                                if (!this.tipo.objeto.equals("String")) {
+                                    
+                                    Object valor = asigna.getValor().getValor(e, salida, errores);
+                                    if (valor != null) {
+                                        e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                                    } 
+                                } else {
+                                    Object valor = asigna.getValor().getValor(e, salida, errores);
+
+                                    if (valor != null) {
+                                        e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                                    }
+                                }
+                            } else {
+
+                                Object valor = asigna.getValor().getValor(e, salida, errores);
+
+                                if (valor != null) {
+                                    e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                                }
+                            }
+                        } else {
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor(asigna.getId().getId());
+                            error.setDescripcion("El valor no corresponde al tipo declarado.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         }
-                        
-                        Object valor = asigna.getValor().getValor(e, salida, errores);
-                        
-                        if (valor != null) {
-                            e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
-                        }
-                        
-                    } else {
-                        ErrorC error = new ErrorC();
-                        error.setTipo("Semántico");
-                        error.setValor(asigna.getId().getId());
-                        error.setDescripcion("El valor no corresponde al tipo declarado.");
-                        error.setLinea(this.getLinea());
-                        error.setColumna(this.getColumna());
-                        errores.add(error);
                     }
-                } else {  
-                    e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                } else {
+                    if (this.tipo.tipo != Tipo.type.OBJECT) {
+                        e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                    } else {
+                        if (e.getClase(this.tipo.objeto) != null) {
+                            e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                        } else {
+                            System.err.println("Error, no se ha importado la clase: " + this.tipo.objeto);
+                        }
+                    }
                 }
             } else {
                 ErrorC error = new ErrorC();
