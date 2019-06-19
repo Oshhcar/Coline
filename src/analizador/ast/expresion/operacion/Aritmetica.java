@@ -27,9 +27,9 @@ public class Aritmetica extends Operacion {
         Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
-            if (tipOp1.tipo == Tipo.type.OBJECT || tipOp2.tipo == Tipo.type.OBJECT) {/*ARREGLAR STRING Y OBJETOS*/
+            if (tipOp1.tipo == Tipo.type.STRING || tipOp2.tipo == Tipo.type.STRING) {
                 if (this.getOperador() == Operacion.Operador.SUMA) {
-                    return new Tipo(Tipo.type.OBJECT);
+                    return new Tipo(Tipo.type.STRING);
                 }
             } else if (tipOp1.tipo != Tipo.type.BOOLEAN && tipOp2.tipo != Tipo.type.BOOLEAN) {
                 if (tipOp1.tipo == Tipo.type.DOUBLE || tipOp2.tipo == Tipo.type.DOUBLE) {
@@ -50,7 +50,7 @@ public class Aritmetica extends Operacion {
 
         if (tipDominante != null) {
             switch (tipDominante.tipo) {
-                case OBJECT:
+                case STRING:
                     return this.getOp1().getValor(e, salida, errores).toString() + this.getOp2().getValor(e, salida, errores).toString();
                 case DOUBLE: {
                     Double valOp1 = this.getDouble(this.getOp1().getTipo(e, salida, errores), this.getOp1().getValor(e, salida, errores));

@@ -95,6 +95,9 @@ non terminal ArrayList<Case> CASESL;
 non terminal Case CASE;
 non terminal AccesoObjeto ACCESO_OBJETO;
 non terminal Expresion ACCESO;
+non terminal ArrayList<Expresion> DIMENSION; 
+non terminal ArrayList<Expresion> ARREGLO;
+non terminal AsignacionArreglo ASIGNA_ARREGLO;
 
 non terminal Expresion E;
 
@@ -179,7 +182,10 @@ TIPO ::= int_ {: RESULT = new Tipo(Tipo.type.INT); :}
         |char_ {: RESULT = new Tipo(Tipo.type.CHAR); :}
         |boolean_ {: RESULT = new Tipo(Tipo.type.BOOLEAN); :}
         |void_ {: RESULT = new Tipo(Tipo.type.VOID); :}
-        |id:a {: RESULT = new Tipo(Tipo.type.OBJECT, a); :};
+        |id:a {:
+            if(a.equals("String")){ RESULT = new Tipo(Tipo.type.STRING); } 
+            else { RESULT = new Tipo(Tipo.type.OBJECT, a);} 
+            :};
 
 BLOQUES ::= {: RESULT = null; :}
         |BLOQUES_L:a {: RESULT = new Bloque(a, aleft, aright); :};
@@ -202,7 +208,8 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |DO_WHILE:a {: RESULT = a; :}
           |FOR:a {: RESULT = a; :}
           |SWITCH:a {: RESULT = a; :}
-          |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :};
+          |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :}
+          | ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
            | id:a menosmenos:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :}
@@ -254,8 +261,18 @@ ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; RESULT.getAcceso
 ACCESO ::= id:a {: RESULT = new Identificador(a, aleft, aright); :}
         | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(new LlamadaMetodo(a, b, aleft, aright)); :};
 
+ASIGNA_ARREGLO ::= id:a DIMENSION:b igual VALOR:c {: RESULT = new AsignacionArreglo(a, b, c, aleft, aright); :};
+
 VALOR ::= E:e {: RESULT = e; :}
-        | new_:x id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new Instancia(a, b, xleft, xright); :};
+        | new_:x id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new Instancia(a, b, xleft, xright); :}
+        | new_:x TIPO:a DIMENSION:b {: RESULT = new Literal(a, b, xleft, xright); :}
+        | llaveIzquierda:x ARREGLO:a llaveDerecha {: RESULT = new Literal(a, xleft, xright);  :};
+
+DIMENSION ::= DIMENSION:a corcheteIzquierda E:b corcheteDerecha {: RESULT = a; RESULT.add(b); :}
+                |corcheteIzquierda E:a corcheteDerecha {: RESULT = new ArrayList<>(); RESULT.add(a); :}; 
+
+ARREGLO ::= ARREGLO:a coma VALOR:b {: RESULT = a; RESULT.add(b); :}
+        | VALOR:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};
 
 E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xleft, xright); :}
     | E:a menos:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.RESTA, xleft, xright); :}
@@ -286,9 +303,11 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
 
     | parIzquierda E:a parDerecha {: RESULT = a; :}
 
+    | id:a DIMENSION:b {: RESULT = new AccesoArreglo(a, b, aleft, aright); :}
+
     | entero:a {: RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); :}
-    | tstring:a {: RESULT = new Literal(new Tipo(Tipo.type.OBJECT, "String"), a, aleft, aright);  :}
+    | tstring:a {: RESULT = new Literal(new Tipo(Tipo.type.STRING), a, aleft, aright);  :}
     | tchar:a {: RESULT = new Literal(new Tipo(Tipo.type.CHAR), a.charAt(0), aleft, aright); :}
     | true_:a {: RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(true), aleft, aright); :}
     | false_:a {: RESULT = new Literal(new Tipo(Tipo.type.BOOLEAN), new Boolean(false), aleft, aright); :}

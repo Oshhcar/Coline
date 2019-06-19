@@ -29,7 +29,7 @@ public class Relacional extends Operacion {
         if (tipOp1 != null && tipOp2 != null) {
             if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
                 return new Tipo(Tipo.type.BOOLEAN);
-            } else if (tipOp1.tipo == Tipo.type.OBJECT && tipOp2.tipo == Tipo.type.OBJECT) {
+            } else if (tipOp1.tipo == Tipo.type.STRING && tipOp2.tipo == Tipo.type.STRING) {
                 return new Tipo(Tipo.type.BOOLEAN);
             } else if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
                 if (this.getOperador() == Operacion.Operador.IGUAL || this.getOperador() == Operacion.Operador.DIFERENTE) {
@@ -65,7 +65,7 @@ public class Relacional extends Operacion {
                             return valOp1.doubleValue() != valOp2.doubleValue();
                     }
                 }
-            } else if (tipOp1.tipo == Tipo.type.OBJECT && tipOp2.tipo == Tipo.type.OBJECT) {
+            } else if (tipOp1.tipo == Tipo.type.STRING && tipOp2.tipo == Tipo.type.STRING) {
                 Integer valOp1 = this.getValorCadena(this.getOp1().getValor(e, salida, errores).toString());
                 Integer valOp2 = this.getValorCadena(this.getOp2().getValor(e, salida, errores).toString());
 

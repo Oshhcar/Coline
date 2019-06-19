@@ -6,6 +6,7 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
@@ -43,6 +44,24 @@ public class Asignacion extends Instruccion {
                 if (tmp.getTipo().tipo == tipValor.tipo) {
                     Object valValor = this.valor.getValor(e, salida, errores);
                     if (valValor != null) {
+                        if (tmp.getTipo().tipo == Tipo.type.ARRAY) {
+                            if (valValor instanceof Arreglo) {
+                                Arreglo a = (Arreglo) valValor;
+
+                                if (tmp.getTamaño() != a.getDimensiones()) {
+                                    System.err.println("Arreglos no son de las mismas dimensiones");
+                                    return null;
+                                }
+                                if (tmp.getTipo().subtipo != tipValor.subtipo) {
+                                    System.err.println("Arreglos no son del mismo tipo");
+                                    return null;
+                                }
+
+                            } else {
+                                System.err.println("no se está asignando arreglo");
+                                return null;
+                            }
+                        }
                         tmp.setValor(valValor);
                         return null;
                     }

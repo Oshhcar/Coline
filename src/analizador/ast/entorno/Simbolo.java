@@ -14,26 +14,21 @@ public class Simbolo {
     private final Tipo tipo;
     private final String id;
     private Object valor;
-
+    private int tamaño;
+    
     public Simbolo(Tipo tipo, String id) {
         this.tipo = tipo;
         this.id = id;
         this.valor = null;
+        this.tamaño = 0;
     }
 
     public Simbolo(Tipo tipo, String id, Object valor) {
         this.tipo = tipo;
         this.id = id;
         this.valor = valor;
+        this.tamaño = 0;
     }
-
-    public Simbolo(Tipo tipo, String id, int dim) {
-        this.tipo = tipo;
-        this.id = id;
-        this.valor = null;
-    }
-    
-    
     
     /**
      * @return the tipo
@@ -61,6 +56,20 @@ public class Simbolo {
      */
     public void setValor(Object valor) {
         this.valor = valor;
+    }
+
+    /**
+     * @return the tamaño
+     */
+    public int getTamaño() {
+        return tamaño;
+    }
+
+    /**
+     * @param tamaño the tamaño to set
+     */
+    public void setTamaño(int tamaño) {
+        this.tamaño = tamaño;
     }
 
 }

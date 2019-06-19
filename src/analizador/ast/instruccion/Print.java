@@ -6,6 +6,7 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.expresion.Expresion;
 import java.util.ArrayList;
@@ -15,9 +16,10 @@ import javax.swing.JTextArea;
  *
  * @author oscar
  */
-public class Print extends Instruccion{
+public class Print extends Instruccion {
+
     private final Expresion toPrint;
-    
+
     public Print(Expresion toPrint, int linea, int columna) {
         super(linea, columna);
         this.toPrint = toPrint;
@@ -26,12 +28,17 @@ public class Print extends Instruccion{
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Object valor = toPrint.getValor(e, salida, errores);
-        if(valor != null){
-            ((JTextArea) salida).append(valor.toString());
+        if (valor != null) {
+            if (valor instanceof Arreglo) {
+                Arreglo arr = (Arreglo) valor;
+                ((JTextArea) salida).append(arr.print());
+            } else {
+                ((JTextArea) salida).append(valor.toString());
+            }
         } else {
-            System.err.println("No se econtró el valor, print.");
+            System.err.println("No se econtro el valor,Println.");
         }
         return null;
     }
-    
+
 }

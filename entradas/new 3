@@ -36,3 +36,6 @@ validar que no hayan mas de un main.
 validar que no este vacía la clase.
 validar que no hayan clases repetidas.
 Arreglar llamada a metodos con parametros actuales;
+valores nulos
+switch solo un entorno
+validar arreglos tipo primitivo

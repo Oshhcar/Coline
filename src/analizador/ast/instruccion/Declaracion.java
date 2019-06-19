@@ -6,10 +6,12 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Modificador;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
+import analizador.ast.expresion.Expresion;
 import java.util.ArrayList;
 
 /**
@@ -39,57 +41,86 @@ public class Declaracion extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         for (Asignacion asigna : this.asignaciones) {
-            if (e.getLocal(asigna.getId().getId()) == null) {
-                if (asigna.getValor() != null) {
-                    Tipo tipValor = asigna.getValor().getTipo(e, salida, errores);
+            String id = asigna.getId().getId();
+            Simbolo tmp = e.getLocal(id);
+            if (tmp == null) {
+                Expresion valor = asigna.getValor();
+                if (valor != null) {
+                    Tipo tipValor = valor.getTipo(e, salida, errores);
                     if (tipValor != null) {
-                        if (this.tipo.tipo == tipValor.tipo) {
-                            if (this.tipo.tipo == Tipo.type.OBJECT) {
-                                if (!this.tipo.objeto.equals("String")) {
-
-                                    Object valor = asigna.getValor().getValor(e, salida, errores);
-                                    if (valor != null) {
-                                        e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                        Object valValor = valor.getValor(e, salida, errores);
+                        if (valValor != null) {
+                            if (asigna.getId().getDim() == 0) {
+                                if (!(valValor instanceof Arreglo)) {
+                                    if (this.tipo.tipo == tipValor.tipo) {
+                                        if (this.tipo.tipo == Tipo.type.OBJECT) {
+                                            if (!this.tipo.objeto.equals(tipValor.objeto)) {
+                                                System.err.println("objetos de diferente tipo");
+                                                continue;
+                                            }
+                                        }
+                                        tmp = new Simbolo(this.tipo, id, valValor);
+                                    } else {
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        error.setValor(asigna.getId().getId());
+                                        error.setDescripcion("El valor no corresponde al tipo declarado.");
+                                        error.setLinea(this.getLinea());
+                                        error.setColumna(this.getColumna());
+                                        errores.add(error);
+                                        continue;
                                     }
                                 } else {
-                                    Object valor = asigna.getValor().getValor(e, salida, errores);
-
-                                    if (valor != null) {
-                                        e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
-                                    }
+                                    System.err.println("se esta intentando asignar un arreglo");
+                                    continue;
                                 }
-                            } else {
-
-                                Object valor = asigna.getValor().getValor(e, salida, errores);
-
-                                if (valor != null) {
-                                    e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
+                            } else {/*ARREGLO*/
+                                if (valValor instanceof Arreglo) {
+                                   // System.err.println(this.tipo.tipo +" == " +tipValor.subtipo);
+                                    if (this.tipo.tipo == tipValor.subtipo) {
+                                        if (asigna.getId().getDim() == ((Arreglo) valValor).getDimensiones()) {
+                                            Tipo t = new Tipo(Tipo.type.ARRAY);
+                                            t.subtipo = this.tipo.tipo;
+                                            tmp = new Simbolo(t, id, valValor);
+                                            tmp.setTamaño(asigna.getId().getDim());
+                                        } else {
+                                            System.err.println("las dimensiones no son iguales");
+                                            continue;
+                                        }
+                                    } else {
+                                        System.err.println("Arreglos de diferente tipo");
+                                        continue;
+                                    }
+                                } else {
+                                    System.err.println("No se esta asignando arreglo");
+                                    continue;
                                 }
                             }
-                        } else {
-                            ErrorC error = new ErrorC();
-                            error.setTipo("Semántico");
-                            error.setValor(asigna.getId().getId());
-                            error.setDescripcion("El valor no corresponde al tipo declarado.");
-                            error.setLinea(this.getLinea());
-                            error.setColumna(this.getColumna());
-                            errores.add(error);
+                            e.add(tmp);
+                            continue;
                         }
                     }
+                    System.err.println("error calculando el valor");
                 } else {
-                    if (this.tipo.tipo != Tipo.type.OBJECT) {
-                        e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                    if (asigna.getId().getDim() != 0) {
+                        Tipo t = new Tipo(Tipo.type.ARRAY);
+                        t.subtipo = this.tipo.tipo;
+
+                        tmp = new Simbolo(t, id);
+                        tmp.setTamaño(asigna.getId().getDim());
                     } else {
-                        if (!this.tipo.objeto.equals("String")) {
+                        if (this.tipo.tipo != Tipo.type.OBJECT) {
+                            tmp = new Simbolo(this.tipo, id);
+                        } else {
                             if (e.getClase(this.tipo.objeto) != null) {
-                                e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                                tmp = new Simbolo(this.tipo, id);
                             } else {
                                 System.err.println("Error, no se ha importado la clase: " + this.tipo.objeto);
+                                continue;
                             }
-                        } else {
-                            e.add(new Simbolo(this.tipo, asigna.getId().getId()));
                         }
                     }
+                    e.add(tmp);
                 }
             } else {
                 ErrorC error = new ErrorC();

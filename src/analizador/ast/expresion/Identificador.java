@@ -52,7 +52,7 @@ public class Identificador extends Expresion {
     }
 
     /**
-     * @param dimesiones the dimesiones to set
+     * @param dim the dimesiones to set
      */
     public void setDim(int dim) {
         this.dim = dim;
