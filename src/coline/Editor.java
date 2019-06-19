@@ -48,6 +48,9 @@ import org.fife.ui.autocomplete.ShorthandCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import reporte.Nodo;
+import reporte.ReporteLexico;
+import reporte.ReporteSintactico;
 
 /**
  *
@@ -61,6 +64,9 @@ public class Editor extends javax.swing.JFrame {
     private Lexico lexico;
     private Sintactico sintactico;
     private ArrayList<ErrorC> errores;
+
+    private ReporteLexico lexicoR;
+    private ReporteSintactico sintacticoR;
 
     /**
      * Creates new form Editor
@@ -428,6 +434,11 @@ public class Editor extends javax.swing.JFrame {
         jMenuItem10.setBackground(java.awt.Color.white);
         jMenuItem10.setIcon(new ImageIcon("iconos/algoritmo.png"));
         jMenuItem10.setText("AST");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem10);
 
         jMenuBar1.add(jMenu3);
@@ -546,6 +557,102 @@ public class Editor extends javax.swing.JFrame {
         } else
             reporteErrores();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        int i = jTabbedPane1.getSelectedIndex();
+        if (i != -1) {
+            JScrollPane scroll = (JScrollPane) jTabbedPane1.getComponent(i);
+            JViewport view = (JViewport) scroll.getViewport();
+            JTextArea text = (JTextArea) view.getComponent(0);
+
+            String entrada;
+            entrada = text.getText();
+
+            File a;
+            if (!text.getName().equals("")) {
+                a = new File(text.getName());
+            } else {
+                a = new File("nuevo" + (i + 1) + ".coline");
+            }
+
+            if (!text.getName().equals("")) {
+                String ext = text.getName().substring(text.getName().lastIndexOf('.'));
+
+                if (ext.toLowerCase().equals(".coline")) {
+
+
+                    lexicoR = new ReporteLexico(new BufferedReader(new StringReader(entrada)));
+                    sintacticoR = new ReporteSintactico(lexicoR);
+
+                    try {
+                        sintacticoR.parse();
+
+                        if (sintacticoR.padre != null) {
+                            graficarAst(sintacticoR);
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Exception " + ex);
+                        JOptionPane.showMessageDialog(null,
+                                "El archivo contiene errores.",
+                                "Mensaje de Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Solo se pueden ejecutar archivos \".coline\".",
+                            "Mensaje de Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "No se ha guardado el archivo, guardelo primero.",
+                        "Mensaje de Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "No se ha seleccionado un archivo",
+                    "Mensaje de Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    public void graficarAst(ReporteSintactico sintactico) {
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+        String cadena = graficarNodo(sintactico.padre);
+
+        try {
+            archivo = new FileWriter("arbol.dot");
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3];rankdir=UD \n");
+            pw.println(cadena);
+            pw.println("\n}");
+            archivo.close();
+        } catch (Exception e) {
+            System.out.println(e + " 1");
+        }
+
+        try {
+            String cmd = "dot -Tpng arbol.dot -o arbol.png";
+            Runtime.getRuntime().exec(cmd);
+            abrirarchivo("arbol.png");
+        } catch (IOException ioe) {
+            System.out.println(ioe + " 2");
+        }
+
+    }
+
+    public String graficarNodo(Nodo nodo) {
+        String cadena = "";
+        for (Nodo hijos : nodo.getHijos()) {
+            cadena += "\"" + nodo.getNumNodo() + "_" + nodo.getNombre() + "=" + nodo.getValor() + "\"->\"" + hijos.getNumNodo() + "_" + hijos.getNombre() + "=" + hijos.getValor() + "\"\n";
+            cadena += graficarNodo(hijos);
+        }
+        return cadena;
+    }
 
     public void reporteErrores() {
         if (!this.errores.isEmpty()) {
@@ -814,11 +921,11 @@ public class Editor extends javax.swing.JFrame {
             }
 
         }
-        
+
         CompletionProvider provider = createCompletionProvider();
         AutoCompletion ac = new AutoCompletion(provider);
         ac.install(filler);
-        
+
         return sp;
     }
 
@@ -874,8 +981,7 @@ public class Editor extends javax.swing.JFrame {
         provider.addCompletion(new BasicCompletion(provider, "do"));
         provider.addCompletion(new BasicCompletion(provider, "int"));
         provider.addCompletion(new BasicCompletion(provider, "foreach"));
-        
-        
+
         // Add a couple of "shorthand" completions. These completions don't
         // require the input text to be the same thing as the replacement text.
         provider.addCompletion(new ShorthandCompletion(provider, "sout",

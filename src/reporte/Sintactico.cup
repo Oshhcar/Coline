@@ -1,0 +1,928 @@
+package reporte;
+
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
+
+parser code
+{:
+        public Nodo padre;
+	public String resultado="";
+	public int contador = 1;
+	
+    @Override
+    public void syntax_error(Symbol s){
+        System.out.println("Error Sintactico en la Linea " + s.left +" Columna "+ s.right + ". Identificador " +s.value + " no reconocido." );
+		//AnalizadorError tmp = new AnalizadorError();
+		//tmp.setColumna(s.right+1);
+		//tmp.setLinea(s.left+1);
+		//tmp.setValor(s.value+"");
+		//tmp.setError("Sintáctico");
+        
+		//error.add(tmp);
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol s){
+        System.out.println("Error Sintactico Fatal en la Linea " + s.left + " Columna "+ s.right +". Identificador " + s.value + " no reconocido.");
+		//report_fatal_error("Error sintactico: <"+s.value+">", cur_token);
+	}
+:}
+
+action code
+{:
+
+:}
+
+terminal String tstring, tchar, entero, decimal, id, null_, true_, false_;
+terminal llaveIzquierda, llaveDerecha, parIzquierda, parDerecha, corcheteIzquierda, corcheteDerecha, puntoycoma, coma, punto;
+terminal dospuntos, interrogacion;
+terminal mas, menos, asterisco, diagonal, modulo, umenos, umas, masmas, menosmenos, umasmas, umenosmenos;
+terminal mayorque, menorque, mayorigual, menorigual, igualigual, diferente;
+terminal and, or, not, xor;
+terminal igual, masigual, menosigual, porigual, diagonaligual;
+terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
+terminal int_, double_, char_, boolean_;
+terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
+terminal switch_, case_, default_, import_, new_;
+
+non terminal INICIO;
+
+non terminal IMPORTS;
+non terminal IMPORTSL;
+non terminal CLASE;
+non terminal MODIFICADORES;
+non terminal MODIFICADOR;
+non terminal MOD;
+non terminal CUERPO_CLASE;
+non terminal CUERPO_CLASE_LISTA;
+non terminal CUERPO_CLASE_DEC;
+non terminal DECLARACION_VARIABLES;
+non terminal DECLARACION_VARIABLE;
+non terminal DECLARACION_VARIABLE_ID;
+non terminal TIPO; 
+non terminal VALOR;
+non terminal BLOQUES;
+non terminal BLOQUES_L;
+non terminal BLOQUE;
+non terminal PARAMETROS_DEC;
+non terminal PARAMETROS_DEC_LISTA;
+non terminal PARAMETRO_DEC;
+non terminal UNARIO;
+non terminal PARAMETROS;
+non terminal PARAMETRO;
+non terminal IF;
+non terminal IF_LISTA;
+non terminal WHILE;
+non terminal DO_WHILE;
+non terminal FOR;
+non terminal FOR_INIT;
+non terminal FOR_UPDATE;
+non terminal SWITCH;
+non terminal CASES;
+non terminal CASESL;
+non terminal CASE;
+non terminal ACCESO_OBJETO;
+non terminal ACCESO;
+non terminal DIMENSION; 
+non terminal ARREGLO;
+non terminal ASIGNA_ARREGLO;
+
+non terminal E;
+
+precedence left interrogacion;
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence right not;
+precedence left igualigual;
+precedence left diferente;
+precedence left mayorque, menorque, mayorigual, menorigual;
+precedence left mas, menos;
+precedence left asterisco, diagonal, modulo;
+precedence right masmas, menosmenos;
+precedence right umasmas, umenosmenos;
+precedence right umenos, umas;
+
+start with INICIO;
+
+INICIO ::=IMPORTS:a CLASE:b
+        {: 
+            Nodo tmp = new Nodo("INICIO");
+            tmp.setNumNodo(parser.contador++);
+            if(a != null)
+                tmp.addHijo((Nodo)a);
+            tmp.addHijo((Nodo) b);
+            parser.padre = (Nodo) tmp;
+            System.out.println("COLINE OK"); 
+        :};
+
+CLASE ::= MOD:a  class_:x id:b llaveIzquierda CUERPO_CLASE:c llaveDerecha 
+        {:
+            Nodo tmp = new Nodo("CLASE");
+            tmp.setValor(b);
+            tmp.setNumNodo(parser.contador++);
+            if(a != null)
+                tmp.addHijo((Nodo) a);
+            if(c != null)
+                tmp.addHijo((Nodo) c);
+            RESULT = tmp;
+
+        :}
+        | MOD:a class_:x id:b extends_ id:c llaveIzquierda CUERPO_CLASE:d llaveDerecha 
+        {:
+            Nodo tmp = new Nodo("CLASE");
+            tmp.setValor(b);
+            Nodo c1 = new Nodo("EXTENDS");
+            c1.setValor(c);
+            c1.setNumNodo(parser.contador++);
+            
+            tmp.setNumNodo(parser.contador++);
+            if(a != null)
+                tmp.addHijo((Nodo) a);
+            tmp.addHijo(c1);
+            if(d != null)
+                tmp.addHijo((Nodo) d);
+            RESULT = tmp;
+        :};
+
+IMPORTS ::= {: RESULT = null; :}
+            | IMPORTSL:a {: RESULT = a; :};
+
+IMPORTSL ::= IMPORTSL:a import_:x E:b puntoycoma {: 
+                Nodo tmp = new Nodo("IMPORTS");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) b);
+                RESULT = a;
+                ((Nodo) RESULT).addHijo(tmp);
+             :}
+            |import_:x E:a puntoycoma {: 
+                Nodo tmp = new Nodo("IMPORTS");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                RESULT = tmp;
+             :};
+
+MOD ::= {: RESULT = null; :}
+        | MODIFICADORES:a {: RESULT = a; :};
+
+MODIFICADORES ::= MODIFICADORES:a MODIFICADOR:b {: RESULT = a; ((Nodo)RESULT).addHijo((Nodo) b);:}
+                | MODIFICADOR:a {: RESULT = a; :};
+
+MODIFICADOR ::= public_ {:  
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("public");
+                    RESULT = tmp;
+                :}
+                | protected_ {:  
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("protected");
+                    RESULT = tmp;
+                :}
+                | private_ {:  
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("private");
+                    RESULT = tmp;
+                :}
+                | abstract_ {: 
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("abstract");
+                    RESULT = tmp;
+                 :}
+                | static_ {: 
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("static");
+                    RESULT = tmp;
+                 :}
+                | final_ {: 
+                    Nodo tmp = new Nodo("MODIFICADOR");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("final");
+                    RESULT = tmp;
+                :};
+
+CUERPO_CLASE ::= {: RESULT = null; :}
+                | CUERPO_CLASE_LISTA:a {: RESULT = a; :};
+
+CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC:b {: RESULT = a; ((Nodo)RESULT).addHijo((Nodo) b); :}
+                    | CUERPO_CLASE_DEC:a {: RESULT = a; :};
+
+CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
+                    |MOD:a TIPO:b DECLARACION_VARIABLES:c puntoycoma {:
+                            Nodo tmp = new Nodo("DECLARACION_VARIABLES");
+                            tmp.setNumNodo(parser.contador++);
+                            if(a != null)
+                                tmp.addHijo((Nodo) a);
+                            tmp.addHijo((Nodo) b);
+                            tmp.addHijo((Nodo) c);
+                            RESULT = tmp;
+                     :}
+                    |MOD:a TIPO:b id:c parIzquierda PARAMETROS_DEC:d parDerecha llaveIzquierda BLOQUES:e llaveDerecha
+                        {: 
+                            Nodo tmp = new Nodo("DECLARACION_METODO");
+                            tmp.setValor(c);
+                            tmp.setNumNodo(parser.contador++);
+                            if(a != null)
+                                tmp.addHijo((Nodo) a);
+                            tmp.addHijo((Nodo) b);
+                            if(d != null)
+                                tmp.addHijo((Nodo) d);
+                            if(e != null)
+                                tmp.addHijo((Nodo) e);
+                            RESULT = tmp;
+                         :};
+
+DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; ((Nodo)RESULT).addHijo((Nodo)b); :}
+                        |DECLARACION_VARIABLE:a {: RESULT = a;  :};
+
+DECLARACION_VARIABLE ::= DECLARACION_VARIABLE_ID:a igual VALOR:b {:  
+                            Nodo tmp = new Nodo("DECLARACION_VARIABLE");
+                            tmp.setNumNodo(parser.contador++);
+                            tmp.addHijo((Nodo)a);
+                            tmp.addHijo((Nodo)b);
+                            RESULT = tmp;
+                        :}
+                        | DECLARACION_VARIABLE_ID:a {: 
+                            Nodo tmp = new Nodo("DECLARACION_VARIABLE");
+                            tmp.setNumNodo(parser.contador++);
+                            tmp.addHijo((Nodo)a);
+                            RESULT = tmp;
+                         :};
+
+DECLARACION_VARIABLE_ID ::= DECLARACION_VARIABLE_ID:a corcheteIzquierda corcheteDerecha{:  
+                                RESULT = a;
+                                Nodo tmp = new Nodo("DECLARACION_VARIABLE_ID");
+                                tmp.setNumNodo(parser.contador++);
+                                ((Nodo)RESULT).addHijo(tmp);
+                            :}
+                            |id:a {: 
+                                Nodo tmp = new Nodo("DECLARACION_VARIABLE_ID");
+                                tmp.setNumNodo(parser.contador++);
+                                tmp.setValor(a);
+                                RESULT = tmp;
+                             :};
+
+PARAMETROS_DEC ::= {: RESULT = null; :}
+                | PARAMETROS_DEC_LISTA:a {: RESULT = a; :};
+
+PARAMETROS_DEC_LISTA ::= PARAMETROS_DEC:a coma PARAMETRO_DEC:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+                | PARAMETRO_DEC:a {: RESULT = a; :};
+
+PARAMETRO_DEC ::= final_:a TIPO:b DECLARACION_VARIABLE_ID:c {: 
+                    Nodo tmp = new Nodo("PARAMETRO_DEC");
+                    Nodo a1 = new Nodo("FINAL");
+                    a1.setNumNodo(parser.contador++);
+                    
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo(a1);
+                    tmp.addHijo((Nodo) b);
+                    tmp.addHijo((Nodo) c);
+                    RESULT = tmp;
+                 :}
+            | TIPO:a DECLARACION_VARIABLE_ID:b {: 
+                Nodo tmp = new Nodo("PARAMETRO_DEC");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :};
+
+TIPO ::= int_ {:
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("int");
+                RESULT = tmp;
+            :}
+        |double_ {:  
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("double");
+                RESULT = tmp;
+            :}
+        |char_ {:  
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("char");
+                RESULT = tmp;
+            :}
+        |boolean_ {: 
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("boolean");
+                RESULT = tmp;
+            :}
+        |void_ {: 
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("void");
+                RESULT = tmp;
+            :}
+        |id:a {:
+                Nodo tmp = new Nodo("TIPO");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor(a);
+                RESULT = tmp;
+            :};
+
+BLOQUES ::= {: RESULT = null; :}
+        |BLOQUES_L:a {: RESULT = a; :};
+
+BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+            | BLOQUE:a {: RESULT = a; :};
+
+BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:  
+                Nodo tmp = new Nodo("PRINT");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+           :}
+          |println_:a parIzquierda E:b parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("PRINTLN");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :}
+          |return_:a puntoycoma {: 
+                Nodo tmp = new Nodo("RETURN");
+                tmp.setNumNodo(parser.contador++);
+                RESULT = tmp;
+             :}
+          |return_:a VALOR:b puntoycoma {:
+                Nodo tmp = new Nodo("RETURN");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :}
+          |break_:a puntoycoma {:
+                Nodo tmp = new Nodo("BREAK");
+                tmp.setNumNodo(parser.contador++);
+                RESULT = tmp;
+             :}
+          |continue_:a puntoycoma {: 
+                Nodo tmp = new Nodo("CONTINUE");
+                tmp.setNumNodo(parser.contador++);
+                RESULT = tmp;
+             :}
+          |TIPO:a DECLARACION_VARIABLES:b puntoycoma {: 
+                Nodo tmp = new Nodo("DECLARACION_VARIABLES");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+             :}
+          |id:a igual VALOR:b puntoycoma {: 
+                Nodo tmp = new Nodo("ASIGNACION");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :}
+          |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("LLAMADA_METODO");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                if(b != null)
+                    tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+             :}
+          |UNARIO:a puntoycoma {: RESULT = a; :}
+          |IF:a {: RESULT = a; :}
+          |WHILE:a {: RESULT = a; :}
+          |DO_WHILE:a {:RESULT = a;:}
+          |FOR:a {: RESULT = a; :}
+          |SWITCH:a {: RESULT = a; :}
+          |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :}
+          | ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
+
+UNARIO ::=  id:a masmas:x {:  
+                Nodo tmp = new Nodo("UNARIO");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+                Nodo x1 = new Nodo("OPERADOR");
+                x1.setNumNodo(parser.contador++);
+                x1.setValor("++");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                tmp.addHijo(x1);
+                RESULT = tmp;
+            :}
+           | id:a menosmenos:x {: 
+                Nodo tmp = new Nodo("UNARIO");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+                Nodo x1 = new Nodo("OPERADOR");
+                x1.setNumNodo(parser.contador++);
+                x1.setValor("--");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                tmp.addHijo(x1);
+                RESULT = tmp;
+             :}
+           | masmas:x id:a {: 
+                Nodo tmp = new Nodo("UNARIO");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+                Nodo x1 = new Nodo("OPERADOR");
+                x1.setNumNodo(parser.contador++);
+                x1.setValor("++");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(x1);
+                tmp.addHijo(a1);
+                RESULT = tmp;
+             :} 
+           | menosmenos:x id:a {: 
+                Nodo tmp = new Nodo("UNARIO");
+                Nodo a1 = new Nodo("ID");
+                a1.setNumNodo(parser.contador++);
+                a1.setValor(a);
+                Nodo x1 = new Nodo("OPERADOR");
+                x1.setNumNodo(parser.contador++);
+                x1.setValor("--");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(x1);
+                tmp.addHijo(a1);
+                RESULT = tmp;
+            :};
+
+PARAMETROS ::= {: RESULT = null; :}
+            | PARAMETRO:a {: RESULT = a; :};
+
+PARAMETRO ::= PARAMETRO:a coma VALOR:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+            | VALOR:a {: RESULT = a; :};
+
+IF ::= IF_LISTA:a else_:b llaveIzquierda BLOQUES:c llaveDerecha 
+        {:  
+            Nodo tmp = new Nodo("IF");
+            Nodo b1 = new Nodo("ELSE");
+            b1.setNumNodo(parser.contador++);
+            if(c != null)
+                b1.addHijo((Nodo) c);
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo(b1);
+            RESULT = tmp;
+        :}
+      |IF_LISTA:a {:
+            Nodo tmp = new Nodo("IF");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT = tmp;
+         :};
+
+IF_LISTA ::= IF_LISTA:a else_:b if_ parIzquierda E:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha 
+                {: 
+                    RESULT = a;
+                    Nodo tmp = new Nodo("ELSE-IF");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo((Nodo) c);
+                    if(d != null){
+                        tmp.addHijo((Nodo) d);
+                    }
+                    ((Nodo)RESULT).addHijo(tmp);
+                :}
+            | if_:a parIzquierda E:b parDerecha llaveIzquierda BLOQUES:c llaveDerecha
+                {:  
+                    Nodo tmp = new Nodo("IF");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo((Nodo) b);
+                    if(c != null){
+                        tmp.addHijo((Nodo) c);
+                    }
+                    RESULT = tmp;
+                :};
+
+WHILE ::= while_:x parIzquierda E:a parDerecha llaveIzquierda BLOQUES:b llaveDerecha {:  
+                Nodo tmp = new Nodo("WHILE");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                if(b != null)
+                    tmp.addHijo((Nodo)b);
+                RESULT = tmp;
+            :};
+
+DO_WHILE ::= do_:x llaveIzquierda BLOQUES:a llaveDerecha while_ parIzquierda E:b parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("DO_WHILE");
+                tmp.setNumNodo(parser.contador++);
+                if(a != null)
+                    tmp.addHijo((Nodo)a);
+                tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :};
+
+FOR ::= for_:x parIzquierda FOR_INIT:a puntoycoma E:b puntoycoma FOR_UPDATE:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha
+            {:  
+                Nodo tmp = new Nodo("FOR");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                tmp.addHijo((Nodo) b);
+                tmp.addHijo((Nodo) c);
+                if(d!= null)
+                    tmp.addHijo((Nodo) d);
+                RESULT = tmp;
+            :};
+
+FOR_INIT ::= TIPO:a DECLARACION_VARIABLES:b {:  
+                    Nodo tmp = new Nodo("FOR_INIT");
+                    Nodo a1 = new Nodo("DECLARACION");
+                    a1.setNumNodo(parser.contador++);
+                    a1.addHijo((Nodo)a);
+                    a1.addHijo((Nodo)b);
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo(a1);
+                    RESULT = tmp;
+                :}
+            |id:a igual VALOR:b {: 
+                Nodo tmp = new Nodo("FOR_INIT");
+                Nodo a1 = new Nodo("ASIGNACION");
+                Nodo a2 = new Nodo("ID");
+                a2.setNumNodo(parser.contador++);
+                a2.setValor(a);
+                a1.setNumNodo(parser.contador++);
+                a1.addHijo(a2);
+                a1.addHijo((Nodo)b);
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                RESULT = tmp;
+             :};
+
+FOR_UPDATE ::= id:a igual VALOR:b {:
+                Nodo tmp = new Nodo("FOR_UPDATE");
+                Nodo a1 = new Nodo("ASIGNACION");
+                Nodo a2 = new Nodo("ID");
+                a2.setNumNodo(parser.contador++);
+                a2.setValor(a);
+                a1.setNumNodo(parser.contador++);
+                a1.addHijo(a2);
+                a1.addHijo((Nodo)b);
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo(a1);
+                RESULT = tmp;
+                :}
+               |UNARIO:a {: 
+                    Nodo tmp = new Nodo("FOR_UPDATE");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo((Nodo)a);
+                    RESULT = tmp;
+                :};
+
+SWITCH ::= switch_:x parIzquierda E:a parDerecha llaveIzquierda CASES:b llaveDerecha {: 
+            Nodo tmp = new Nodo("SWITCH");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo)a);
+            if(b != null)
+                tmp.addHijo((Nodo)b);
+            RESULT = tmp;
+        :};
+
+CASES ::= {: RESULT = null; :}
+        | CASESL:a {: RESULT = a; :};
+
+CASESL ::= CASESL:a CASE:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+          | CASE:a {: RESULT = a; :};
+
+CASE ::= case_:x E:a dospuntos BLOQUES:b {: 
+                Nodo tmp = new Nodo("CASE");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                if(b != null)
+                    tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :}
+        |default_:x dospuntos BLOQUES:a {:  
+                Nodo tmp = new Nodo("DEFAULT");
+                tmp.setNumNodo(parser.contador++);
+                if(a != null)
+                    tmp.addHijo((Nodo) a);
+                RESULT = tmp;
+            :};
+
+ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+                | id:a punto ACCESO:b {: 
+                    Nodo tmp = new Nodo("ACCESO_MIEMBRO");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor(a);
+                    tmp.addHijo((Nodo) b);
+                    RESULT = tmp;
+                :};
+
+ACCESO ::= id:a {:  
+            Nodo tmp = new Nodo("ID");
+            tmp.setNumNodo(parser.contador++);
+            tmp.setValor(a);
+            RESULT = tmp;
+        :}
+        | id:a parIzquierda PARAMETROS:b parDerecha {:  
+            Nodo tmp = new Nodo("METODO");
+            Nodo a1 = new Nodo("ID");
+            a1.setNumNodo(parser.contador++);
+            a1.setValor(a);
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo(a1);
+            if(b != null)
+                tmp.addHijo((Nodo)b);
+            RESULT = tmp;
+        :};
+
+ASIGNA_ARREGLO ::= id:a DIMENSION:b igual VALOR:c {:  
+            Nodo tmp = new Nodo("ASIGNA_ARREGLO");
+            Nodo a1 = new Nodo("ID");
+            a1.setNumNodo(parser.contador++);
+            a1.setValor(a);
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo(a1);
+            if(b!= null)
+                tmp.addHijo((Nodo)b);
+            tmp.addHijo((Nodo)c);
+            RESULT = tmp;
+        :};
+
+VALOR ::= E:e {: RESULT = e; :}
+        | new_:x id:a parIzquierda PARAMETROS:b parDerecha {:  
+            Nodo tmp = new Nodo("OBJETO");
+            tmp.setValor(a);
+            tmp.setNumNodo(parser.contador++);
+            if(b != null)
+                tmp.addHijo((Nodo)b);
+            RESULT = tmp;
+        :}
+        | new_:x TIPO:a DIMENSION:b {:  
+            Nodo tmp = new Nodo("ARREGLO");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo)a);
+            tmp.addHijo((Nodo)b);
+            RESULT = tmp;
+        :}
+        | llaveIzquierda:x ARREGLO:a llaveDerecha {: 
+            Nodo tmp = new Nodo("ARREGLO");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo)a);
+            RESULT = tmp;
+        :};
+
+DIMENSION ::= DIMENSION:a corcheteIzquierda E:b corcheteDerecha {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+                |corcheteIzquierda E:a corcheteDerecha {: 
+                    Nodo tmp = new Nodo("DIMENSION");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo((Nodo) a);
+                    RESULT = tmp;
+                 :}; 
+
+ARREGLO ::= ARREGLO:a coma VALOR:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
+        | VALOR:a {: RESULT = a; :};
+
+E ::= E:a mas:x E:b {:  
+            Nodo tmp = new Nodo("+");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a menos:x E:b {:  
+            Nodo tmp = new Nodo("-");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a asterisco:x E:b {:  
+            Nodo tmp = new Nodo("*");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a diagonal:x E:b {:
+            Nodo tmp = new Nodo("/");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+         :}
+    | E:a modulo:x E:b {: 
+            Nodo tmp = new Nodo("%");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | menos:x E:a {:
+            Nodo tmp = new Nodo("-");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);;
+            RESULT=tmp;
+        :} %prec umenos
+    | mas:x E:a {: 
+            Nodo tmp = new Nodo("+");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT=tmp;
+        :} %prec umas
+
+    | E:a masmas:x {: 
+            Nodo tmp = new Nodo("++");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT=tmp;
+        :}
+    | E:a menosmenos:x {:  
+            Nodo tmp = new Nodo("--");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT=tmp;
+        :}
+    | masmas:x E:a {:  
+            Nodo tmp = new Nodo("++");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT=tmp;
+        :} %prec umasmas
+    | menosmenos:x E:a {:  
+            Nodo tmp = new Nodo("--");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            RESULT=tmp;
+        :} %prec umenosmenos
+
+    | E:a mayorque:x E:b {:  
+            Nodo tmp = new Nodo(">");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a menorque:x E:b {:  
+            Nodo tmp = new Nodo("<");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a mayorigual:x E:b {:  
+            Nodo tmp = new Nodo(">=");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+    | E:a menorigual:x E:b {: 
+            Nodo tmp = new Nodo("<=");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+    | E:a igualigual:x E:b {:  
+            Nodo tmp = new Nodo("==");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+    | E:a diferente:x E:b {: 
+            Nodo tmp = new Nodo("!=");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+
+    | E:a and:x E:b {:  
+            Nodo tmp = new Nodo("&&");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+    | E:a or:x E:b {:
+            Nodo tmp = new Nodo("||");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | not:x E:b {: 
+            Nodo tmp = new Nodo("!");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | E:a xor:x E:b {: 
+            Nodo tmp = new Nodo("^");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+
+    | E:a interrogacion:x E:b dospuntos E:c{:
+            Nodo tmp = new Nodo("?");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            tmp.addHijo((Nodo) c);
+            RESULT=tmp;
+        :}
+
+    | parIzquierda E:a parDerecha {: RESULT = a; :}
+
+    | id:a DIMENSION:b {:  
+            Nodo tmp = new Nodo("ACCESO_ARREGLO");
+            tmp.setNumNodo(parser.contador++);
+            tmp.setValor(a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+
+    | entero:a {:
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("entero");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor(a);
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+        :}
+    | decimal:a {:
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("decimal");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor(a);
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+         :}
+    | tstring:a {:  
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("tstring");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor(a);
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+        :}
+    | tchar:a {:
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("tchar");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor(a);
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+        :}
+    | true_:a {: 
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("boolean");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor("true");
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+         :}
+    | false_:a {:  
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("boolean");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor("false");
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+        :}
+    | id:a {:
+                Nodo tmp = new Nodo("E");
+		Nodo r1 = new Nodo("id");
+		r1.setNumNodo(parser.contador++);
+		r1.setValor(a);
+		tmp.setNumNodo(parser.contador++);
+		tmp.addHijo((Nodo) r1);
+		RESULT=tmp;
+         :}
+    | id:a parIzquierda PARAMETROS:b parDerecha {: 
+            Nodo tmp = new Nodo("LLAMADA_METODO");
+            tmp.setNumNodo(parser.contador++);
+            tmp.setValor(a);
+            if(b!= null)
+                tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :};
+
+		
+		
+		
