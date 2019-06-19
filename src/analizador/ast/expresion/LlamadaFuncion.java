@@ -24,6 +24,7 @@ public class LlamadaFuncion extends Expresion {
     private final LlamadaMetodo funcion;
     private Object valor;
     private Tipo tipo;
+    
     public LlamadaFuncion(LlamadaMetodo funcion) {
         super(funcion.getLinea(), funcion.getColumna());
         this.funcion = funcion;
@@ -61,5 +62,19 @@ public class LlamadaFuncion extends Expresion {
      */
     public LlamadaMetodo getFuncion() {
         return funcion;
+    }
+    
+        /**
+     * @return the id
+     */
+    public String getId() {
+        return funcion.getId();
+    }
+
+    /**
+     * @return the parametros
+     */
+    public ArrayList<Expresion> getParametros() {
+        return funcion.getParametros();
     }
 }

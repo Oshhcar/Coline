@@ -40,18 +40,32 @@ public class Instancia extends Expresion {
         if (clase != null) {
             Entorno eNuevo = new Entorno(clase.getE().getPadre());
             eNuevo.setGlobal(eNuevo);
-            
-            for(Simbolo sim: clase.getE().getTabla()){
-                if(sim instanceof Metodo){
-                    Metodo m = (Metodo)sim;
+
+            for (Simbolo sim : clase.getE().getTabla()) {
+                if (sim instanceof Metodo) {
+                    Metodo m = (Metodo) sim;
                     eNuevo.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
                 } else {
                     eNuevo.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
                 }
             }
-            
+
+            if (clase.getPadre() != null) {
+                Entorno papa = new Entorno(eNuevo.getPadre());
+
+                for (Simbolo sim : clase.getPadre().getE().getTabla()) {
+                    if (sim instanceof Metodo) {
+                        Metodo m = (Metodo) sim;
+                        papa.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                    } else {
+                        papa.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                    }
+                }
+                
+                eNuevo.setPadre(papa);
+            }
+
             //eNuevo.recorrer();
-            
             Objeto obj = new Objeto(id, eNuevo);
             return obj;
         } else {

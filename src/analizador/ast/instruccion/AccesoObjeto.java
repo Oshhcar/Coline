@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author oscar
  */
-public class AccesoObjeto extends Instruccion{
+public class AccesoObjeto extends Instruccion {
 
     private final String id;
     private final ArrayList<Expresion> accesos;
@@ -34,34 +34,51 @@ public class AccesoObjeto extends Instruccion{
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
         Simbolo sim = e.get(id);
-        if(sim != null){
-            if(sim.getTipo().tipo == Tipo.type.OBJECT){
+        if (sim != null) {
+            if (sim.getTipo().tipo == Tipo.type.OBJECT) {
                 Object obj = sim.getValor();
-                if(obj != null){
-                    if(obj instanceof Objeto){
+                if (obj != null) {
+                    if (obj instanceof Objeto) {
                         Objeto objeto = (Objeto) obj;
-                        
-//                        Entorno tmp = new Entorno(null);
-//                        tmp.setPadre(tmp);
-//                        tmp.setTabla(e.getTabla());
-//                        
-//                        tmp.setPadre(e.getPadre());
-//                        tmp.setGlobal(objeto.getE());
-                        
-                        for(Expresion acceso: this.accesos){
-                           acceso.getValor(objeto.getE(), salida, errores);
+
+                        Entorno tmp = new Entorno(null);
+                        tmp.setPadre(tmp);
+                        tmp.setTabla(e.getTabla());
+
+                        tmp.setPadre(e.getPadre());
+                        tmp.setGlobal(objeto.getE());
+
+                        for (Expresion acceso : this.accesos) {
+                            Tipo tipAcceso = acceso.getTipo(tmp, salida, errores);
+                            if (tipAcceso != null) {
+                                acceso.getValor(tmp, salida, errores);
+                            }
                         }
-                    }else {
-                        System.err.println("Error fatal acceso objeto.");
+                    } else {
+                        System.err.println("Es arreglo o string o objeto");
+                        if (sim.getTipo().objeto.equals("String")) {
+                            for (Expresion acceso : this.accesos) {
+                                if(acceso instanceof LlamadaFuncion){
+                                    LlamadaFuncion llamada = (LlamadaFuncion) acceso;
+                                    
+                                    switch(llamada.getId()){
+                                        case "toString":
+                                            System.out.println(""+obj.toString());
+                                    }
+                                }
+                            }
+                        } else {
+                            System.err.println("Error fatal acceso objeto.");
+                        }
                     }
                 } else {
-                    System.err.println("No se ha inicializado la variable "+id);
+                    System.err.println("No se ha inicializado la variable " + id);
                 }
             } else {
                 System.err.println("La variable no es un objeto");
             }
         } else {
-            System.err.println("no se ha declarado una variable "+id);
+            System.err.println("no se ha declarado una variable " + id);
         }
         return null;
     }
@@ -72,5 +89,5 @@ public class AccesoObjeto extends Instruccion{
     public ArrayList<Expresion> getAccesos() {
         return accesos;
     }
-    
+
 }

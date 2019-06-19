@@ -17,7 +17,6 @@ public class ClaseSim extends Simbolo{
     private Entorno e;
     private Metodo main;/*Agregar constructores*/
     private ClaseSim padre;
-    private ArrayList<ClaseSim> padres; 
     
     
     public ClaseSim(ArrayList<Modificador> modificadores,String id, Entorno e) {
@@ -53,20 +52,6 @@ public class ClaseSim extends Simbolo{
      */
     public void setPadre(ClaseSim padre) {
         this.padre = padre;
-    }
-
-    /**
-     * @return the padres
-     */
-    public ArrayList<ClaseSim> getPadres() {
-        return padres;
-    }
-
-    /**
-     * @param padres the padres to set
-     */
-    public void setPadres(ArrayList<ClaseSim> padres) {
-        this.padres = padres;
     }
 
     /**

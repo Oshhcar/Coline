@@ -46,11 +46,11 @@ public class Declaracion extends Instruccion {
                         if (this.tipo.tipo == tipValor.tipo) {
                             if (this.tipo.tipo == Tipo.type.OBJECT) {
                                 if (!this.tipo.objeto.equals("String")) {
-                                    
+
                                     Object valor = asigna.getValor().getValor(e, salida, errores);
                                     if (valor != null) {
                                         e.add(new Simbolo(this.tipo, asigna.getId().getId(), valor));
-                                    } 
+                                    }
                                 } else {
                                     Object valor = asigna.getValor().getValor(e, salida, errores);
 
@@ -80,10 +80,14 @@ public class Declaracion extends Instruccion {
                     if (this.tipo.tipo != Tipo.type.OBJECT) {
                         e.add(new Simbolo(this.tipo, asigna.getId().getId()));
                     } else {
-                        if (e.getClase(this.tipo.objeto) != null) {
-                            e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                        if (!this.tipo.objeto.equals("String")) {
+                            if (e.getClase(this.tipo.objeto) != null) {
+                                e.add(new Simbolo(this.tipo, asigna.getId().getId()));
+                            } else {
+                                System.err.println("Error, no se ha importado la clase: " + this.tipo.objeto);
+                            }
                         } else {
-                            System.err.println("Error, no se ha importado la clase: " + this.tipo.objeto);
+                            e.add(new Simbolo(this.tipo, asigna.getId().getId()));
                         }
                     }
                 }

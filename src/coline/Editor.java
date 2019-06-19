@@ -40,6 +40,11 @@ import analizador.*;
 import analizador.ast.Ast;
 import java.awt.Color;
 import java.awt.HeadlessException;
+import org.fife.ui.autocomplete.AutoCompletion;
+import org.fife.ui.autocomplete.BasicCompletion;
+import org.fife.ui.autocomplete.CompletionProvider;
+import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.autocomplete.ShorthandCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -746,7 +751,7 @@ public class Editor extends javax.swing.JFrame {
         filler.setTabSize(4);
 
         filler.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-        filler.setCodeFoldingEnabled(false);
+        filler.setCodeFoldingEnabled(true);
 
         RTextScrollPane sp = new RTextScrollPane(filler);
 
@@ -809,8 +814,77 @@ public class Editor extends javax.swing.JFrame {
             }
 
         }
-
+        
+        CompletionProvider provider = createCompletionProvider();
+        AutoCompletion ac = new AutoCompletion(provider);
+        ac.install(filler);
+        
         return sp;
+    }
+
+    /**
+     * Create a simple provider that adds some Java-related completions.
+     */
+    private CompletionProvider createCompletionProvider() {
+
+        // A DefaultCompletionProvider is the simplest concrete implementation
+        // of CompletionProvider. This provider has no understanding of
+        // language semantics. It simply checks the text entered up to the
+        // caret position for a match against known completions. This is all
+        // that is needed in the majority of cases.
+        DefaultCompletionProvider provider = new DefaultCompletionProvider();
+
+        // Add completions for all Java keywords. A BasicCompletion is just
+        // a straightforward word completion.
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "double"));
+        provider.addCompletion(new BasicCompletion(provider, "char"));
+        provider.addCompletion(new BasicCompletion(provider, "boolean"));
+        provider.addCompletion(new BasicCompletion(provider, "class"));
+        provider.addCompletion(new BasicCompletion(provider, "extends"));
+        provider.addCompletion(new BasicCompletion(provider, "public"));
+        provider.addCompletion(new BasicCompletion(provider, "protected"));
+        provider.addCompletion(new BasicCompletion(provider, "private"));
+        provider.addCompletion(new BasicCompletion(provider, "abstract"));
+        provider.addCompletion(new BasicCompletion(provider, "static"));
+        provider.addCompletion(new BasicCompletion(provider, "final"));
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "void"));
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "println"));
+        provider.addCompletion(new BasicCompletion(provider, "print"));
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "return"));
+        provider.addCompletion(new BasicCompletion(provider, "new"));
+        provider.addCompletion(new BasicCompletion(provider, "this"));
+        provider.addCompletion(new BasicCompletion(provider, "super"));
+        provider.addCompletion(new BasicCompletion(provider, "String"));
+        provider.addCompletion(new BasicCompletion(provider, "LinkedList"));
+        provider.addCompletion(new BasicCompletion(provider, "try"));
+        provider.addCompletion(new BasicCompletion(provider, "throw"));
+        provider.addCompletion(new BasicCompletion(provider, "break"));
+        provider.addCompletion(new BasicCompletion(provider, "continue"));
+        provider.addCompletion(new BasicCompletion(provider, "if"));
+        provider.addCompletion(new BasicCompletion(provider, "else"));
+        provider.addCompletion(new BasicCompletion(provider, "Switch"));
+        provider.addCompletion(new BasicCompletion(provider, "case"));
+        provider.addCompletion(new BasicCompletion(provider, "default"));
+        provider.addCompletion(new BasicCompletion(provider, "catch"));
+        provider.addCompletion(new BasicCompletion(provider, "while"));
+        provider.addCompletion(new BasicCompletion(provider, "do"));
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "foreach"));
+        
+        
+        // Add a couple of "shorthand" completions. These completions don't
+        // require the input text to be the same thing as the replacement text.
+        provider.addCompletion(new ShorthandCompletion(provider, "sout",
+                "println(", "println"));
+        provider.addCompletion(new ShorthandCompletion(provider, "syserr",
+                "System.err.println(", "System.err.println("));
+
+        return provider;
+
     }
 
     private void nuevoArchivo() {

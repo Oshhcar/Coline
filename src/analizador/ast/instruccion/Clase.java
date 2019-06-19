@@ -64,7 +64,7 @@ public class Clase extends Instruccion {
         Entorno padre = new Entorno(null);
         padre.getTabla().addAll(e.getTabla());
         local.setPadre(padre);
-        
+
         ArrayList<Simbolo> simbolos = new ArrayList<>();
         Metodo main = null;
 
@@ -89,13 +89,24 @@ public class Clase extends Instruccion {
 
         }
 
-        if (e.getClase(this.id) == null) {
-            ClaseSim clase = new ClaseSim(this.modificadores, this.id, local);
-            clase.setMain(main);
-            e.add(clase);
-        } else {
-            System.err.println("Error, ya se definió una clase con el id: " + this.id);
+        if (!this.id.equals("String") && !this.id.equals("Object")) {
+            if (e.getClase(this.id) == null) {
+                ClaseSim clase = new ClaseSim(this.modificadores, this.id, local);
+                clase.setMain(main);
+                if(extiende != null){
+                    ClaseSim ext = e.getClase(extiende);
+                    if(ext != null){
+                        clase.setPadre(ext);
+                    } else {
+                        System.err.println("Error, no se ha importado la clase "+extiende);
+                    }
+                }
+                e.add(clase);
+                return null;
+            }
         }
+        System.err.println("Error, ya se definió una clase con el id: " + this.id);
+
         return null;
     }
 
