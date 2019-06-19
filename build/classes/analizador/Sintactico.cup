@@ -54,7 +54,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
-terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
+terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
 terminal switch_, case_, default_, import_, new_;
 
 non terminal INICIO;
@@ -195,6 +195,7 @@ BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; RESULT.add(b); :}
 
 BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print(b, aleft, aright); :}
           |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
+          |printTabla_:a parIzquierda parDerecha puntoycoma {: RESULT = new PrintTabla(aleft, aright); :}
           |return_:a puntoycoma {: RESULT = new Return(aleft, aright); :}
           |return_:a VALOR:b puntoycoma {: RESULT = new Return(b, aleft, aright); :}
           |break_:a puntoycoma {: RESULT = new Break(aleft, aright); :}

@@ -21,22 +21,23 @@ public class ReporteSym {
   public static final int asterisco = 23;
   public static final int parDerecha = 13;
   public static final int porigual = 45;
+  public static final int printTabla_ = 61;
   public static final int boolean_ = 58;
-  public static final int for_ = 69;
-  public static final int import_ = 73;
-  public static final int continue_ = 66;
+  public static final int for_ = 70;
+  public static final int import_ = 74;
+  public static final int continue_ = 67;
   public static final int mas = 21;
   public static final int dospuntos = 19;
   public static final int menorigual = 35;
   public static final int umenos = 26;
-  public static final int else_ = 64;
+  public static final int else_ = 65;
   public static final int decimal = 5;
   public static final int umas = 27;
   public static final int interrogacion = 20;
   public static final int extends_ = 53;
   public static final int abstract_ = 50;
-  public static final int do_ = 68;
-  public static final int case_ = 71;
+  public static final int do_ = 69;
+  public static final int case_ = 72;
   public static final int masigual = 43;
   public static final int or = 39;
   public static final int mayorque = 32;
@@ -44,24 +45,24 @@ public class ReporteSym {
   public static final int static_ = 51;
   public static final int mayorigual = 34;
   public static final int id = 6;
-  public static final int while_ = 67;
+  public static final int while_ = 68;
   public static final int llaveDerecha = 11;
   public static final int menosmenos = 29;
-  public static final int break_ = 65;
+  public static final int break_ = 66;
   public static final int llaveIzquierda = 10;
   public static final int true_ = 8;
   public static final int and = 38;
-  public static final int default_ = 72;
+  public static final int default_ = 73;
   public static final int xor = 41;
-  public static final int void_ = 61;
+  public static final int void_ = 62;
   public static final int EOF = 0;
-  public static final int if_ = 63;
+  public static final int if_ = 64;
   public static final int tstring = 2;
-  public static final int return_ = 62;
+  public static final int return_ = 63;
   public static final int umenosmenos = 31;
   public static final int double_ = 56;
+  public static final int switch_ = 71;
   public static final int error = 1;
-  public static final int switch_ = 70;
   public static final int diferente = 37;
   public static final int public_ = 47;
   public static final int entero = 4;
@@ -70,7 +71,7 @@ public class ReporteSym {
   public static final int class_ = 54;
   public static final int println_ = 60;
   public static final int corcheteIzquierda = 14;
-  public static final int new_ = 74;
+  public static final int new_ = 75;
   public static final int coma = 17;
   public static final int null_ = 7;
   public static final int modulo = 25;
@@ -145,6 +146,7 @@ public class ReporteSym {
   "boolean_",
   "print_",
   "println_",
+  "printTabla_",
   "void_",
   "return_",
   "if_",

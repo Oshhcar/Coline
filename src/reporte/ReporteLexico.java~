@@ -841,7 +841,7 @@ public class ReporteLexico implements java_cup.runtime.Scanner {
             }
           case 85: break;
           case 5: 
-            { if(this.isError){this.valorError += " ";}
+            { /*Se ignoran*/
             }
           case 86: break;
           case 6: 

@@ -45,7 +45,7 @@ terminal and, or, not, xor;
 terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
-terminal print_, println_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
+terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
 terminal switch_, case_, default_, import_, new_;
 
 non terminal INICIO;
@@ -352,6 +352,11 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:
                 Nodo tmp = new Nodo("PRINTLN");
                 tmp.setNumNodo(parser.contador++);
                 tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+            :}
+          |printTabla_:a parIzquierda parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("PRINT_TABLA");
+                tmp.setNumNodo(parser.contador++);
                 RESULT = tmp;
             :}
           |return_:a puntoycoma {: 
