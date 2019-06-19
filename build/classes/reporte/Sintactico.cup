@@ -335,7 +335,12 @@ BLOQUES ::= {: RESULT = null; :}
         |BLOQUES_L:a {: RESULT = a; :};
 
 BLOQUES_L ::= BLOQUES_L:a BLOQUE:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
-            | BLOQUE:a {: RESULT = a; :};
+            | BLOQUE:a {: 
+                Nodo tmp = new Nodo("BLOQUE");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp; 
+            :};
 
 BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:  
                 Nodo tmp = new Nodo("PRINT");

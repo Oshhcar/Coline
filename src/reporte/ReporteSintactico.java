@@ -1615,7 +1615,12 @@ class CUP$ReporteSintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$ReporteSintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$ReporteSintactico$stack.peek()).right;
 		Object a = (Object)((java_cup.runtime.Symbol) CUP$ReporteSintactico$stack.peek()).value;
-		 RESULT = a; 
+		 
+                Nodo tmp = new Nodo("BLOQUE");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp; 
+            
               CUP$ReporteSintactico$result = parser.getSymbolFactory().newSymbol("BLOQUES_L",16, ((java_cup.runtime.Symbol)CUP$ReporteSintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReporteSintactico$stack.peek()), RESULT);
             }
           return CUP$ReporteSintactico$result;

@@ -26,5 +26,7 @@ entradas/*
 arbol.dot
 arbol.png
 Errores.html
+grafo.dot
+grafo.png
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml

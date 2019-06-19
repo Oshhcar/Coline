@@ -129,6 +129,7 @@ public class Editor extends javax.swing.JFrame {
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
 
@@ -441,6 +442,17 @@ public class Editor extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem10);
 
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setBackground(java.awt.Color.white);
+        jMenuItem12.setIcon(new ImageIcon("iconos/algoritmo.png"));
+        jMenuItem12.setText("Grafo dependencias");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem12);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Ayuda");
@@ -581,7 +593,6 @@ public class Editor extends javax.swing.JFrame {
 
                 if (ext.toLowerCase().equals(".coline")) {
 
-
                     lexicoR = new ReporteLexico(new BufferedReader(new StringReader(entrada)));
                     sintacticoR = new ReporteSintactico(lexicoR);
 
@@ -619,6 +630,104 @@ public class Editor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+        int i = jTabbedPane1.getSelectedIndex();
+        if (i != -1) {
+            JScrollPane scroll = (JScrollPane) jTabbedPane1.getComponent(i);
+            JViewport view = (JViewport) scroll.getViewport();
+            JTextArea text = (JTextArea) view.getComponent(0);
+
+            String entrada;
+            entrada = text.getText();
+
+            File a;
+            if (!text.getName().equals("")) {
+                a = new File(text.getName());
+            } else {
+                a = new File("nuevo" + (i + 1) + ".coline");
+            }
+
+            if (!text.getName().equals("")) {
+                String ext = text.getName().substring(text.getName().lastIndexOf('.'));
+
+                if (ext.toLowerCase().equals(".coline")) {
+
+                    lexicoR = new ReporteLexico(new BufferedReader(new StringReader(entrada)));
+                    sintacticoR = new ReporteSintactico(lexicoR);
+
+                    try {
+                        sintacticoR.parse();
+
+                        if (sintacticoR.padre != null) {
+                            graficarGrafo(sintacticoR);
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Exception " + ex);
+                        JOptionPane.showMessageDialog(null,
+                                "El archivo contiene errores.",
+                                "Mensaje de Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Solo se pueden ejecutar archivos \".coline\".",
+                            "Mensaje de Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "No se ha guardado el archivo, guardelo primero.",
+                        "Mensaje de Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "No se ha seleccionado un archivo",
+                    "Mensaje de Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    public void graficarGrafo(ReporteSintactico sintactico) {
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+        String cadena = graficarNodo(sintactico.padre);
+        String cadena2 = graficarNodoGrafo(sintactico.padre);
+
+        try {
+            archivo = new FileWriter("grafo.dot");
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3, dir = none];rankdir=UD \n");
+            pw.println(cadena);
+            pw.println("edge [color=red, dir=forward, style=dashed];\n");
+            pw.println(cadena2);
+            pw.println("\n}");
+            archivo.close();
+        } catch (Exception e) {
+            System.out.println(e + " 1");
+        }
+
+        try {
+            String cmd = "dot -Tpng grafo.dot -o grafo.png";
+            Runtime.getRuntime().exec(cmd);
+            abrirarchivo("grafo.png");
+        } catch (IOException ioe) {
+            System.out.println(ioe + " 2");
+        }
+
+    }
+
+    public String graficarNodoGrafo(Nodo nodo) {
+        String cadena = "";
+        for (Nodo hijos : nodo.getHijos()) {
+            cadena += "\"" + hijos.getNumNodo() + "_" + hijos.getNombre() + "=" + hijos.getValor() + "\"->\"" + nodo.getNumNodo() + "_" + nodo.getNombre() + "=" + nodo.getValor() + "\"\n";
+            cadena += graficarNodoGrafo(hijos);
+        }
+        return cadena;
+    }
+
     public void graficarAst(ReporteSintactico sintactico) {
         FileWriter archivo = null;
         PrintWriter pw = null;
@@ -627,7 +736,7 @@ public class Editor extends javax.swing.JFrame {
         try {
             archivo = new FileWriter("arbol.dot");
             pw = new PrintWriter(archivo);
-            pw.println("digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3];rankdir=UD \n");
+            pw.println("digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3, dir=none];rankdir=UD \n");
             pw.println(cadena);
             pw.println("\n}");
             archivo.close();
@@ -1418,6 +1527,7 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
