@@ -46,7 +46,7 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_;
 
 non terminal INICIO;
 
@@ -85,6 +85,7 @@ non terminal CASES;
 non terminal CASESL;
 non terminal CASE;
 non terminal ACCESO_OBJETO;
+non terminal DIM;
 non terminal ACCESO;
 non terminal DIMENSION; 
 non terminal ARREGLO;
@@ -658,13 +659,18 @@ CASE ::= case_:x E:a dospuntos BLOQUES:b {:
             :};
 
 ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
-                | id:a punto ACCESO:b {: 
+                | id:a DIM:b punto ACCESO:c {: 
                     Nodo tmp = new Nodo("ACCESO_MIEMBRO");
                     tmp.setNumNodo(parser.contador++);
                     tmp.setValor(a);
-                    tmp.addHijo((Nodo) b);
+                    if(b != null)
+                        tmp.addHijo((Nodo) b);
+                    tmp.addHijo((Nodo) c);
                     RESULT = tmp;
                 :};
+
+DIM ::= {: RESULT = null; :}
+      | DIMENSION:a {: RESULT = a; :};
 
 ACCESO ::= id:a {:  
             Nodo tmp = new Nodo("ID");
@@ -893,6 +899,7 @@ E ::= E:a mas:x E:b {:
             tmp.addHijo((Nodo) b);
             RESULT=tmp;
         :}
+    | ACCESO_OBJETO:a  {: RESULT = a; :}
 
     | entero:a {:
                 Nodo tmp = new Nodo("E");

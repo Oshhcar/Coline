@@ -94,6 +94,7 @@ non terminal ArrayList<Case> CASES;
 non terminal ArrayList<Case> CASESL;
 non terminal Case CASE;
 non terminal AccesoObjeto ACCESO_OBJETO;
+non terminal ArrayList<Expresion>  DIM;
 non terminal Expresion ACCESO;
 non terminal ArrayList<Expresion> DIMENSION; 
 non terminal ArrayList<Expresion> ARREGLO;
@@ -262,7 +263,10 @@ CASE ::= case_:x E:a dospuntos BLOQUES:b {: RESULT = new Case(a, b, xleft, xrigh
         |default_:x dospuntos BLOQUES:a {: RESULT = new Case(a, xleft, xright); :};
 
 ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; RESULT.getAccesos().add(b); :}
-                | id:a punto ACCESO:b {: RESULT = new AccesoObjeto(a, aleft, aright); RESULT.getAccesos().add(b); :};
+                | id:a DIM:b punto ACCESO:c {: RESULT = new AccesoObjeto(a, b, aleft, aright); RESULT.getAccesos().add(c); :};
+
+DIM ::= {: RESULT = null; :}
+      | DIMENSION:a {: RESULT = a; :};
 
 ACCESO ::= id:a {: RESULT = new Identificador(a, aleft, aright); :}
         | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(new LlamadaMetodo(a, b, aleft, aright)); :};
@@ -310,6 +314,7 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | parIzquierda E:a parDerecha {: RESULT = a; :}
 
     | id:a DIMENSION:b {: RESULT = new AccesoArreglo(a, b, aleft, aright); :}
+    | ACCESO_OBJETO:a  {: RESULT = new Acceso(a); :}
 
     | entero:a {: RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); :}

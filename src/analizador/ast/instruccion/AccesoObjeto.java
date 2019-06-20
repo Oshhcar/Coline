@@ -14,6 +14,7 @@ import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Identificador;
+import analizador.ast.expresion.Literal;
 import analizador.ast.expresion.LlamadaFuncion;
 import java.util.ArrayList;
 
@@ -25,10 +26,12 @@ public class AccesoObjeto extends Instruccion {
 
     private final String id;
     private final ArrayList<Expresion> accesos;
+    private final ArrayList<Expresion> dimensiones;
 
-    public AccesoObjeto(String id, int linea, int columna) {
+    public AccesoObjeto(String id, ArrayList<Expresion> dimensiones, int linea, int columna) {
         super(linea, columna);
         this.id = id;
+        this.dimensiones = dimensiones;
         this.accesos = new ArrayList<>();
     }
 
@@ -78,19 +81,45 @@ public class AccesoObjeto extends Instruccion {
             } else if (sim.getTipo().tipo == Tipo.type.ARRAY) {
                 Object obj = sim.getValor();
                 if (obj != null) {
-                    Arreglo o = (Arreglo) obj;
-                    System.out.println("1lehgth es " + o.getTamaño());
-                    Object pos0 = o.get(0);
-                    if (pos0 instanceof Arreglo) {
-                        Arreglo arr = (Arreglo) pos0;
-                        System.out.println("2length es " + arr.getTamaño());
-                        Object pos1 = arr.get(0);
-                        if (pos1 instanceof Arreglo) {
-                            Arreglo arr1 = (Arreglo) pos1;
-                            System.out.println("3length es " + arr1.getTamaño());
-                        }
-                    }
+                    if (obj instanceof Arreglo) {
 
+                        Object ret = null;
+                        Arreglo aux = (Arreglo) obj;
+
+                        if (this.dimensiones != null) {
+                            int i = 0;
+                            while (i < this.dimensiones.size()) {
+                                Expresion exp = this.dimensiones.get(i++);
+                                Tipo tipExp = exp.getTipo(e, salida, errores);
+                                if (tipExp.tipo == Tipo.type.INT) {
+                                    Object valExp = exp.getValor(e, salida, errores);
+                                    if (valExp != null) {
+                                        try {
+                                            int pos = Integer.valueOf(valExp.toString());
+                                            ret = aux.get(pos);
+                                            if (ret instanceof Arreglo) {
+                                                aux = (Arreglo) ret;
+                                            }
+                                            if (i == this.dimensiones.size()) {
+                                                if (ret instanceof Arreglo) {
+                                                    return new Literal(new Tipo(Tipo.type.INT), ((Arreglo)ret).getTamaño(), this.getLinea(), this.getColumna());
+                                                } 
+                                                System.err.println("error dimensiones");
+                                            } else {
+                                                continue;
+                                            }
+                                        } catch (Exception ex) {
+                                            System.err.println("" + ex);
+                                        }
+                                    }
+                                }
+                                return null;
+                            }
+                        }
+                        return new Literal(new Tipo(Tipo.type.INT), aux.getTamaño(), this.getLinea(), this.getColumna());
+                    } else {
+                        System.err.println("No es un arreglo. ");
+                    }
                 }
 
             } else {
