@@ -50,20 +50,18 @@ public class Clase extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        Entorno local = new Entorno(null);
-        local.setGlobal(local);
+        Entorno global = new Entorno(null);
 
         if (this.imports != null) {
 
             for (Import i : this.imports) {
                 i.setDirActual(dirActual);
-                i.ejecutar(e, salida, metodo, ciclo, switch_, errores);
+                i.ejecutar(global, salida, metodo, ciclo, switch_, errores);
             }
         }
 
-        Entorno padre = new Entorno(null);
-        padre.getTabla().addAll(e.getTabla());
-        local.setPadre(padre);
+        Entorno local = new Entorno(global);
+        local.setGlobal(local);
 
         ArrayList<Simbolo> simbolos = new ArrayList<>();
         Metodo main = null;
@@ -90,17 +88,22 @@ public class Clase extends Instruccion {
         }
 
         if (!this.id.equals("String") && !this.id.equals("Object")) {
-            if (e.getClase(this.id) == null) {
+            if (local.getClase(this.id) == null) {
                 ClaseSim clase = new ClaseSim(this.modificadores, this.id, local);
                 clase.setMain(main);
-                if(extiende != null){
-                    ClaseSim ext = e.getClase(extiende);
-                    if(ext != null){
-                        clase.setPadre(ext);
+                if (extiende != null) {
+                    if (!this.id.equals(extiende)) {
+                        ClaseSim ext = local.getClase(extiende);
+                        if (ext != null) {
+                            clase.setPadre(ext);
+                        } else {
+                            System.err.println("Error, no se ha importado la clase " + extiende);
+                        }
                     } else {
-                        System.err.println("Error, no se ha importado la clase "+extiende);
+                        System.err.println("No puede heredar de ella misma");
                     }
                 }
+                global.add(clase);
                 e.add(clase);
                 return null;
             }

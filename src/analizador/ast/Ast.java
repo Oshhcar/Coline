@@ -47,11 +47,7 @@ public class Ast {
 
         if(claseMain != null){
             if(claseMain.getMain().getBloque() != null){
-                Entorno local = new Entorno(global);
-                local.setGlobal(local);
-                local.getTabla().addAll(claseMain.getE().getTabla());
-                
-                claseMain.getMain().getBloque().ejecutar(local, salida, true, false, false, errores);
+                claseMain.getMain().getBloque().ejecutar(claseMain.getE(), salida, true, false, false, errores);
             }
         }
     }

@@ -11,14 +11,7 @@ import java.util.ArrayList;
  * @author oscar
  */
 public class Entorno {
-
-    /**
-     * @param tabla the tabla to set
-     */
-    public void setTabla(ArrayList<Simbolo> tabla) {
-        this.tabla = tabla;
-    }
-
+    
     private Entorno padre;
     private Entorno global = null;
     private ArrayList<Simbolo> tabla;
@@ -124,6 +117,13 @@ public class Entorno {
      */
     public ArrayList<Simbolo> getTabla() {
         return tabla;
+    }
+    
+    /**
+     * @param tabla the tabla to set
+     */
+    public void setTabla(ArrayList<Simbolo> tabla) {
+        this.tabla = tabla;
     }
 
     /**
