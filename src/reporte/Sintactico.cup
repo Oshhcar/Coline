@@ -237,6 +237,19 @@ CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
                             if(e != null)
                                 tmp.addHijo((Nodo) e);
                             RESULT = tmp;
+                         :}
+                    |MOD:a id:b parIzquierda PARAMETROS_DEC:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha
+                        {: 
+                            Nodo tmp = new Nodo("CONSTRUCTOR");
+                            tmp.setValor(b);
+                            tmp.setNumNodo(parser.contador++);
+                            if(a != null)
+                                tmp.addHijo((Nodo) a);
+                            if(c != null)
+                                tmp.addHijo((Nodo) c);
+                            if(d != null)
+                                tmp.addHijo((Nodo) d);
+                            RESULT = tmp;
                          :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; ((Nodo)RESULT).addHijo((Nodo)b); :}

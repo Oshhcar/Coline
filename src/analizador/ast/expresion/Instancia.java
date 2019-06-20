@@ -50,6 +50,57 @@ public class Instancia extends Expresion {
                 }
             }
 
+            if (clase.getConstructores() != null) {
+                Entorno local = new Entorno(eNuevo);
+                String firma = id;
+
+                ArrayList<Simbolo> parm = new ArrayList<>();
+                if (this.parametros != null) {
+                    for (Expresion parametro : this.parametros) {
+                        Tipo tipo = parametro.getTipo(e, salida, errores);
+                        if (tipo != null) {
+                            Object valor = parametro.getValor(e, salida, errores);
+                            if (valor != null) {
+                                firma += "_" + tipo.tipo.toString();
+                                parm.add(new Simbolo(tipo, "parm", valor));
+                                continue;
+                            }
+                        }
+                        System.err.println("error en parametros");
+                        return null;
+                    }
+                }
+                
+                boolean ejecuto = false;
+                
+                for (Simbolo sim : clase.getConstructores()) {
+                    Metodo m = (Metodo) sim;
+                    if (m.getFirma().equals(firma)) {
+                        if (this.parametros != null) {
+                            for (int i = 0; i <= parm.size() - 1; i++) {
+                                local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
+                            }
+                        }
+                        m.getBloque().ejecutar(local, salida, true, false, false, errores);
+                        ejecuto = true;
+                        break;
+                    }
+                }
+                
+                if(!ejecuto){
+                    if(this.parametros != null){
+                        System.err.println("no se econtro el constructor, no se creo el objeto.");
+                        return null;
+                    }
+                }
+
+            } else {
+                if (this.parametros != null) {
+                    System.err.println("Error, no se definio el constructor. ");
+                    return null;
+                }
+            }
+
             if (clase.getPadre() != null) {
                 Entorno papa = new Entorno(eNuevo.getPadre());
 
@@ -61,7 +112,7 @@ public class Instancia extends Expresion {
                         papa.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
                     }
                 }
-                
+
                 eNuevo.setPadre(papa);
             }
 

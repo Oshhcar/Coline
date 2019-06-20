@@ -93,6 +93,12 @@ public class Tipo {
                 return false;
             }
 
+        }, 
+        CONSTRUCTOR{
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
         };
 
         public abstract boolean isNumero();

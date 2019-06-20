@@ -63,14 +63,32 @@ public class Clase extends Instruccion {
         Entorno local = new Entorno(global);
         local.setGlobal(local);
 
-        ArrayList<Simbolo> simbolos = new ArrayList<>();
+        Entorno cons = new Entorno(null);
+        cons.setGlobal(cons);
+        ArrayList<Simbolo> constructores = new ArrayList<>();
+        
         Metodo main = null;
 
         if (this.declaraciones != null) {
 
             for (NodoAst inst : this.declaraciones) {
                 if (inst instanceof Instruccion) {
-                    ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                    if(inst instanceof Constructor){
+                        ((Constructor) inst).ejecutar(cons, salida, metodo, ciclo, switch_, errores);
+                    } else{
+                        ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                    }
+                }
+            }
+            
+            for(Simbolo simbolo: cons.getTabla()){
+                if(simbolo instanceof Metodo){
+                    Metodo m = (Metodo) simbolo;
+                    if(m.getId().equals(this.id)){
+                        constructores.add(simbolo);
+                        continue;
+                    } 
+                    System.err.println("Error, constructor no es del mismo nombre " +m.getId());
                 }
             }
 
@@ -79,18 +97,24 @@ public class Clase extends Instruccion {
                     Metodo m = (Metodo) simbolo;
                     if (m.getFirma().equals("main")) {
                         main = m;
-                        continue;
+                        break;
                     }
                 }
-                simbolos.add(simbolo);
             }
 
         }
 
         if (!this.id.equals("String") && !this.id.equals("Object")) {
             if (local.getClase(this.id) == null) {
-                ClaseSim clase = new ClaseSim(this.modificadores, this.id, local);
+                
+                ClaseSim clase;
+                if(constructores.isEmpty()){
+                    clase = new ClaseSim(this.modificadores, this.id, local);
+                } else {
+                    clase = new ClaseSim(this.modificadores, constructores, this.id, local);
+                }
                 clase.setMain(main);
+                
                 if (extiende != null) {
                     if (!this.id.equals(extiende)) {
                         ClaseSim ext = local.getClase(extiende);
