@@ -20,6 +20,6 @@ public abstract class Instruccion extends NodoAst{
         super(linea, columna);
     }
     
-    public abstract Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores);
+    public abstract Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores);
     
 }

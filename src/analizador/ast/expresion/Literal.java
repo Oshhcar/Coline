@@ -49,12 +49,12 @@ public class Literal extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         return this.tipo;
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if (this.dimensiones != null) {
             /*new TYPE[num]*/
            
@@ -63,10 +63,10 @@ public class Literal extends Expresion {
             int i = this.dimensiones.size() - 1;
             while (i >= 0) {
                 Expresion exp = this.dimensiones.get(i);
-                Tipo tipExp = exp.getTipo(e, salida, errores);
+                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                 if (tipExp != null) {
                     if (tipExp.tipo == Tipo.type.INT) {
-                        Object valExp = exp.getValor(e, salida, errores);
+                        Object valExp = exp.getValor(e, salida, this_, errores);
                         if (valExp != null) {
                             try {
                                 int tamExp = Integer.valueOf(valExp.toString());
@@ -106,7 +106,7 @@ public class Literal extends Expresion {
             
             for (int i = 0; i <= this.valores.size() - 1; i++) {
                 Expresion exp = this.valores.get(i);
-                Tipo tipExp = exp.getTipo(e, salida, errores);
+                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                 if (tipExp != null) {
                     
                     if(this.tipo.subtipo == null){
@@ -115,7 +115,7 @@ public class Literal extends Expresion {
                     }
                     
                     if (tipExp.tipo == this.tipo.subtipo) {
-                        Object valExp = exp.getValor(e, salida, errores);
+                        Object valExp = exp.getValor(e, salida, this_, errores);
                         if (valExp != null) {
                             if (valExp instanceof Arreglo) {
                                 multi = true;

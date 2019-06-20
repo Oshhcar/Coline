@@ -28,7 +28,7 @@ public class AccesoArreglo extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Simbolo s = e.get(id);
         if (s != null) {
             if(s.getTamaño() > this.dimensiones.size()){
@@ -41,7 +41,7 @@ public class AccesoArreglo extends Expresion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Simbolo s = e.get(id);
         if (s != null) {
             Object val = s.getValor();
@@ -54,9 +54,9 @@ public class AccesoArreglo extends Expresion {
                     int i = 0;
                     while (i < this.dimensiones.size()) {
                         Expresion exp = this.dimensiones.get(i++);
-                        Tipo tipExp = exp.getTipo(e, salida, errores);
+                        Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                         if (tipExp.tipo == Tipo.type.INT) {
-                            Object valExp = exp.getValor(e, salida, errores);
+                            Object valExp = exp.getValor(e, salida, this_, errores);
                             if (valExp != null) {
                                 try {
                                     int pos = Integer.valueOf(valExp.toString());

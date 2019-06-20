@@ -28,16 +28,16 @@ public class ReadFile extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         return new Tipo(Tipo.type.STRING);
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipRuta = ruta.getTipo(e, salida, errores);
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipRuta = ruta.getTipo(e, salida, this_, errores);
         if (tipRuta != null) {
             if (tipRuta.tipo == Tipo.type.STRING) {
-                Object valValor = ruta.getValor(e, salida, errores);
+                Object valValor = ruta.getValor(e, salida, this_, errores);
                 if (valValor != null) {
                     String direccion = valValor.toString();
 

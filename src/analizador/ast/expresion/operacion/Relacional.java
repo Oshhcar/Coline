@@ -22,9 +22,9 @@ public class Relacional extends Operacion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
-        Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
+        Tipo tipOp2 = this.getOp2().getTipo(e, salida, this_, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
             if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
@@ -41,14 +41,14 @@ public class Relacional extends Operacion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
-        Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
+        Tipo tipOp2 = this.getOp2().getTipo(e, salida, this_, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
             if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
-                Double valOp1 = this.getDouble(tipOp1, this.getOp1().getValor(e, salida, errores));
-                Double valOp2 = this.getDouble(tipOp2, this.getOp2().getValor(e, salida, errores));
+                Double valOp1 = this.getDouble(tipOp1, this.getOp1().getValor(e, salida, this_, errores));
+                Double valOp2 = this.getDouble(tipOp2, this.getOp2().getValor(e, salida, this_, errores));
                 if (valOp1 != null && valOp2 != null) {
                     switch (this.getOperador()) {
                         case MAYORQUE:
@@ -66,8 +66,8 @@ public class Relacional extends Operacion {
                     }
                 }
             } else if (tipOp1.tipo == Tipo.type.STRING && tipOp2.tipo == Tipo.type.STRING) {
-                Integer valOp1 = this.getValorCadena(this.getOp1().getValor(e, salida, errores).toString());
-                Integer valOp2 = this.getValorCadena(this.getOp2().getValor(e, salida, errores).toString());
+                Integer valOp1 = this.getValorCadena(this.getOp1().getValor(e, salida, this_, errores).toString());
+                Integer valOp2 = this.getValorCadena(this.getOp2().getValor(e, salida, this_, errores).toString());
 
                 if (valOp1 != null && valOp2 != null) {
                     switch (this.getOperador()) {
@@ -87,8 +87,8 @@ public class Relacional extends Operacion {
                 }
 
             } else if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
-                Object val1 = this.getOp1().getValor(e, salida, errores).toString();
-                Object val2 = this.getOp2().getValor(e, salida, errores).toString();
+                Object val1 = this.getOp1().getValor(e, salida, this_, errores).toString();
+                Object val2 = this.getOp2().getValor(e, salida, this_, errores).toString();
 
                 if (val1 != null && val2 != null) {
                     Boolean valOp1 = Boolean.valueOf(val1.toString());

@@ -32,7 +32,7 @@ public class AsignacionArreglo extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         Simbolo sim = e.get(id);
         if (sim != null) {
             if (sim.getTipo().tipo == Tipo.type.ARRAY) {
@@ -41,10 +41,10 @@ public class AsignacionArreglo extends Instruccion {
                 int i = 0;
                 while (i < this.dimensiones.size()) {
                     Expresion exp = this.dimensiones.get(i++);
-                    Tipo tipExp = exp.getTipo(e, salida, errores);
+                    Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                     if (tipExp != null) {
                         if (tipExp.tipo == Tipo.type.INT) {
-                            Object valExp = exp.getValor(e, salida, errores);
+                            Object valExp = exp.getValor(e, salida, this_, errores);
                             if (valExp != null) {
                                 int dim = Integer.valueOf(valExp.toString());
 
@@ -57,11 +57,11 @@ public class AsignacionArreglo extends Instruccion {
                                     System.err.println("Error, ya no hay mas dimensiones");
                                     return null;
                                 } else {
-                                    Tipo tipValor = this.valor.getTipo(e, salida, errores);
+                                    Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
                                     if (tipValor != null) {
                                         if (tipValor.tipo != Tipo.type.ARRAY) {
                                             if (tipValor.tipo == aux.getTipo().subtipo) {
-                                                Object valor = this.valor.getValor(e, salida, errores);
+                                                Object valor = this.valor.getValor(e, salida, this_, errores);
                                                 if (valor != null) {
                                                     aux.setValor(dim, valor);
                                                     return null;
@@ -73,7 +73,7 @@ public class AsignacionArreglo extends Instruccion {
                                             return null;
                                         } else {
                                             if(tipValor.subtipo == tipValor.subtipo){
-                                                Object valor = this.valor.getValor(e, salida, errores);
+                                                Object valor = this.valor.getValor(e, salida, this_, errores);
                                                 if(valor != null){
                                                     /*verificar tamaños*/
                                                     aux.setValor(dim, valor);

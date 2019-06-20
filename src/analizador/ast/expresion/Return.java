@@ -29,17 +29,17 @@ public class Return extends Expresion{
 
     
     @Override
-    public Tipo getTipo(Entorno e,  Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e,  Object salida, Object this_, ArrayList<ErrorC> errores) {
         if(getToReturn() != null){
-            return getToReturn().getTipo(e, salida, errores);
+            return getToReturn().getTipo(e, salida, this_, errores);
         }
         return null;
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if(getToReturn() != null){
-            return getToReturn().getValor(e, salida, errores);
+            return getToReturn().getValor(e, salida, this_, errores);
         }
         return null;
     }

@@ -28,12 +28,12 @@ public class Operacion extends Expresion{
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         return null;
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         return null;
     }
 

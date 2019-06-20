@@ -26,8 +26,8 @@ public class Println extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        Object valor = toPrint.getValor(e, salida, errores);
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        Object valor = toPrint.getValor(e, salida, this_, errores);
         if (valor != null) {
             if (valor instanceof Arreglo) {
                 Arreglo arr = (Arreglo) valor;

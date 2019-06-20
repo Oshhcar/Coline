@@ -36,7 +36,7 @@ public class AccesoObjeto extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         Simbolo sim = e.get(id);
         if (sim != null) {
             if (sim.getTipo().tipo == Tipo.type.OBJECT) {
@@ -53,9 +53,9 @@ public class AccesoObjeto extends Instruccion {
                         tmp.setGlobal(objeto.getE());
 
                         for (Expresion acceso : this.accesos) {
-                            Tipo tipAcceso = acceso.getTipo(tmp, salida, errores);
+                            Tipo tipAcceso = acceso.getTipo(tmp, salida, this_, errores);
                             if (tipAcceso != null) {
-                                acceso.getValor(tmp, salida, errores);
+                                acceso.getValor(tmp, salida, this_, errores);
                             }
                         }
                     } else {
@@ -90,9 +90,9 @@ public class AccesoObjeto extends Instruccion {
                             int i = 0;
                             while (i < this.dimensiones.size()) {
                                 Expresion exp = this.dimensiones.get(i++);
-                                Tipo tipExp = exp.getTipo(e, salida, errores);
+                                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                                 if (tipExp.tipo == Tipo.type.INT) {
-                                    Object valExp = exp.getValor(e, salida, errores);
+                                    Object valExp = exp.getValor(e, salida, this_, errores);
                                     if (valExp != null) {
                                         try {
                                             int pos = Integer.valueOf(valExp.toString());

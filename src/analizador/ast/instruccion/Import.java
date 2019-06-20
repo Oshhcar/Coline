@@ -38,11 +38,11 @@ public class Import extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        Tipo tipDir = direccion.getTipo(e, salida, errores);
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipDir = direccion.getTipo(e, salida, this_, errores);
         if (tipDir != null) {
             if (tipDir.tipo == Tipo.type.STRING) {
-                Object valDir = direccion.getValor(e, salida, errores);
+                Object valDir = direccion.getValor(e, salida, this_, errores);
                 if (valDir != null) {
                     String rutaImport = valDir.toString();
                     String ext = rutaImport.substring(rutaImport.lastIndexOf('.'));
@@ -93,7 +93,7 @@ public class Import extends Instruccion {
                                     Clase clase = ast.getClase();
 
                                     clase.setDirActual(dirActual);
-                                    clase.ejecutar(e, salida, metodo, ciclo, switch_, errores);
+                                    clase.ejecutar(e, salida, metodo, ciclo, switch_, this_, errores);
                                 }
                             } catch (Exception ex) {
                                 System.err.println("El archivo importado contiene errores.");

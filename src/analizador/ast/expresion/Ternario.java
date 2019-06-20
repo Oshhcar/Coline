@@ -28,17 +28,17 @@ public class Ternario extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipCond = this.condicion.getTipo(e, salida, errores);
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipCond = this.condicion.getTipo(e, salida, this_, errores);
 
         if (tipCond != null) {
             if (tipCond.tipo == Tipo.type.BOOLEAN) {
-                Object valCond = this.condicion.getValor(e, salida, errores);
+                Object valCond = this.condicion.getValor(e, salida, this_, errores);
                 if (valCond != null) {
                     if (Boolean.valueOf(valCond.toString())) {
-                        return this.verdadera.getTipo(e, salida, errores);
+                        return this.verdadera.getTipo(e, salida, this_, errores);
                     } else {
-                        return this.falsa.getTipo(e, salida, errores);
+                        return this.falsa.getTipo(e, salida, this_, errores);
                     }
                 }
             }
@@ -47,17 +47,17 @@ public class Ternario extends Expresion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipCond = this.condicion.getTipo(e, salida, errores);
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipCond = this.condicion.getTipo(e, salida, this_, errores);
 
         if (tipCond != null) {
             if (tipCond.tipo == Tipo.type.BOOLEAN) {
-                Object valCond = this.condicion.getValor(e, salida, errores);
+                Object valCond = this.condicion.getValor(e, salida, this_, errores);
                 if (valCond != null) {
                     if (Boolean.valueOf(valCond.toString())) {
-                        return this.verdadera.getValor(e, salida, errores);
+                        return this.verdadera.getValor(e, salida, this_, errores);
                     } else {
-                        return this.falsa.getValor(e, salida, errores);
+                        return this.falsa.getValor(e, salida, this_, errores);
                     }
                 }
             }

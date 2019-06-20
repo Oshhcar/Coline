@@ -26,10 +26,10 @@ public class Logica extends Operacion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if (this.getOp2() != null) {
-            Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
-            Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
+            Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
+            Tipo tipOp2 = this.getOp2().getTipo(e, salida, this_, errores);
 
             if (tipOp1 != null && tipOp2 != null) {
                 if (tipOp1.tipo == Tipo.type.BOOLEAN && tipOp2.tipo == Tipo.type.BOOLEAN) {
@@ -37,7 +37,7 @@ public class Logica extends Operacion {
                 }
             }
         } else {
-            Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
+            Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
             if (tipOp1 != null) {
                 if (tipOp1.tipo == Tipo.type.BOOLEAN) {
                     return new Tipo(Tipo.type.BOOLEAN);
@@ -48,13 +48,13 @@ public class Logica extends Operacion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipRes = this.getTipo(e, salida, errores);
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipRes = this.getTipo(e, salida, this_, errores);
         if (tipRes != null) {
             if (tipRes.tipo == Tipo.type.BOOLEAN) {
                 if (this.getOp2() != null) {
-                    Object val1 = this.getOp1().getValor(e, salida, errores);
-                    Object val2 = this.getOp2().getValor(e, salida, errores);
+                    Object val1 = this.getOp1().getValor(e, salida, this_, errores);
+                    Object val2 = this.getOp2().getValor(e, salida, this_, errores);
 
                     if (val1 != null && val2 != null) {
                         boolean valOp1 = Boolean.valueOf(val1.toString());
@@ -71,7 +71,7 @@ public class Logica extends Operacion {
 
                     }
                 } else {
-                    Object val1 = this.getOp1().getValor(e, salida, errores);
+                    Object val1 = this.getOp1().getValor(e, salida, this_, errores);
 
                     if (val1 != null) {
                         boolean valOp1 = Boolean.valueOf(val1.toString());

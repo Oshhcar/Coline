@@ -33,18 +33,18 @@ public class WriteFile extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        Tipo tipRuta = ruta.getTipo(e, salida, errores);
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipRuta = ruta.getTipo(e, salida, this_, errores);
         if (tipRuta != null) {
             if (tipRuta.tipo == Tipo.type.STRING) {
-                Object valValor = ruta.getValor(e, salida, errores);
+                Object valValor = ruta.getValor(e, salida, this_, errores);
                 if (valValor != null) {
                     String direccion = valValor.toString();
 
-                    Tipo tipContenido = contenido.getTipo(e, salida, errores);
+                    Tipo tipContenido = contenido.getTipo(e, salida, this_, errores);
                     if (tipContenido != null) {
                         if (tipContenido.tipo == Tipo.type.STRING) {
-                            Object valContenido = contenido.getValor(e, salida, errores);
+                            Object valContenido = contenido.getValor(e, salida, this_, errores);
                             if (valContenido != null) {
                                 String texto = valContenido.toString();
 

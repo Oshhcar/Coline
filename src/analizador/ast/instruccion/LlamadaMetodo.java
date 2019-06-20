@@ -33,7 +33,7 @@ public class LlamadaMetodo extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
         String firma = this.getId();
@@ -43,9 +43,9 @@ public class LlamadaMetodo extends Instruccion {
         } else {
             ArrayList<Simbolo> parm = new ArrayList<>();
             for (Expresion parametro : this.getParametros()) {
-                Tipo tipo = parametro.getTipo(e, salida, errores);
+                Tipo tipo = parametro.getTipo(e, salida, this_, errores);
                 if (tipo != null) {
-                    Object valor = parametro.getValor(e, salida, errores);
+                    Object valor = parametro.getValor(e, salida, this_, errores);
                     if (valor != null) {
                         firma += "_" + tipo.tipo.toString();
                         parm.add(new Simbolo(tipo, "parm", valor));
@@ -66,11 +66,11 @@ public class LlamadaMetodo extends Instruccion {
         }
 
         if (m != null) {
-            Object obj = m.getBloque().ejecutar(local, salida, true, false, false, errores);
+            Object obj = m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
             if (obj != null) {
                 if (obj instanceof Return) {
                     if (isFuncion()) {
-                        if(m.getTipo().tipo == ((Return) obj).getTipo(local, salida, errores).tipo){
+                        if(m.getTipo().tipo == ((Return) obj).getTipo(local, salida, this_, errores).tipo){
                             return obj;
                         } else {
                             System.err.println("No son del mismo tipo. LLamada funcion");

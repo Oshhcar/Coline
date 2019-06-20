@@ -22,9 +22,9 @@ public class Aritmetica extends Operacion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipOp1 = this.getOp1().getTipo(e, salida, errores);
-        Tipo tipOp2 = this.getOp2().getTipo(e, salida, errores);
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
+        Tipo tipOp2 = this.getOp2().getTipo(e, salida, this_, errores);
 
         if (tipOp1 != null && tipOp2 != null) {
             if (tipOp1.tipo == Tipo.type.STRING || tipOp2.tipo == Tipo.type.STRING) {
@@ -45,16 +45,16 @@ public class Aritmetica extends Operacion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
-        Tipo tipDominante = this.getTipo(e, salida, errores);
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipDominante = this.getTipo(e, salida, this_, errores);
 
         if (tipDominante != null) {
             switch (tipDominante.tipo) {
                 case STRING:
-                    return this.getOp1().getValor(e, salida, errores).toString() + this.getOp2().getValor(e, salida, errores).toString();
+                    return this.getOp1().getValor(e, salida, this_, errores).toString() + this.getOp2().getValor(e, salida, this_, errores).toString();
                 case DOUBLE: {
-                    Double valOp1 = this.getDouble(this.getOp1().getTipo(e, salida, errores), this.getOp1().getValor(e, salida, errores));
-                    Double valOp2 = this.getDouble(this.getOp2().getTipo(e, salida, errores), this.getOp2().getValor(e, salida, errores));
+                    Double valOp1 = this.getDouble(this.getOp1().getTipo(e, salida, this_, errores), this.getOp1().getValor(e, salida, this_, errores));
+                    Double valOp2 = this.getDouble(this.getOp2().getTipo(e, salida, this_, errores), this.getOp2().getValor(e, salida, this_, errores));
                     if (valOp1 != null && valOp2 != null) {
                         switch (this.getOperador()) {
                             case SUMA:
@@ -72,8 +72,8 @@ public class Aritmetica extends Operacion {
                     break;
                 }
                 case INT: {
-                    Integer valOp1 = this.getInt(this.getOp1().getTipo(e, salida, errores), this.getOp1().getValor(e, salida, errores));
-                    Integer valOp2 = this.getInt(this.getOp2().getTipo(e, salida, errores), this.getOp2().getValor(e, salida, errores));
+                    Integer valOp1 = this.getInt(this.getOp1().getTipo(e, salida, this_, errores), this.getOp1().getValor(e, salida, this_, errores));
+                    Integer valOp2 = this.getInt(this.getOp2().getTipo(e, salida, this_, errores), this.getOp2().getValor(e, salida, this_, errores));
                     switch (this.getOperador()) {
                         case SUMA:
                             return valOp1 + valOp2;

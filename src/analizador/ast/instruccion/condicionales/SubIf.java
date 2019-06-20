@@ -45,13 +45,13 @@ public class SubIf extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         if (this.bloque != null) {
             if (!this.isElse) {
-                Tipo tipCond = this.condicion.getTipo(e, salida, errores);
+                Tipo tipCond = this.condicion.getTipo(e, salida, this_, errores);
                 if (tipCond != null) {
                     if (tipCond.tipo == Tipo.type.BOOLEAN) {
-                        Object valCond = this.condicion.getValor(e, salida, errores);
+                        Object valCond = this.condicion.getValor(e, salida, this_, errores);
                         if (valCond != null) {
                             this.entra = Boolean.valueOf(valCond.toString());
                         }
@@ -61,7 +61,7 @@ public class SubIf extends Instruccion {
 
             if (this.isElse || isEntra()) {
                 Entorno local = new Entorno(e);
-                return this.bloque.ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                return this.bloque.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
             }
         }
         return null;

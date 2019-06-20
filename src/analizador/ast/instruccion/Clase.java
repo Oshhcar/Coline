@@ -49,14 +49,14 @@ public class Clase extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         Entorno global = new Entorno(null);
 
         if (this.imports != null) {
 
             for (Import i : this.imports) {
                 i.setDirActual(dirActual);
-                i.ejecutar(global, salida, metodo, ciclo, switch_, errores);
+                i.ejecutar(global, salida, metodo, ciclo, switch_, this_, errores);
             }
         }
 
@@ -74,9 +74,9 @@ public class Clase extends Instruccion {
             for (NodoAst inst : this.declaraciones) {
                 if (inst instanceof Instruccion) {
                     if(inst instanceof Constructor){
-                        ((Constructor) inst).ejecutar(cons, salida, metodo, ciclo, switch_, errores);
+                        ((Constructor) inst).ejecutar(cons, salida, metodo, ciclo, switch_, this_, errores);
                     } else{
-                        ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                        ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
                     }
                 }
             }

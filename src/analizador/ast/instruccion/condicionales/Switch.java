@@ -29,10 +29,10 @@ public class Switch extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
-        Tipo tipExp = this.expSwitch.getTipo(e, salida, errores);
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        Tipo tipExp = this.expSwitch.getTipo(e, salida, this_, errores);
         if (tipExp != null) {
-            Object valExp = this.expSwitch.getValor(e, salida, errores);
+            Object valExp = this.expSwitch.getValor(e, salida, this_, errores);
             if (valExp != null) {
                 if (cases != null) {
                     boolean isContinuar = false;
@@ -41,7 +41,7 @@ public class Switch extends Instruccion {
                         caso.setExpSwitch(tipExp, valExp);
                         caso.setContinuar(isContinuar);
                         
-                        Object obj = caso.ejecutar(e, salida, metodo, ciclo, true, errores);
+                        Object obj = caso.ejecutar(e, salida, metodo, ciclo, true, this_, errores);
                         
                         if(obj != null){
                             if(obj instanceof Break){

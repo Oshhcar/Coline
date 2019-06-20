@@ -30,12 +30,12 @@ public class Instancia extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         return new Tipo(Tipo.type.OBJECT, id);
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         ClaseSim clase = e.getClase(id);
         if (clase != null) {
             Entorno eNuevo = new Entorno(clase.getE().getPadre());
@@ -57,9 +57,9 @@ public class Instancia extends Expresion {
                 ArrayList<Simbolo> parm = new ArrayList<>();
                 if (this.parametros != null) {
                     for (Expresion parametro : this.parametros) {
-                        Tipo tipo = parametro.getTipo(e, salida, errores);
+                        Tipo tipo = parametro.getTipo(e, salida, this_, errores);
                         if (tipo != null) {
-                            Object valor = parametro.getValor(e, salida, errores);
+                            Object valor = parametro.getValor(e, salida, this_, errores);
                             if (valor != null) {
                                 firma += "_" + tipo.tipo.toString();
                                 parm.add(new Simbolo(tipo, "parm", valor));
@@ -81,7 +81,7 @@ public class Instancia extends Expresion {
                                 local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
                             }
                         }
-                        m.getBloque().ejecutar(local, salida, true, false, false, errores);
+                        m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
                         ejecuto = true;
                         break;
                     }

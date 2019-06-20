@@ -27,7 +27,7 @@ public class Identificador extends Expresion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(getId());
         if (tmp != null) {
             return tmp.getTipo();
@@ -36,7 +36,7 @@ public class Identificador extends Expresion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(getId());
         if (tmp != null) {
             return tmp.getValor();

@@ -32,17 +32,17 @@ public class While extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         if (bloque != null) {
             while (true) {
-                Tipo tipCondicion = condicion.getTipo(e, salida, errores);
+                Tipo tipCondicion = condicion.getTipo(e, salida, this_, errores);
                 if (tipCondicion != null) {
                     if (tipCondicion.tipo == Tipo.type.BOOLEAN) {
-                        Object valCondicion = condicion.getValor(e, salida, errores);
+                        Object valCondicion = condicion.getValor(e, salida, this_, errores);
                         if (valCondicion != null) {
                             if (Boolean.valueOf(valCondicion.toString())) {
                                 Entorno local = new Entorno(e);
-                                Object obj = this.bloque.ejecutar(local, salida, metodo, true, switch_, errores);
+                                Object obj = this.bloque.ejecutar(local, salida, metodo, true, switch_, this_, errores);
                                 if (obj != null) {
                                     if (obj instanceof Break) {
                                         return null;

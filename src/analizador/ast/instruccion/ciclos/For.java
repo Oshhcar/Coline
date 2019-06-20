@@ -37,20 +37,20 @@ public class For extends Instruccion{
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         if(bloque != null){
             Entorno local = new Entorno(e);
-            for_init.ejecutar(local, salida, metodo, ciclo, switch_, errores);
+            for_init.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
 
             while(true){
-                Tipo tipCondicion = condicion.getTipo(local, salida, errores);
+                Tipo tipCondicion = condicion.getTipo(local, salida, this_, errores);
                 if(tipCondicion != null){
                     if(tipCondicion.tipo == Tipo.type.BOOLEAN){
-                        Object valCondicion = condicion.getValor(local, salida, errores);
+                        Object valCondicion = condicion.getValor(local, salida, this_, errores);
                         if(valCondicion != null){
                             if(Boolean.valueOf(valCondicion.toString())){
                                 Entorno local2 = new Entorno(local);
-                                Object obj = bloque.ejecutar(local2, salida, metodo, true, switch_, errores);
+                                Object obj = bloque.ejecutar(local2, salida, metodo, true, switch_, this_, errores);
                                 
                                 if(obj != null){
                                     if(obj instanceof Break){
@@ -61,9 +61,9 @@ public class For extends Instruccion{
                                 }
                                 
                                 if(update instanceof Instruccion){
-                                    ((Instruccion) update).ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                                    ((Instruccion) update).ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
                                 } else {
-                                    ((Expresion) update).getValor(local, salida, errores);
+                                    ((Expresion) update).getValor(local, salida, this_, errores);
                                 }
                                 continue;
                             }

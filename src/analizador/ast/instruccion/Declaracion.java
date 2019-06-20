@@ -39,16 +39,16 @@ public class Declaracion extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         for (Asignacion asigna : this.asignaciones) {
             String id = asigna.getId().getId();
             Simbolo tmp = e.getLocal(id);
             if (tmp == null) {
                 Expresion valor = asigna.getValor();
                 if (valor != null) {
-                    Tipo tipValor = valor.getTipo(e, salida, errores);
+                    Tipo tipValor = valor.getTipo(e, salida, this_, errores);
                     if (tipValor != null) {
-                        Object valValor = valor.getValor(e, salida, errores);
+                        Object valValor = valor.getValor(e, salida, this_, errores);
                         if (valValor != null) {
                             if (asigna.getId().getDim() == 0) {
                                 if (!(valValor instanceof Arreglo)) {

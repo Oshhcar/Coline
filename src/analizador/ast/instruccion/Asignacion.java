@@ -36,13 +36,13 @@ public class Asignacion extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         Simbolo tmp = e.get(this.id.getId());
         if (tmp != null) {
-            Tipo tipValor = this.valor.getTipo(e, salida, errores);
+            Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
             if (tipValor != null) {
                 if (tmp.getTipo().tipo == tipValor.tipo) {
-                    Object valValor = this.valor.getValor(e, salida, errores);
+                    Object valValor = this.valor.getValor(e, salida, this_, errores);
                     if (valValor != null) {
                         if (tmp.getTipo().tipo == Tipo.type.ARRAY) {
                             if (valValor instanceof Arreglo) {

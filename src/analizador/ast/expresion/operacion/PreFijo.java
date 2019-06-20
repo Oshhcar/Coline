@@ -24,9 +24,9 @@ public class PreFijo extends Operacion {
     }
 
     @Override
-    public Tipo getTipo(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if (this.getOp1() instanceof Identificador) {
-            Tipo tip = this.getOp1().getTipo(e, salida, errores);
+            Tipo tip = this.getOp1().getTipo(e, salida, this_, errores);
             if (tip != null) {
                 if (tip.tipo.isNumero() || tip.tipo == Tipo.type.CHAR) {
                     return tip;
@@ -37,12 +37,12 @@ public class PreFijo extends Operacion {
     }
 
     @Override
-    public Object getValor(Entorno e, Object salida, ArrayList<ErrorC> errores) {
+    public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if (this.getOp1() instanceof Identificador) {
-            Tipo tip = this.getOp1().getTipo(e, salida, errores);
+            Tipo tip = this.getOp1().getTipo(e, salida, this_, errores);
             if (tip != null) {
                 if (tip.tipo.isNumero() || tip.tipo == Tipo.type.CHAR) {
-                    Object valor = this.getOp1().getValor(e, salida, errores);
+                    Object valor = this.getOp1().getValor(e, salida, this_, errores);
                     if (valor != null) {
                         Simbolo tmp = e.get(((Identificador) this.getOp1()).getId());
                         switch (tip.tipo) {

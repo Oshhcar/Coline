@@ -27,7 +27,7 @@ public class Ast {
     public void ejecutar(Object salida, ArrayList<ErrorC> errores, String dirActual) {
         Entorno global = new Entorno(null);
         this.getClase().setDirActual(dirActual);
-        this.getClase().ejecutar(global, salida, false, false, false, errores);
+        this.getClase().ejecutar(global, salida, false, false, false, null, errores);
         
         ClaseSim claseMain = null;
         
@@ -47,7 +47,7 @@ public class Ast {
 
         if(claseMain != null){
             if(claseMain.getMain().getBloque() != null){
-                claseMain.getMain().getBloque().ejecutar(claseMain.getE(), salida, true, false, false, errores);
+                claseMain.getMain().getBloque().ejecutar(claseMain.getE(), salida, true, false, false, null, errores);
             }
         }
     }

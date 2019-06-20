@@ -27,7 +27,7 @@ public class PrintTabla extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         String cadena = "digraph G \n{\n";
         cadena += "node[ shape = none, fontname = \"Arial\" ];\n";
         cadena += "rankdir=LR;\n";

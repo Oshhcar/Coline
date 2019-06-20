@@ -47,12 +47,12 @@ public class Case extends Instruccion {
     }
 
     @Override
-    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, ArrayList<ErrorC> errores) {
+    public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         if (!isDefault) {
             if (!isContinuar()) {
-                Tipo tipExp = expresion.getTipo(e, salida, errores);
+                Tipo tipExp = expresion.getTipo(e, salida, this_, errores);
                 if (tipExp != null) {
-                    Object valExp = expresion.getValor(e, salida, errores);
+                    Object valExp = expresion.getValor(e, salida, this_, errores);
                     if (valExp != null) {
                         if (tipExp.tipo == this.tipExp.tipo) {
                             if (valExp.toString().equals(this.valorExp.toString())) {
@@ -71,7 +71,7 @@ public class Case extends Instruccion {
         if (isContinuar()) {
             if (bloque != null) {
                 Entorno local = new Entorno(e);
-                return bloque.ejecutar(local, salida, metodo, ciclo, switch_, errores);
+                return bloque.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
             }
         }
 
