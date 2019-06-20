@@ -444,6 +444,14 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:
                     tmp.addHijo((Nodo) b);
                 RESULT = tmp;
              :}
+          |this_ parIzquierda PARAMETROS:b parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("LLAMADA_CONSTRUCTOR");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("this");
+                if(b != null)
+                    tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+             :}
           |UNARIO:a puntoycoma {: RESULT = a; :}
           |IF:a {: RESULT = a; :}
           |WHILE:a {: RESULT = a; :}

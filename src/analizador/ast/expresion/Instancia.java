@@ -41,6 +41,8 @@ public class Instancia extends Expresion {
             Entorno eNuevo = new Entorno(clase.getE().getPadre());
             eNuevo.setGlobal(eNuevo);
 
+            Objeto obj = new Objeto(clase, eNuevo);
+            
             for (Simbolo sim : clase.getE().getTabla()) {
                 if (sim instanceof Metodo) {
                     Metodo m = (Metodo) sim;
@@ -81,7 +83,8 @@ public class Instancia extends Expresion {
                                 local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
                             }
                         }
-                        m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
+                        if(m.getBloque() != null)
+                            m.getBloque().ejecutar(local, salida, true, false, false, obj, errores);
                         ejecuto = true;
                         break;
                     }
@@ -115,7 +118,6 @@ public class Instancia extends Expresion {
             }
 
             //eNuevo.recorrer();
-            Objeto obj = new Objeto(id, eNuevo);
             return obj;
         } else {
             System.err.println("No se ha importado la clase: " + id);

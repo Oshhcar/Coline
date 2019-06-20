@@ -13,10 +13,10 @@ import java.util.ArrayList;
  */
 public class Objeto {
 
-    private String clase; 
+    private ClaseSim clase; 
     private Entorno e;
     
-    public Objeto(String clase, Entorno e) {
+    public Objeto(ClaseSim clase, Entorno e) {
         this.clase = clase;
         this.e = e;
     }
@@ -24,14 +24,14 @@ public class Objeto {
     /**
      * @return the clase
      */
-    public String getClase() {
+    public ClaseSim getClase() {
         return clase;
     }
 
     /**
      * @param clase the clase to set
      */
-    public void setClase(String clase) {
+    public void setClase(ClaseSim clase) {
         this.clase = clase;
     }
 

@@ -209,6 +209,7 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |TIPO:a DECLARACION_VARIABLES:b puntoycoma {: RESULT = new Declaracion(a, b, aleft, aright); :}
           |id:a igual VALOR:b puntoycoma {: RESULT = new Asignacion(new Identificador(a, aleft, aright), b); :}
           |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :}
+          |this_:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new ConstructorInv("this", b, aleft, aright); :}
           |UNARIO:a puntoycoma {: RESULT = a; :}
           |IF:a {: RESULT = a; :}
           |WHILE:a {: RESULT = a; :}
@@ -216,7 +217,7 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |FOR:a {: RESULT = a; :}
           |SWITCH:a {: RESULT = a; :}
           |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :}
-          | ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
+          |ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
            | id:a menosmenos:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.DECREMENTO, xleft+1, xright+1); :}

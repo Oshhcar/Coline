@@ -27,7 +27,7 @@ public class This extends Expresion{
             if(this_ instanceof Objeto){
                 Objeto t = (Objeto) this_;
                 Tipo tipo = new Tipo(Tipo.type.OBJECT);
-                tipo.objeto = t.getClase();
+                tipo.objeto = t.getClase().getId();
                 return tipo;
             }
         }

@@ -37,7 +37,7 @@ public class LlamadaMetodo extends Instruccion {
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
         String firma = this.getId();
-        
+
         if (this.getParametros() == null) {
             m = e.getMetodo(firma);
         } else {
@@ -66,16 +66,20 @@ public class LlamadaMetodo extends Instruccion {
         }
 
         if (m != null) {
-            Object obj = m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
+            Object obj = null;
+            if (m.getBloque() != null) {
+                obj = m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
+            }
+
             if (obj != null) {
                 if (obj instanceof Return) {
                     if (isFuncion()) {
-                        if(m.getTipo().tipo == ((Return) obj).getTipo(local, salida, this_, errores).tipo){
+                        if (m.getTipo().tipo == ((Return) obj).getTipo(local, salida, this_, errores).tipo) {
                             return obj;
                         } else {
                             System.err.println("No son del mismo tipo. LLamada funcion");
                         }
-                        
+
                     } else if (((Return) obj).getToReturn() != null && m.getTipo().tipo == Tipo.type.VOID) {
                         System.err.println("No debe retornar algo.");
                     }
