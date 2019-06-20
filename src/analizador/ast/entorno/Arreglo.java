@@ -58,6 +58,8 @@ public class Arreglo {
             valor = 0;
         } else if (this.tipo.subtipo == Tipo.type.DOUBLE) {
             valor = 0.0;
+        } else if(this.tipo.subtipo == Tipo.type.CHAR){
+            valor = '\0';
         } else {
             System.err.println("no es ninguno iniciaizar, arreglo");
         }

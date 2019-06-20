@@ -6,6 +6,7 @@
 package analizador.ast.instruccion;
 
 import analizador.ErrorC;
+import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Objeto;
@@ -58,12 +59,12 @@ public class AccesoObjeto extends Instruccion {
                         System.err.println("Es arreglo o string o objeto");
                         if (sim.getTipo().objeto.equals("String")) {
                             for (Expresion acceso : this.accesos) {
-                                if(acceso instanceof LlamadaFuncion){
+                                if (acceso instanceof LlamadaFuncion) {
                                     LlamadaFuncion llamada = (LlamadaFuncion) acceso;
-                                    
-                                    switch(llamada.getId()){
+
+                                    switch (llamada.getId()) {
                                         case "toString":
-                                            System.out.println(""+obj.toString());
+                                            System.out.println("" + obj.toString());
                                     }
                                 }
                             }
@@ -74,8 +75,26 @@ public class AccesoObjeto extends Instruccion {
                 } else {
                     System.err.println("No se ha inicializado la variable " + id);
                 }
+            } else if (sim.getTipo().tipo == Tipo.type.ARRAY) {
+                Object obj = sim.getValor();
+                if (obj != null) {
+                    Arreglo o = (Arreglo) obj;
+                    System.out.println("1lehgth es " + o.getTamaño());
+                    Object pos0 = o.get(0);
+                    if (pos0 instanceof Arreglo) {
+                        Arreglo arr = (Arreglo) pos0;
+                        System.out.println("2length es " + arr.getTamaño());
+                        Object pos1 = arr.get(0);
+                        if (pos1 instanceof Arreglo) {
+                            Arreglo arr1 = (Arreglo) pos1;
+                            System.out.println("3length es " + arr1.getTamaño());
+                        }
+                    }
+
+                }
+
             } else {
-                System.err.println("La variable no es un objeto");
+                System.err.println("La variable no es un objeto ni arreglo");
             }
         } else {
             System.err.println("no se ha declarado una variable " + id);
