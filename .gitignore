@@ -32,3 +32,4 @@ tabla.dot
 tabla.png
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+/dist/

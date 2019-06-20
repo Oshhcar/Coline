@@ -86,6 +86,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "default"                   { return symbol(ReporteSym.default_);}
 <YYINITIAL> "import"                    { return symbol(ReporteSym.import_);}
 <YYINITIAL> "new"                       { return symbol(ReporteSym.new_);}
+<YYINITIAL> "read_file"                 { return symbol(ReporteSym.read_file_);}
 
 <YYINITIAL>{
 

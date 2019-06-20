@@ -10,7 +10,8 @@ package coline;
  * @author oscar
  */
 public class Coline {
-
+    
+    public static String dirActual = "";
     /**
      * @param args the command line arguments
      */

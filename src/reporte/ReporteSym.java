@@ -22,6 +22,7 @@ public class ReporteSym {
   public static final int parDerecha = 13;
   public static final int porigual = 45;
   public static final int printTabla_ = 61;
+  public static final int read_file_ = 76;
   public static final int boolean_ = 58;
   public static final int for_ = 70;
   public static final int import_ = 74;
@@ -160,7 +161,8 @@ public class ReporteSym {
   "case_",
   "default_",
   "import_",
-  "new_"
+  "new_",
+  "read_file_"
   };
 }
 

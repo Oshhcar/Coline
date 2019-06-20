@@ -1412,7 +1412,7 @@ public class Editor extends javax.swing.JFrame {
                         }
 
                         if (ast != null) {
-
+                            Coline.dirActual = text.getName();
                             ast.ejecutar(this.jTextArea1, this.errores, text.getName());
                             //System.out.println("Genera ast");
                         }
