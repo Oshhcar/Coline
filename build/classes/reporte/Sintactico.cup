@@ -900,6 +900,11 @@ E ::= E:a mas:x E:b {:
             RESULT=tmp;
         :}
     | ACCESO_OBJETO:a  {: RESULT = a; :}
+    | this_:a {:  
+            Nodo tmp = new Nodo("THIS");
+            tmp.setNumNodo(parser.contador++);
+            RESULT=tmp;
+        :}
 
     | entero:a {:
                 Nodo tmp = new Nodo("E");

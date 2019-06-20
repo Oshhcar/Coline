@@ -7,6 +7,7 @@ package analizador.ast.expresion;
 
 import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Objeto;
 import analizador.ast.entorno.Tipo;
 import java.util.ArrayList;
 
@@ -22,12 +23,27 @@ public class This extends Expresion{
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(this_ != null){
+            if(this_ instanceof Objeto){
+                Objeto t = (Objeto) this_;
+                Tipo tipo = new Tipo(Tipo.type.OBJECT);
+                tipo.objeto = t.getClase();
+                return tipo;
+            }
+        }
+        System.err.println("No se ha instanciado el objeto. ");
+        return null;
     }
 
     @Override
     public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(this_ != null){
+            if(this_ instanceof Objeto){
+                return this_;
+            }
+        }
+        System.err.println("No se ha instanciado el objeto. ");
+        return null;
     }
     
 }

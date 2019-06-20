@@ -315,6 +315,7 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
 
     | id:a DIMENSION:b {: RESULT = new AccesoArreglo(a, b, aleft, aright); :}
     | ACCESO_OBJETO:a  {: RESULT = new Acceso(a); :}
+    | this_:a {: RESULT = new This(aleft, aright);  :}
 
     | entero:a {: RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); :}

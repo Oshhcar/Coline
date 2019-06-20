@@ -53,9 +53,9 @@ public class AccesoObjeto extends Instruccion {
                         tmp.setGlobal(objeto.getE());
 
                         for (Expresion acceso : this.accesos) {
-                            Tipo tipAcceso = acceso.getTipo(tmp, salida, this_, errores);
+                            Tipo tipAcceso = acceso.getTipo(tmp, salida, objeto, errores);
                             if (tipAcceso != null) {
-                                acceso.getValor(tmp, salida, this_, errores);
+                                acceso.getValor(tmp, salida, objeto, errores);
                             }
                         }
                     } else {
