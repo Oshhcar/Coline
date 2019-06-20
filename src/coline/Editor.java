@@ -124,7 +124,6 @@ public class Editor extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
@@ -406,9 +405,6 @@ public class Editor extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem7);
-
-        jRadioButtonMenuItem1.setText("Nombre Archivo");
-        jMenu2.add(jRadioButtonMenuItem1);
 
         jMenuBar1.add(jMenu2);
 
@@ -1538,7 +1534,6 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;

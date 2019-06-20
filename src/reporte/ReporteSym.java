@@ -26,6 +26,7 @@ public class ReporteSym {
   public static final int boolean_ = 58;
   public static final int for_ = 70;
   public static final int import_ = 74;
+  public static final int graph_ = 78;
   public static final int continue_ = 67;
   public static final int mas = 21;
   public static final int dospuntos = 19;
@@ -60,6 +61,7 @@ public class ReporteSym {
   public static final int if_ = 64;
   public static final int tstring = 2;
   public static final int return_ = 63;
+  public static final int write_file_ = 77;
   public static final int umenosmenos = 31;
   public static final int double_ = 56;
   public static final int switch_ = 71;
@@ -162,7 +164,9 @@ public class ReporteSym {
   "default_",
   "import_",
   "new_",
-  "read_file_"
+  "read_file_",
+  "write_file_",
+  "graph_"
   };
 }
 

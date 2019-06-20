@@ -65,6 +65,8 @@ public class ReadFile extends Expresion {
                             texto += line + "\n";
                         }
                         
+                        fr.close();
+                        
                         return texto;
                         
                     } catch (Exception ex) {

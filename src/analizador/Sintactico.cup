@@ -55,7 +55,7 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_;
 
 non terminal INICIO;
 
@@ -197,6 +197,8 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |println_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Println(b, aleft, aright); :}
           |printTabla_:a parIzquierda parDerecha puntoycoma {: RESULT = new PrintTabla(aleft, aright); :}
           |read_file_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new ReadFile(b, aleft, aright); :}
+          |write_file_:a parIzquierda E:b coma E:c parDerecha puntoycoma {: RESULT = new WriteFile(b, c, aleft, aright); :}
+          |graph_:a parIzquierda E:b coma E:c parDerecha puntoycoma {: RESULT = new Graph(b, c, aleft, aright); :}
           |return_:a puntoycoma {: RESULT = new Return(aleft, aright); :}
           |return_:a VALOR:b puntoycoma {: RESULT = new Return(b, aleft, aright); :}
           |break_:a puntoycoma {: RESULT = new Break(aleft, aright); :}
