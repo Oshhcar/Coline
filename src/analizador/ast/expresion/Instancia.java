@@ -70,9 +70,9 @@ public class Instancia extends Expresion {
                         return null;
                     }
                 }
-                
+
                 boolean ejecuto = false;
-                
+
                 for (Simbolo sim : clase.getConstructores()) {
                     Metodo m = (Metodo) sim;
                     if (m.getFirma().equals(firma)) {
@@ -86,12 +86,10 @@ public class Instancia extends Expresion {
                         break;
                     }
                 }
-                
-                if(!ejecuto){
-                    if(this.parametros != null){
-                        System.err.println("no se econtro el constructor, no se creo el objeto.");
-                        return null;
-                    }
+
+                if (!ejecuto) {
+                    System.err.println("no se econtro el constructor, no se creo el objeto.");
+                    return null;
                 }
 
             } else {

@@ -43,6 +43,7 @@ public class Sym {
   public static final int masigual = 43;
   public static final int or = 39;
   public static final int mayorque = 32;
+  public static final int this_ = 79;
   public static final int menosigual = 44;
   public static final int static_ = 51;
   public static final int mayorigual = 34;
@@ -166,7 +167,8 @@ public class Sym {
   "new_",
   "read_file_",
   "write_file_",
-  "graph_"
+  "graph_",
+  "this_"
   };
 }
 

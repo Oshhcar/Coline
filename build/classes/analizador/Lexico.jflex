@@ -116,6 +116,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "read_file"                 { return symbol(Sym.read_file_);}
 <YYINITIAL> "write_file"                { return symbol(Sym.write_file_);}
 <YYINITIAL> "graph"                     { return symbol(Sym.graph_);}
+<YYINITIAL> "this"                      { return symbol(Sym.this_);}
 
 <YYINITIAL>{
 
