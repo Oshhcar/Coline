@@ -46,7 +46,7 @@ terminal igual, masigual, menosigual, porigual, diagonaligual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_;
 
 non terminal INICIO;
 
@@ -449,6 +449,14 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:
                 Nodo tmp = new Nodo("LLAMADA_CONSTRUCTOR");
                 tmp.setNumNodo(parser.contador++);
                 tmp.setValor("this");
+                if(b != null)
+                    tmp.addHijo((Nodo) b);
+                RESULT = tmp;
+             :}
+           |super_ parIzquierda PARAMETROS:b parDerecha puntoycoma {: 
+                Nodo tmp = new Nodo("LLAMADA_CONSTRUCTOR");
+                tmp.setNumNodo(parser.contador++);
+                tmp.setValor("super");
                 if(b != null)
                     tmp.addHijo((Nodo) b);
                 RESULT = tmp;

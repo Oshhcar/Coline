@@ -60,6 +60,7 @@ public class ReporteSym {
   public static final int void_ = 62;
   public static final int EOF = 0;
   public static final int if_ = 64;
+  public static final int super_ = 80;
   public static final int tstring = 2;
   public static final int return_ = 63;
   public static final int write_file_ = 77;
@@ -168,7 +169,8 @@ public class ReporteSym {
   "read_file_",
   "write_file_",
   "graph_",
-  "this_"
+  "this_",
+  "super_"
   };
 }
 
