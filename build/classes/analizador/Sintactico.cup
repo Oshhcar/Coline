@@ -94,6 +94,7 @@ non terminal ArrayList<Case> CASES;
 non terminal ArrayList<Case> CASESL;
 non terminal Case CASE;
 non terminal AccesoObjeto ACCESO_OBJETO;
+non terminal AccesoObjeto OBJETO;
 non terminal ArrayList<Expresion>  DIM;
 non terminal Expresion ACCESO;
 non terminal ArrayList<Expresion> DIMENSION; 
@@ -263,8 +264,12 @@ CASESL ::= CASESL:a CASE:b {: RESULT = a; RESULT.add(b); :}
 CASE ::= case_:x E:a dospuntos BLOQUES:b {: RESULT = new Case(a, b, xleft, xright); :}
         |default_:x dospuntos BLOQUES:a {: RESULT = new Case(a, xleft, xright); :};
 
+
 ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; RESULT.getAccesos().add(b); :}
-                | id:a DIM:b punto ACCESO:c {: RESULT = new AccesoObjeto(a, b, aleft, aright); RESULT.getAccesos().add(c); :};
+                | OBJETO:a {: RESULT = a; :};
+
+OBJETO ::= id:a DIM:b punto ACCESO:c {: RESULT = new AccesoObjeto(a, b, aleft, aright); RESULT.getAccesos().add(c); :}
+                | this_:a punto ACCESO:c {: RESULT = new AccesoObjeto("this", null, aleft, aright); RESULT.getAccesos().add(c); :};
 
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};

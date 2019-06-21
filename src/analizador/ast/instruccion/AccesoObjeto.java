@@ -102,8 +102,8 @@ public class AccesoObjeto extends Instruccion {
                                             }
                                             if (i == this.dimensiones.size()) {
                                                 if (ret instanceof Arreglo) {
-                                                    return new Literal(new Tipo(Tipo.type.INT), ((Arreglo)ret).getTamaño(), this.getLinea(), this.getColumna());
-                                                } 
+                                                    return new Literal(new Tipo(Tipo.type.INT), ((Arreglo) ret).getTamaño(), this.getLinea(), this.getColumna());
+                                                }
                                                 System.err.println("error dimensiones");
                                             } else {
                                                 continue;
@@ -126,6 +126,28 @@ public class AccesoObjeto extends Instruccion {
                 System.err.println("La variable no es un objeto ni arreglo");
             }
         } else {
+            if (this.id.equals("this")) {
+                if (this_ != null) {
+                    if (this_ instanceof Objeto) {
+                        Objeto obj = (Objeto) this_;
+                        
+                        for (Expresion acceso : this.accesos) {
+                            if (acceso instanceof Identificador) {
+                                Identificador ident = (Identificador) acceso;
+                                Tipo identTipo = ident.getTipo(obj.getE(), salida, this_, errores);
+                                if(identTipo != null){
+                                    Object valTipo = ident.getValor(obj.getE(), salida, this_, errores);
+                                    if(valTipo != null){
+                                        return new Literal(identTipo, valTipo, this.getLinea(), this.getColumna());
+                                    }
+                                }
+                            }
+                        }
+                        System.err.println("ocurrioi un problema this");
+                        return null;
+                    }
+                }
+            }
             System.err.println("no se ha declarado una variable " + id);
         }
         return null;

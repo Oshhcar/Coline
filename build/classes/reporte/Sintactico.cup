@@ -85,6 +85,7 @@ non terminal CASES;
 non terminal CASESL;
 non terminal CASE;
 non terminal ACCESO_OBJETO;
+non terminal OBJETO;
 non terminal DIM;
 non terminal ACCESO;
 non terminal DIMENSION; 
@@ -667,7 +668,9 @@ CASE ::= case_:x E:a dospuntos BLOQUES:b {:
             :};
 
 ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
-                | id:a DIM:b punto ACCESO:c {: 
+                | OBJETO:a {: RESULT = a; :};
+
+OBJETO ::= id:a DIM:b punto ACCESO:c {: 
                     Nodo tmp = new Nodo("ACCESO_MIEMBRO");
                     tmp.setNumNodo(parser.contador++);
                     tmp.setValor(a);
@@ -675,7 +678,14 @@ ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; ((Nodo) RESULT).
                         tmp.addHijo((Nodo) b);
                     tmp.addHijo((Nodo) c);
                     RESULT = tmp;
-                :};
+         :}
+        | this_ punto ACCESO:c {: 
+                    Nodo tmp = new Nodo("ACCESO_MIEMBRO");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("this");
+                    tmp.addHijo((Nodo) c);
+                    RESULT = tmp;
+        :};
 
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};

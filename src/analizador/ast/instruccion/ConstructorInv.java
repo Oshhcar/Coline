@@ -37,7 +37,7 @@ public class ConstructorInv extends Instruccion {
 
                 if (this.id.equals("this")) {
                     if (obj.getClase().getConstructores() != null) {
-                        Entorno local = new Entorno(e);
+                        Entorno local = new Entorno(obj.getE());
                         String firma = obj.getClase().getId();
 
                         ArrayList<Simbolo> parm = new ArrayList<>();
