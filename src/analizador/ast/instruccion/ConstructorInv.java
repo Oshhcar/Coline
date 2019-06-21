@@ -88,7 +88,62 @@ public class ConstructorInv extends Instruccion {
                     }
                     return null;
                 } else {
-                    System.err.println("No se ha implementado super.");;
+                    /*SUPER*/
+                    if (obj.getClase().getPadre() != null) {
+                        
+                        if (obj.getClase().getPadre().getConstructores() != null) {
+                            Entorno local = new Entorno(obj.getE().getPadre());//no sé aún
+                            String firma = obj.getClase().getPadre().getId();
+
+                            ArrayList<Simbolo> parm = new ArrayList<>();
+                            if (this.parametros != null) {
+                                for (Expresion parametro : this.parametros) {
+                                    Tipo tipo = parametro.getTipo(e, salida, this_, errores);
+                                    if (tipo != null) {
+                                        Object valor = parametro.getValor(e, salida, this_, errores);
+                                        if (valor != null) {
+                                            firma += "_" + tipo.tipo.toString();
+                                            parm.add(new Simbolo(tipo, "parm", valor));
+                                            continue;
+                                        }
+                                    }
+                                    System.err.println("error en parametros");
+                                    return null;
+                                }
+                            }
+
+                            boolean ejecuto = false;
+
+                            for (Simbolo sim : obj.getClase().getPadre().getConstructores()) {
+                                Metodo m = (Metodo) sim;
+                                if (m.getFirma().equals(firma)) {
+                                    if (this.parametros != null) {
+                                        for (int i = 0; i <= parm.size() - 1; i++) {
+                                            local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
+                                        }
+                                    }
+                                    if (m.getBloque() != null) {
+                                        m.getBloque().ejecutar(local, salida, true, false, false, this_, errores);
+                                    }
+                                    ejecuto = true;
+                                    break;
+                                }
+                            }
+
+                            if (!ejecuto) {
+                                System.err.println("Error, no se definio el constructor. 2");
+                                return null;
+                            }
+
+                        } else {
+                            if (this.parametros != null) {
+                                System.err.println("Error, no se definio el constructor. 1");
+                                return null;
+                            }
+                        }
+                        return null;
+                    }
+                    System.err.println("No tine padre. ");
                     return null;
                 }
             }
