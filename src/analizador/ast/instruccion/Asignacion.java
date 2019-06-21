@@ -8,6 +8,7 @@ package analizador.ast.instruccion;
 import analizador.ErrorC;
 import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
@@ -41,33 +42,39 @@ public class Asignacion extends Instruccion {
         if (tmp != null) {
             Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
             if (tipValor != null) {
-                if (tmp.getTipo().tipo == tipValor.tipo) {
-                    Object valValor = this.valor.getValor(e, salida, this_, errores);
-                    if (valValor != null) {
-                        if (tmp.getTipo().tipo == Tipo.type.ARRAY) {
-                            if (valValor instanceof Arreglo) {
-                                Arreglo a = (Arreglo) valValor;
+                if (tipValor.tipo != Tipo.type.NULL) {
+                    if (tmp.getTipo().tipo == tipValor.tipo) {
+                        Object valValor = this.valor.getValor(e, salida, this_, errores);
+                        if (valValor != null) {
+                            if (tmp.getTipo().tipo == Tipo.type.ARRAY) {
+                                if (valValor instanceof Arreglo) {
+                                    Arreglo a = (Arreglo) valValor;
 
-                                if (tmp.getTamaño() != a.getDimensiones()) {
-                                    System.err.println("Arreglos no son de las mismas dimensiones");
+                                    if (tmp.getTamaño() != a.getDimensiones()) {
+                                        System.err.println("Arreglos no son de las mismas dimensiones");
+                                        return null;
+                                    }
+                                    if (tmp.getTipo().subtipo != tipValor.subtipo) {
+                                        System.err.println("Arreglos no son del mismo tipo");
+                                        return null;
+                                    }
+
+                                } else {
+                                    System.err.println("no se está asignando arreglo");
                                     return null;
                                 }
-                                if (tmp.getTipo().subtipo != tipValor.subtipo) {
-                                    System.err.println("Arreglos no son del mismo tipo");
-                                    return null;
-                                }
-
-                            } else {
-                                System.err.println("no se está asignando arreglo");
-                                return null;
                             }
+                            tmp.setValor(valValor);
+                            return null;
                         }
-                        tmp.setValor(valValor);
-                        return null;
                     }
+                    System.err.println("*Error Semántico, no se puede asignar el valor. ");
+                } else {
+                    tmp.setValor(new Null());
+                    return null;
                 }
             }
-            System.err.println("*Error Semántico, no se puede asignar el valor. ");
+            
 
         } else {
             System.err.println("*Error Semántico, no se ha declarado la variable: " + this.id.getId() + ". ");

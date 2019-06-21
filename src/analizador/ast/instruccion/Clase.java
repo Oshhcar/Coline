@@ -50,90 +50,90 @@ public class Clase extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
-        Entorno global = new Entorno(null);
+        if (!this.id.equals("String") && !this.id.equals("Object")) {
 
-        if (this.imports != null) {
+            Entorno global = new Entorno(null);
+            
+            ClaseSim clase = new ClaseSim(this.modificadores, this.id);
+            global.add(clase);
+            
+            if (this.imports != null) {
 
-            for (Import i : this.imports) {
-                i.setDirActual(dirActual);
-                i.ejecutar(global, salida, metodo, ciclo, switch_, this_, errores);
+                for (Import i : this.imports) {
+                    i.setDirActual(dirActual);
+                    i.ejecutar(global, salida, metodo, ciclo, switch_, this_, errores);
+                }
             }
-        }
 
-        Entorno local = new Entorno(global);
-        local.setGlobal(local);
+            Entorno local = new Entorno(global);
+            local.setGlobal(local);
 
-        Entorno cons = new Entorno(null);
-        cons.setGlobal(cons);
-        ArrayList<Simbolo> constructores = new ArrayList<>();
-        
-        Metodo main = null;
+            Entorno cons = new Entorno(null);
+            cons.setGlobal(cons);
+            ArrayList<Simbolo> constructores = new ArrayList<>();
 
-        if (this.declaraciones != null) {
+            Metodo main = null;
 
-            for (NodoAst inst : this.declaraciones) {
-                if (inst instanceof Instruccion) {
-                    if(inst instanceof Constructor){
-                        ((Constructor) inst).ejecutar(cons, salida, metodo, ciclo, switch_, this_, errores);
-                    } else{
-                        ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
+            if (this.declaraciones != null) {
+
+                for (NodoAst inst : this.declaraciones) {
+                    if (inst instanceof Instruccion) {
+                        if (inst instanceof Constructor) {
+                            ((Constructor) inst).ejecutar(cons, salida, metodo, ciclo, switch_, this_, errores);
+                        } else {
+                            ((Instruccion) inst).ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
+                        }
                     }
+                }
+
+                for (Simbolo simbolo : cons.getTabla()) {
+                    if (simbolo instanceof Metodo) {
+                        Metodo m = (Metodo) simbolo;
+                        if (m.getId().equals(this.id)) {
+                            constructores.add(simbolo);
+                            continue;
+                        }
+                        System.err.println("Error, constructor no es del mismo nombre " + m.getId());
+                    }
+                }
+
+                for (Simbolo simbolo : local.getTabla()) {
+                    if (simbolo instanceof Metodo) {
+                        Metodo m = (Metodo) simbolo;
+                        if (m.getFirma().equals("main")) {
+                            main = m;
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            
+            if (!constructores.isEmpty()) {
+                clase.setConstructores(constructores);
+             }
+            
+            clase.setE(local);
+            clase.setMain(main);
+
+            if (extiende != null) {
+                if (!this.id.equals(extiende)) {
+                    ClaseSim ext = local.getClase(extiende);
+                    if (ext != null) {
+                        clase.setPadre(ext);
+                    } else {
+                        System.err.println("Error, no se ha importado la clase " + extiende);
+                    }
+                } else {
+                    System.err.println("No puede heredar de ella misma");
                 }
             }
             
-            for(Simbolo simbolo: cons.getTabla()){
-                if(simbolo instanceof Metodo){
-                    Metodo m = (Metodo) simbolo;
-                    if(m.getId().equals(this.id)){
-                        constructores.add(simbolo);
-                        continue;
-                    } 
-                    System.err.println("Error, constructor no es del mismo nombre " +m.getId());
-                }
-            }
-
-            for (Simbolo simbolo : local.getTabla()) {
-                if (simbolo instanceof Metodo) {
-                    Metodo m = (Metodo) simbolo;
-                    if (m.getFirma().equals("main")) {
-                        main = m;
-                        break;
-                    }
-                }
-            }
-
+            e.add(clase);
+            return null;
         }
-
-        if (!this.id.equals("String") && !this.id.equals("Object")) {
-            if (local.getClase(this.id) == null) {
-                
-                ClaseSim clase;
-                if(constructores.isEmpty()){
-                    clase = new ClaseSim(this.modificadores, this.id, local);
-                } else {
-                    clase = new ClaseSim(this.modificadores, constructores, this.id, local);
-                }
-                clase.setMain(main);
-                
-                if (extiende != null) {
-                    if (!this.id.equals(extiende)) {
-                        ClaseSim ext = local.getClase(extiende);
-                        if (ext != null) {
-                            clase.setPadre(ext);
-                        } else {
-                            System.err.println("Error, no se ha importado la clase " + extiende);
-                        }
-                    } else {
-                        System.err.println("No puede heredar de ella misma");
-                    }
-                }
-                global.add(clase);
-                e.add(clase);
-                return null;
-            }
-        }
-        System.err.println("Error, ya se definió una clase con el id: " + this.id);
-
+        System.err.println("Error no se puede declarar la clase.");
         return null;
     }
 
