@@ -59,6 +59,25 @@ public class Entorno {
     }
 
     public Metodo getMetodo(String firma) {
+        Entorno actual = getGlobal();
+
+        while (actual != null) {
+            for (int i = actual.getTabla().size() - 1; i >= 0; i--) {
+                Simbolo s = actual.getTabla().get(i);
+                if (s instanceof Metodo) {
+                    Metodo m = (Metodo) s;
+                    if (m.getFirma().equals(firma)) {
+                        return m;
+                    }
+                }
+            }
+            actual = actual.getPadre();
+        }
+        return null;
+    }
+
+    /*
+    public Metodo getMetodo(String firma) {
         for (int i = getGlobal().getTabla().size() - 1; i >= 0; i--) {
             Simbolo s = getGlobal().getTabla().get(i);
             if (s instanceof Metodo) {
@@ -70,8 +89,8 @@ public class Entorno {
         }
         return null;
     }
-
-    /*
+     */
+ /*
     public ClaseSim getClase(String id){
         Entorno clases = null;
         
@@ -94,10 +113,9 @@ public class Entorno {
         return null;
     }
      */
-    
     public ClaseSim getClase(String id) {
         Entorno actual = this;
-        
+
         while (actual != null) {
             for (int i = 0; i < actual.getTabla().size(); i++) {
                 Simbolo s = actual.getTabla().get(i);
