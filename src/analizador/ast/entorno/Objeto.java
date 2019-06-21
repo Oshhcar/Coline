@@ -15,11 +15,12 @@ public class Objeto {
 
     private ClaseSim clase; 
     private Entorno e;
-    
+    private ArrayList<Objeto> heredadas;
     
     public Objeto(ClaseSim clase, Entorno e) {
         this.clase = clase;
         this.e = e;
+        this.heredadas = new ArrayList<>();
     }
     
     /**
@@ -48,6 +49,20 @@ public class Objeto {
      */
     public void setE(Entorno e) {
         this.e = e;
+    }
+
+    /**
+     * @return the heredadas
+     */
+    public ArrayList<Objeto> getHeredadas() {
+        return heredadas;
+    }
+
+    /**
+     * @param heredadas the heredadas to set
+     */
+    public void setHeredadas(ArrayList<Objeto> heredadas) {
+        this.heredadas = heredadas;
     }
 
 }

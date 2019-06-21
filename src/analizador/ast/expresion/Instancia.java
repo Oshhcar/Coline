@@ -42,16 +42,112 @@ public class Instancia extends Expresion {
             eNuevo.setGlobal(eNuevo);
 
             Objeto obj = new Objeto(clase, eNuevo);
-            
+
+            /*Entorno que me servira para casteos*/
+            Entorno eClase = new Entorno(null);
+            eClase.setGlobal(eClase);
+
+            /*Preparo el entorno con los simbolos de la clase*/
             for (Simbolo sim : clase.getE().getTabla()) {
                 if (sim instanceof Metodo) {
                     Metodo m = (Metodo) sim;
-                    eNuevo.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                    Metodo nuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
+                    eNuevo.add(nuevo);
+                    eClase.add(nuevo);
                 } else {
-                    eNuevo.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                    Simbolo nuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
+                    eNuevo.add(nuevo);
+                    eClase.add(nuevo);
                 }
             }
 
+            /*Agrego la clase actual a la lista herencia*/
+            obj.getHeredadas().add(new Objeto(clase, eClase));
+
+            /*Agrego las clases de las que hereda */
+            if (clase.getPadre() != null) {
+                ClaseSim clasePadre = clase.getPadre();
+
+                Entorno ePadre = new Entorno(null);
+                Entorno aux = null;
+
+                while (clasePadre != null) {
+
+                    if (aux != null) {
+                        Entorno nuevo = new Entorno(null);
+                        Objeto objPadre = new Objeto(clasePadre, nuevo);
+                        
+                        for (Simbolo sim : clasePadre.getE().getTabla()) {
+                            if (sim instanceof Metodo) {
+                                Metodo m = (Metodo) sim;
+                                nuevo.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                            } else {
+                                nuevo.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                            }
+                        }
+                        
+                        /*Verifico si hay constructores*/
+                        if (clasePadre.getConstructores() != null) {
+                            Entorno local = new Entorno(nuevo);
+                            String firma = clasePadre.getId();
+
+                            for (Simbolo sim : clasePadre.getConstructores()) {
+                                Metodo m = (Metodo) sim;
+                                if (m.getFirma().equals(firma)) {
+                                    if (m.getBloque() != null) {
+                                        m.getBloque().ejecutar(local, salida, true, false, false, objPadre, errores);
+                                    }
+                                    break;
+                                }
+                            }
+
+                        }
+                        
+                        nuevo.setPadre(aux.getPadre());
+                        obj.getHeredadas().add(objPadre);
+                        aux.setPadre(nuevo);
+                        aux = nuevo;
+                    } else {
+                        Objeto objPadre = new Objeto(clasePadre, ePadre);
+                        
+                        for (Simbolo sim : clasePadre.getE().getTabla()) {
+                            if (sim instanceof Metodo) {
+                                Metodo m = (Metodo) sim;
+                                ePadre.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                            } else {
+                                ePadre.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                            }
+                        }
+
+                        /*Verifico si hay constructores*/
+                        if (clasePadre.getConstructores() != null) {
+                            Entorno local = new Entorno(ePadre);
+                            String firma = clasePadre.getId();
+
+                            for (Simbolo sim : clasePadre.getConstructores()) {
+                                Metodo m = (Metodo) sim;
+                                if (m.getFirma().equals(firma)) {
+                                    if (m.getBloque() != null) {
+                                        m.getBloque().ejecutar(local, salida, true, false, false, objPadre, errores);
+                                    }
+                                    break;
+                                }
+                            }
+
+                        }
+
+                        ePadre.setPadre(eNuevo.getPadre());
+                        obj.getHeredadas().add(objPadre);
+                        aux = ePadre;
+                    }
+                    clasePadre = clasePadre.getPadre();
+                }
+
+                eNuevo.setPadre(ePadre);
+                /*Ejecutar constructores herencia*/
+            }
+
+            /*Verifico si hay constructores*/
             if (clase.getConstructores() != null) {
                 Entorno local = new Entorno(eNuevo);
                 String firma = id;
@@ -83,8 +179,9 @@ public class Instancia extends Expresion {
                                 local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
                             }
                         }
-                        if(m.getBloque() != null)
+                        if (m.getBloque() != null) {
                             m.getBloque().ejecutar(local, salida, true, false, false, obj, errores);
+                        }
                         ejecuto = true;
                         break;
                     }
@@ -100,21 +197,6 @@ public class Instancia extends Expresion {
                     System.err.println("Error, no se definio el constructor. ");
                     return null;
                 }
-            }
-
-            if (clase.getPadre() != null) {
-                Entorno papa = new Entorno(eNuevo.getPadre());
-
-                for (Simbolo sim : clase.getPadre().getE().getTabla()) {
-                    if (sim instanceof Metodo) {
-                        Metodo m = (Metodo) sim;
-                        papa.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
-                    } else {
-                        papa.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
-                    }
-                }
-
-                eNuevo.setPadre(papa);
             }
 
             //eNuevo.recorrer();
