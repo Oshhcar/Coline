@@ -7,6 +7,7 @@ package analizador.ast.instruccion;
 
 import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import java.awt.Desktop;
@@ -58,7 +59,9 @@ public class PrintTabla extends Instruccion {
                     cadena += "<TD> " + s.getTipo().subtipo.toString() + " </TD>\n";
                 } else if (s.getTipo().objeto != null) {
                     cadena += "<TD> " + s.getTipo().objeto + " </TD>\n";
-                } else {
+                } else if(s instanceof Metodo){
+                    cadena += "<TD> " + "METHOD" + " </TD>\n";
+                }else {
                     cadena += "<TD> " + " </TD>\n";
                 }
                 cadena += "<TD> " + s.getTamaño() + " </TD>\n";
