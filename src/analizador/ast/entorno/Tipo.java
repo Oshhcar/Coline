@@ -99,6 +99,12 @@ public class Tipo {
             public boolean isNumero() {
                 return false;
             }
+        }, 
+        NULL{
+            @Override
+            public boolean isNumero() {
+                return false;
+            }
         };
 
         public abstract boolean isNumero();

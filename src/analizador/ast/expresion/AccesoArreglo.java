@@ -31,10 +31,19 @@ public class AccesoArreglo extends Expresion {
     public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Simbolo s = e.get(id);
         if (s != null) {
-            if(s.getTamaño() > this.dimensiones.size()){
+            if (s.getTamaño() > this.dimensiones.size()) {
                 return s.getTipo();
             }
-            return new Tipo(s.getTipo().subtipo);
+            if (s.getTipo().subtipo != Tipo.type.OBJECT) {
+                return new Tipo(s.getTipo().subtipo);
+            } else {
+                Object val = s.getValor();
+                if (val != null) {
+                    if(val instanceof Arreglo) {
+                        return new Tipo(Tipo.type.OBJECT,((Arreglo) val).getObjeto()); 
+                    }
+                }
+            }
         }
         System.err.println("no se econtro el arreglo");
         return null;

@@ -34,6 +34,7 @@ public class Literal extends Expresion {
         super(linea, columna);
         Tipo t = new Tipo(Tipo.type.ARRAY);
         t.subtipo = tipo.tipo;
+        t.objeto = tipo.objeto;
         this.tipo = t;
         this.valor = null;
         this.dimensiones = dimensiones;
@@ -43,6 +44,7 @@ public class Literal extends Expresion {
     public Literal(ArrayList<Expresion> valores, int linea, int columna) {
         super(linea, columna);
         this.tipo = new Tipo(Tipo.type.ARRAY);
+        
         this.valor = null;
         this.dimensiones = null;
         this.valores = valores;
@@ -72,10 +74,16 @@ public class Literal extends Expresion {
                                 int tamExp = Integer.valueOf(valExp.toString());
                                 if (i == this.dimensiones.size() - 1) {
                                     aux = new Arreglo(this.tipo);
+                                    if(this.tipo.objeto != null){
+                                        aux.setObjeto(this.tipo.objeto);
+                                    }
                                     aux.setTamaño(tamExp);
                                     aux.inicializar();
                                 } else {
                                     Arreglo padre = new Arreglo(this.tipo);
+                                    if(this.tipo.objeto != null){
+                                        aux.setObjeto(this.tipo.objeto);
+                                    }
                                     padre.setTamaño(tamExp);
                                     padre.inicializar(aux);
                                     aux = padre;

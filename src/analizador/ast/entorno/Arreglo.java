@@ -16,6 +16,7 @@ public class Arreglo {
     private final Tipo tipo;
     private int tamaño;
     private int dimensiones;
+    private String objeto;
     private Map<Integer, Object> arreglo;
 
     public Arreglo(Tipo tipo) {
@@ -23,6 +24,7 @@ public class Arreglo {
         this.tamaño = 0;
         this.arreglo = new HashMap<>();
         this.dimensiones = 1;
+        this.objeto = null;
     }
 
     public Object get(int posicion) {
@@ -54,14 +56,22 @@ public class Arreglo {
     public void inicializar() {
         Object valor = new Object();
 
-        if (this.tipo.subtipo == Tipo.type.INT) {
-            valor = 0;
-        } else if (this.tipo.subtipo == Tipo.type.DOUBLE) {
-            valor = 0.0;
-        } else if(this.tipo.subtipo == Tipo.type.CHAR){
-            valor = '\0';
-        } else {
-            System.err.println("no es ninguno iniciaizar, arreglo");
+        switch (this.tipo.subtipo) {
+            case INT:
+                valor = 0;
+                break;
+            case DOUBLE:
+                valor = 0.0;
+                break;
+            case CHAR:
+                valor = '\0';
+                break;
+            case BOOLEAN:
+                valor = false;
+                break;
+            default:
+                valor = new Null();
+                break;
         }
 
         for (int i = 0; i < tamaño; i++) {
@@ -103,7 +113,13 @@ public class Arreglo {
                 if (tmp instanceof Arreglo) {
                     cad += ((Arreglo) tmp).print();
                 } else {
-                    cad += tmp.toString();
+                    if(tmp instanceof Null){
+                        cad += "null";
+                    } else if(tmp instanceof Objeto){
+                        cad += ((Objeto) tmp).getClase().getId();
+                    } else {
+                        cad += tmp.toString();
+                    }
                 }
                 if (i + 1 != this.tamaño) {
                     cad += ",";
@@ -127,5 +143,19 @@ public class Arreglo {
      */
     public void setDimensiones(int dimensiones) {
         this.dimensiones = dimensiones;
+    }
+
+    /**
+     * @return the objeto
+     */
+    public String getObjeto() {
+        return objeto;
+    }
+
+    /**
+     * @param objeto the objeto to set
+     */
+    public void setObjeto(String objeto) {
+        this.objeto = objeto;
     }
 }
