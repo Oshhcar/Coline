@@ -1164,6 +1164,7 @@ public class Editor extends javax.swing.JFrame {
                 jTabbedPane1.setTitleAt(i, nombre);
                 jTabbedPane1.setToolTipTextAt(i, nombre);
                 nuevoArchivo--;
+                fr.close();
 
             } catch (Exception e) {
                 e.printStackTrace();
