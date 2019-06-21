@@ -51,11 +51,11 @@ terminal dospuntos, interrogacion;
 terminal mas, menos, asterisco, diagonal, modulo, umenos, umas, masmas, menosmenos, umasmas, umenosmenos;
 terminal mayorque, menorque, mayorigual, menorigual, igualigual, diferente;
 terminal and, or, not, xor;
-terminal igual, masigual, menosigual, porigual, diagonaligual;
+terminal igual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_, instanceof_;
 
 non terminal INICIO;
 
@@ -108,6 +108,7 @@ precedence left or;
 precedence left and;
 precedence left xor;
 precedence right not;
+precedence left instanceof_;
 precedence left igualigual;
 precedence left diferente;
 precedence left mayorque, menorque, mayorigual, menorigual;
@@ -313,6 +314,8 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | E:a igualigual:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.IGUAL, xleft, xright); :}
     | E:a diferente:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.DIFERENTE, xleft, xright); :}
 
+    | E:a instanceof_:x E:b {: RESULT = new Relacional(a, b, Operacion.Operador.INSTANCEOF, xleft, xright); :}
+
     | E:a and:x E:b {: RESULT = new Logica(a, b, Operacion.Operador.AND, xleft, xright); :}
     | E:a or:x E:b {: RESULT = new Logica(a, b, Operacion.Operador.OR, xleft, xright); :}
     | not:x E:b {: RESULT = new Logica(b, Operacion.Operador.NOT, xleft, xright); :}
@@ -326,7 +329,7 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | ACCESO_OBJETO:a  {: RESULT = new Acceso(a); :}
     | this_:a {: RESULT = new This(aleft, aright);  :}
 
-    | null_:a {: RESULT = new Literal(new Tipo(Tipo.type.NULL), "null", aleft, aright); :}
+    | null_:a {: RESULT = new Literal(new Tipo(Tipo.type.NULL), new Null(), aleft, aright); :}
     | entero:a {: RESULT = new Literal(new Tipo(Tipo.type.INT), new Integer(a), aleft, aright); :}
     | decimal:a {: RESULT = new Literal(new Tipo(Tipo.type.DOUBLE), new Double(a), aleft, aright); :}
     | tstring:a {: RESULT = new Literal(new Tipo(Tipo.type.STRING), a, aleft, aright);  :}

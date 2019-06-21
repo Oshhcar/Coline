@@ -55,7 +55,8 @@ public class Operacion extends Expresion{
         NOT,
         XOR,
         AUMENTO,
-        DECREMENTO
+        DECREMENTO, 
+        INSTANCEOF
     }
     
     /**

@@ -9,6 +9,7 @@ import analizador.ErrorC;
 import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Modificador;
+import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
@@ -52,23 +53,28 @@ public class Declaracion extends Instruccion {
                         if (valValor != null) {
                             if (asigna.getId().getDim() == 0) {
                                 if (!(valValor instanceof Arreglo)) {
-                                    if (this.tipo.tipo == tipValor.tipo) {
-                                        if (this.tipo.tipo == Tipo.type.OBJECT) {
-                                            if (!this.tipo.objeto.equals(tipValor.objeto)) {
-                                                System.err.println("objetos de diferente tipo");
-                                                continue;
+                                    if (!(valValor instanceof Null)) { 
+                                        if (this.tipo.tipo == tipValor.tipo) {
+                                            if (this.tipo.tipo == Tipo.type.OBJECT) {
+                                                if (!this.tipo.objeto.equals(tipValor.objeto)) {
+                                                    System.err.println("objetos de diferente tipo");
+                                                    continue;
+                                                }
                                             }
+                                            tmp = new Simbolo(this.tipo, id, valValor);
+                                        } else {
+                                            ErrorC error = new ErrorC();
+                                            error.setTipo("Semántico");
+                                            error.setValor(asigna.getId().getId());
+                                            error.setDescripcion("El valor no corresponde al tipo declarado.");
+                                            error.setLinea(this.getLinea());
+                                            error.setColumna(this.getColumna());
+                                            errores.add(error);
+                                            continue;
                                         }
-                                        tmp = new Simbolo(this.tipo, id, valValor);
                                     } else {
-                                        ErrorC error = new ErrorC();
-                                        error.setTipo("Semántico");
-                                        error.setValor(asigna.getId().getId());
-                                        error.setDescripcion("El valor no corresponde al tipo declarado.");
-                                        error.setLinea(this.getLinea());
-                                        error.setColumna(this.getColumna());
-                                        errores.add(error);
-                                        continue;
+                                        /*ASIGNACION NULL*/
+                                        tmp = new Simbolo(this.tipo, id, valValor);
                                     }
                                 } else {
                                     System.err.println("se esta intentando asignar un arreglo");
@@ -76,7 +82,7 @@ public class Declaracion extends Instruccion {
                                 }
                             } else {/*ARREGLO*/
                                 if (valValor instanceof Arreglo) {
-                                   // System.err.println(this.tipo.tipo +" == " +tipValor.subtipo);
+                                    // System.err.println(this.tipo.tipo +" == " +tipValor.subtipo);
                                     if (this.tipo.tipo == tipValor.subtipo) {
                                         if (asigna.getId().getDim() == ((Arreglo) valValor).getDimensiones()) {
                                             Tipo t = new Tipo(Tipo.type.ARRAY);

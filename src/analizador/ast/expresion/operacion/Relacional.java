@@ -6,9 +6,12 @@
 package analizador.ast.expresion.operacion;
 
 import analizador.ErrorC;
+import analizador.ast.entorno.ClaseSim;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
+import analizador.ast.expresion.Identificador;
 import java.util.ArrayList;
 
 /**
@@ -35,6 +38,11 @@ public class Relacional extends Operacion {
                 if (this.getOperador() == Operacion.Operador.IGUAL || this.getOperador() == Operacion.Operador.DIFERENTE) {
                     return new Tipo(Tipo.type.BOOLEAN);
                 }
+            } else if (tipOp1.tipo == Tipo.type.OBJECT || tipOp2.tipo == Tipo.type.OBJECT) {
+                if (this.getOperador() == Operacion.Operador.IGUAL || this.getOperador() == Operacion.Operador.DIFERENTE ||
+                        this.getOperador() == Operacion.Operador.INSTANCEOF) {
+                    return new Tipo(Tipo.type.BOOLEAN);
+                }
             }
         }
         return null;
@@ -44,7 +52,7 @@ public class Relacional extends Operacion {
     public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         Tipo tipOp1 = this.getOp1().getTipo(e, salida, this_, errores);
         Tipo tipOp2 = this.getOp2().getTipo(e, salida, this_, errores);
-
+        
         if (tipOp1 != null && tipOp2 != null) {
             if ((tipOp1.tipo.isNumero() || tipOp1.tipo == Tipo.type.CHAR) && (tipOp2.tipo.isNumero() || tipOp2.tipo == Tipo.type.CHAR)) {
                 Double valOp1 = this.getDouble(tipOp1, this.getOp1().getValor(e, salida, this_, errores));
@@ -100,6 +108,62 @@ public class Relacional extends Operacion {
                     }
                 }
 
+            } else if (tipOp1.tipo == Tipo.type.OBJECT || tipOp2.tipo == Tipo.type.OBJECT) {
+                if (this.getOperador() == Operacion.Operador.INSTANCEOF) {
+                    Tipo tipObj1 = this.getOp1().getTipo(e, salida, this_, errores);
+                    if(tipObj1 != null){
+                        if(tipObj1.tipo == Tipo.type.OBJECT){
+                            Expresion expObj2 = this.getOp2();
+                            if(expObj2 instanceof Identificador){
+                                ClaseSim clase = e.getClase(((Identificador) expObj2).getId());
+                                if(clase != null){
+                                    return tipObj1.objeto.equals(clase.getId());
+                                }
+                                System.err.println("No se econtro la clase");
+                                return null;
+                            }
+                            System.err.println("Error no es una clase ");
+                            return null;
+                        } 
+                        System.err.println("Error, no es un objeto");
+                        return null;
+                    }
+                } else {
+                    Object obj1 = this.getOp1().getValor(e, salida, this_, errores);
+                    Object obj2 = this.getOp2().getValor(e, salida, this_, errores);
+
+                    if (obj1 != null && obj2 != null) {
+                        if (tipOp1.tipo == Tipo.type.OBJECT) {
+                            if (tipOp2.tipo == Tipo.type.NULL) {
+                                if (this.getOperador() == Operacion.Operador.IGUAL) {
+                                    return obj1 instanceof Null;
+                                } else if (this.getOperador() == Operacion.Operador.DIFERENTE) {
+                                    return !(obj1 instanceof Null);
+                                }
+                            } else if (tipOp2.tipo == Tipo.type.OBJECT) {
+                                if (this.getOperador() == Operacion.Operador.IGUAL) {
+                                    return obj1 == obj2;
+                                } else if (this.getOperador() == Operacion.Operador.DIFERENTE) {
+                                    return obj1 != obj2;
+                                }
+                            }
+                        } else {
+                            if (tipOp1.tipo == Tipo.type.NULL) {
+                                if (this.getOperador() == Operacion.Operador.IGUAL) {
+                                    return obj2 instanceof Null;
+                                } else if (this.getOperador() == Operacion.Operador.DIFERENTE) {
+                                    return !(obj2 instanceof Null);
+                                }
+                            } else if (tipOp1.tipo == Tipo.type.OBJECT) {
+                                if (this.getOperador() == Operacion.Operador.IGUAL) {
+                                    return obj1 == obj2;
+                                } else if (this.getOperador() == Operacion.Operador.DIFERENTE) {
+                                    return obj1 != obj2;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

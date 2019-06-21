@@ -42,11 +42,11 @@ terminal dospuntos, interrogacion;
 terminal mas, menos, asterisco, diagonal, modulo, umenos, umas, masmas, menosmenos, umasmas, umenosmenos;
 terminal mayorque, menorque, mayorigual, menorigual, igualigual, diferente;
 terminal and, or, not, xor;
-terminal igual, masigual, menosigual, porigual, diagonaligual;
+terminal igual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_, instanceof_;
 
 non terminal INICIO;
 
@@ -99,6 +99,7 @@ precedence left or;
 precedence left and;
 precedence left xor;
 precedence right not;
+precedence left instanceof_;
 precedence left igualigual;
 precedence left diferente;
 precedence left mayorque, menorque, mayorigual, menorigual;
@@ -887,6 +888,14 @@ E ::= E:a mas:x E:b {:
             RESULT=tmp;
             :}
 
+    | E:a instanceof_:x E:b {: 
+            Nodo tmp = new Nodo("instanceof");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+            :}
+
     | E:a and:x E:b {:  
             Nodo tmp = new Nodo("&&");
             tmp.setNumNodo(parser.contador++);
@@ -939,7 +948,14 @@ E ::= E:a mas:x E:b {:
             tmp.setNumNodo(parser.contador++);
             RESULT=tmp;
         :}
-
+    | null_:a {:
+            Nodo tmp = new Nodo("E");
+            Nodo r1 = new Nodo("null");
+            r1.setNumNodo(parser.contador++);
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) r1);
+            RESULT=tmp;
+            :}
     | entero:a {:
                 Nodo tmp = new Nodo("E");
 		Nodo r1 = new Nodo("entero");

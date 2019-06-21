@@ -118,6 +118,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "graph"                     { return symbol(Sym.graph_);}
 <YYINITIAL> "this"                      { return symbol(Sym.this_);}
 <YYINITIAL> "super"                     { return symbol(Sym.super_);}
+<YYINITIAL> "instanceof"                { return symbol(Sym.instanceof_);}
 
 <YYINITIAL>{
 
@@ -163,10 +164,6 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 
 //Operador Asignacion
 "="                 {return symbol(Sym.igual);}
-"+="                {return symbol(Sym.masigual);}
-"-="                {return symbol(Sym.menosigual);}
-"*="                {return symbol(Sym.porigual);}
-"/="                {return symbol(Sym.diagonaligual);}
 
 {entero}       		{ return symbol(Sym.entero, yytext());}
 {decimal}		{ return symbol(Sym.decimal, yytext());}
