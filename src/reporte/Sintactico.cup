@@ -469,6 +469,13 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:
           |FOR:a {: RESULT = a; :}
           |SWITCH:a {: RESULT = a; :}
           |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :}
+          |ACCESO_OBJETO:a igual VALOR:b puntoycoma {: 
+                    Nodo tmp = new Nodo("ASIGNACION_OBJETO");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.addHijo((Nodo) a);
+                    tmp.addHijo((Nodo) b);
+                    RESULT = tmp;
+                :}
           | ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {:  
