@@ -27,12 +27,14 @@ public class AccesoObjeto extends Instruccion {
     private final String id;
     private final ArrayList<Expresion> accesos;
     private final ArrayList<Expresion> dimensiones;
+    private boolean retSimbolo;
 
     public AccesoObjeto(String id, ArrayList<Expresion> dimensiones, int linea, int columna) {
         super(linea, columna);
         this.id = id;
         this.dimensiones = dimensiones;
         this.accesos = new ArrayList<>();
+        this.retSimbolo = false;
     }
 
     @Override
@@ -130,16 +132,27 @@ public class AccesoObjeto extends Instruccion {
                 if (this_ != null) {
                     if (this_ instanceof Objeto) {
                         Objeto obj = (Objeto) this_;
-                        
+
                         for (Expresion acceso : this.accesos) {
-                            if (acceso instanceof Identificador) {
-                                Identificador ident = (Identificador) acceso;
-                                Tipo identTipo = ident.getTipo(obj.getE(), salida, this_, errores);
-                                if(identTipo != null){
-                                    Object valTipo = ident.getValor(obj.getE(), salida, this_, errores);
-                                    if(valTipo != null){
-                                        return new Literal(identTipo, valTipo, this.getLinea(), this.getColumna());
+                            if (!retSimbolo) {
+                                if (acceso instanceof Identificador) {
+                                    Identificador ident = (Identificador) acceso;
+                                    Tipo identTipo = ident.getTipo(obj.getE(), salida, this_, errores);
+                                    if (identTipo != null) {
+                                        Object valTipo = ident.getValor(obj.getE(), salida, this_, errores);
+                                        if (valTipo != null) {
+                                            return new Literal(identTipo, valTipo, this.getLinea(), this.getColumna());
+                                        }
                                     }
+                                }
+                            } else {
+                                if(acceso instanceof Identificador){
+                                    Simbolo ret = obj.getE().get(((Identificador) acceso).getId());
+                                    if(ret != null){
+                                        return ret;
+                                    }
+                                    System.err.println("no se encontro el simbolo en this");
+                                    return null;
                                 }
                             }
                         }
@@ -158,6 +171,13 @@ public class AccesoObjeto extends Instruccion {
      */
     public ArrayList<Expresion> getAccesos() {
         return accesos;
+    }
+
+    /**
+     * @param retSimbolo the retSimbolo to set
+     */
+    public void setRetSimbolo(boolean retSimbolo) {
+        this.retSimbolo = retSimbolo;
     }
 
 }

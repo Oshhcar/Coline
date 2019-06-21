@@ -220,6 +220,7 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |FOR:a {: RESULT = a; :}
           |SWITCH:a {: RESULT = a; :}
           |ACCESO_OBJETO:a puntoycoma{: RESULT = a; :}
+          |ACCESO_OBJETO:a igual VALOR:b puntoycoma {: RESULT = new AsignacionObjeto(a, b, aleft, aright); :}
           |ASIGNA_ARREGLO:a puntoycoma {: RESULT = a; :};
 
 UNARIO ::=  id:a masmas:x {: RESULT = new PostFijo(new Identificador(a, aleft, aright), Operacion.Operador.AUMENTO, xleft+1, xright+1); :}
