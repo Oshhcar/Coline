@@ -53,11 +53,15 @@ public class AccesoObjeto extends Instruccion {
 
                         tmp.setPadre(e.getPadre());
                         tmp.setGlobal(objeto.getE());
-
+                        
+                        /*arreglar todo esto*/
+                        
                         for (Expresion acceso : this.accesos) {
-                            Tipo tipAcceso = acceso.getTipo(tmp, salida, objeto, errores);
+                            Tipo tipAcceso = acceso.getTipo(objeto.getE(), salida, objeto, errores);
                             if (tipAcceso != null) {
-                                acceso.getValor(tmp, salida, objeto, errores);
+                                Object valor = acceso.getValor(objeto.getE(), salida, objeto, errores);
+                                if(valor != null)
+                                    return new Literal(tipAcceso, valor, this.getLinea(), this.getColumna());
                             }
                         }
                     } else {

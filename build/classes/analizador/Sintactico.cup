@@ -56,6 +56,7 @@ terminal public_, protected_, private_, abstract_, static_, final_, extends_, cl
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
 terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_, instanceof_;
+terminal pow_;
 
 non terminal INICIO;
 
@@ -299,6 +300,8 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | E:a asterisco:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.MULTIPLICACION, xleft, xright); :}
     | E:a diagonal:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.DIVISION, xleft, xright); :}
     | E:a modulo:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.MODULO, xleft, xright); :}
+    | pow_:x parIzquierda E:a coma E:b parDerecha {: RESULT = new Pow(a, b, xleft, xright); :}
+
     | menos:x E:a {:RESULT = new Aritmetica(a, new Literal(new Tipo(Tipo.type.INT), -1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);:} %prec umenos
     | mas:x E:a {: RESULT = new Aritmetica(a, new Literal(new Tipo(Tipo.type.INT), 1, 0,0), Operacion.Operador.MULTIPLICACION, xleft+1, xright+1);:} %prec umas
 
