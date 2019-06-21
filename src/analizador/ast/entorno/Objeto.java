@@ -16,6 +16,7 @@ public class Objeto {
     private ClaseSim clase; 
     private Entorno e;
     
+    
     public Objeto(ClaseSim clase, Entorno e) {
         this.clase = clase;
         this.e = e;

@@ -6,19 +6,20 @@
 package analizador.ast.entorno;
 
 import java.util.ArrayList;
+
 /**
  *
  * @author oscar
  */
 public class Entorno {
-    
+
     private Entorno padre;
     private Entorno global = null;
     private ArrayList<Simbolo> tabla;
 
     public Entorno(Entorno padre) {
         this.padre = padre;
-        if(padre != null){
+        if (padre != null) {
             global = padre.global;
         }
         this.tabla = new ArrayList<>();
@@ -60,16 +61,17 @@ public class Entorno {
     public Metodo getMetodo(String firma) {
         for (int i = getGlobal().getTabla().size() - 1; i >= 0; i--) {
             Simbolo s = getGlobal().getTabla().get(i);
-            if(s instanceof Metodo){
+            if (s instanceof Metodo) {
                 Metodo m = (Metodo) s;
-                if(m.getFirma().equals(firma)){
+                if (m.getFirma().equals(firma)) {
                     return m;
                 }
             }
         }
         return null;
     }
-    
+
+    /*
     public ClaseSim getClase(String id){
         Entorno clases = null;
         
@@ -88,6 +90,24 @@ public class Entorno {
                     }
                 }
             }
+        }
+        return null;
+    }
+     */
+    
+    public ClaseSim getClase(String id) {
+        Entorno actual = this;
+        
+        while (actual != null) {
+            for (int i = 0; i < actual.getTabla().size(); i++) {
+                Simbolo s = actual.getTabla().get(i);
+                if (s.getId().equals(id)) {
+                    if (s instanceof ClaseSim) {
+                        return (ClaseSim) s;
+                    }
+                }
+            }
+            actual = actual.getPadre();
         }
         return null;
     }
@@ -118,7 +138,7 @@ public class Entorno {
     public ArrayList<Simbolo> getTabla() {
         return tabla;
     }
-    
+
     /**
      * @param tabla the tabla to set
      */

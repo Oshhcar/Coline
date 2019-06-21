@@ -211,6 +211,7 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {: RESULT = new Print
           |id:a igual VALOR:b puntoycoma {: RESULT = new Asignacion(new Identificador(a, aleft, aright), b); :}
           |id:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new LlamadaMetodo(a, b, aleft, aright); :}
           |this_:a parIzquierda PARAMETROS:b parDerecha puntoycoma {: RESULT = new ConstructorInv("this", b, aleft, aright); :}
+          |CLASE:a {: RESULT = a; :}
           |UNARIO:a puntoycoma {: RESULT = a; :}
           |IF:a {: RESULT = a; :}
           |WHILE:a {: RESULT = a; :}

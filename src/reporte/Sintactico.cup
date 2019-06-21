@@ -453,6 +453,7 @@ BLOQUE ::= print_:a parIzquierda E:b parDerecha puntoycoma {:
                     tmp.addHijo((Nodo) b);
                 RESULT = tmp;
              :}
+          |CLASE:a {: RESULT = a; :}
           |UNARIO:a puntoycoma {: RESULT = a; :}
           |IF:a {: RESULT = a; :}
           |WHILE:a {: RESULT = a; :}
