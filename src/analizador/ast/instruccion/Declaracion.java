@@ -41,6 +41,8 @@ public class Declaracion extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "Declaracion Variables");
+        
         for (Asignacion asigna : this.asignaciones) {
             String id = asigna.getId().getId();
             Simbolo tmp = e.getLocal(id);

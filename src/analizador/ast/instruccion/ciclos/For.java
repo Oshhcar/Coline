@@ -15,14 +15,15 @@ import analizador.ast.instruccion.Bloque;
 import analizador.ast.instruccion.Break;
 import analizador.ast.instruccion.Continue;
 import analizador.ast.instruccion.Instruccion;
+import coline.Coline;
 import java.util.ArrayList;
 
 /**
  *
  * @author oscar
  */
-public class For extends Instruccion{
-    
+public class For extends Instruccion {
+
     private final Instruccion for_init;
     private final Expresion condicion;
     private final NodoAst update;
@@ -38,29 +39,43 @@ public class For extends Instruccion{
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
-        if(bloque != null){
+        if (bloque != null) {
             Entorno local = new Entorno(e);
             for_init.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
 
-            while(true){
+            while (true) {
                 Tipo tipCondicion = condicion.getTipo(local, salida, this_, errores);
-                if(tipCondicion != null){
-                    if(tipCondicion.tipo == Tipo.type.BOOLEAN){
+                if (tipCondicion != null) {
+                    if (tipCondicion.tipo == Tipo.type.BOOLEAN) {
                         Object valCondicion = condicion.getValor(local, salida, this_, errores);
-                        if(valCondicion != null){
-                            if(Boolean.valueOf(valCondicion.toString())){
+                        if (valCondicion != null) {
+                            if (Boolean.valueOf(valCondicion.toString())) {
+
+                                if (Coline.saltarDebug) {
+                                    Coline.debugger = false;
+                                }
+                                this.debug(e, this_, "for");
+
                                 Entorno local2 = new Entorno(local);
                                 Object obj = bloque.ejecutar(local2, salida, metodo, true, switch_, this_, errores);
-                                
-                                if(obj != null){
-                                    if(obj instanceof Break){
+
+                                if (obj != null) {
+                                    if (obj instanceof Break) {
+                                        if (Coline.saltarDebug) {
+                                            Coline.debugger = true;
+                                            Coline.saltarDebug = false;
+                                        }
                                         return null;
-                                    } else if(obj instanceof Return){
+                                    } else if (obj instanceof Return) {
+                                        if (Coline.saltarDebug) {
+                                            Coline.debugger = true;
+                                            Coline.saltarDebug = false;
+                                        }
                                         return obj;
                                     }
                                 }
-                                
-                                if(update instanceof Instruccion){
+
+                                if (update instanceof Instruccion) {
                                     ((Instruccion) update).ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
                                 } else {
                                     ((Expresion) update).getValor(local, salida, this_, errores);
@@ -71,6 +86,10 @@ public class For extends Instruccion{
                     } else {
                         System.err.println("Condicion debe ser booleana. for");
                     }
+                }
+                if (Coline.saltarDebug) {
+                    Coline.debugger = true;
+                    Coline.saltarDebug = false;
                 }
                 return null;
             }

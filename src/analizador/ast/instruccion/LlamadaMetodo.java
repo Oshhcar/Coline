@@ -34,6 +34,8 @@ public class LlamadaMetodo extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "LlamadaMetodo");
+        
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
         String firma = this.getId();

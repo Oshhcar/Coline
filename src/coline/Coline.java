@@ -12,6 +12,12 @@ package coline;
 public class Coline {
     
     public static String dirActual = "";
+    public static boolean debugger = false;
+    public static boolean empezoDebug = false;
+    public static boolean saltarDebug = false;
+    public static int lineaDebug = 0;
+    public static String claseDebug = "";
+    
     /**
      * @param args the command line arguments
      */

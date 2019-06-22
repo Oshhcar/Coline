@@ -39,6 +39,8 @@ public class AccesoObjeto extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "Acceso");
+        
         Simbolo sim = e.get(id);
         if (sim != null) {
             if (sim.getTipo().tipo == Tipo.type.OBJECT) {

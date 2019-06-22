@@ -38,6 +38,8 @@ public class Asignacion extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "Asignacion");
+        
         Simbolo tmp = e.get(this.id.getId());
         if (tmp != null) {
             Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);

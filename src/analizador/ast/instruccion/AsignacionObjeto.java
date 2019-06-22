@@ -29,6 +29,8 @@ public class AsignacionObjeto extends Instruccion {
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "Asignacion");
+        
         acceso.setRetSimbolo(true);
         Object var = acceso.ejecutar(e, salida, metodo, ciclo, switch_, this_, errores);
 

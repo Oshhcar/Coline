@@ -21,6 +21,8 @@ public class Break extends Instruccion{
 
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
+        this.debug(e, this_, "break");
+        
         return this;
     }
     

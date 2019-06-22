@@ -70,6 +70,8 @@ public class Case extends Instruccion {
 
         if (isContinuar()) {
             if (bloque != null) {
+                this.debug(e, this_, "Case");
+                
                 Entorno local = new Entorno(e);
                 return bloque.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
             }
