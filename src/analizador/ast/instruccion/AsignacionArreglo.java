@@ -10,6 +10,7 @@ import analizador.ast.entorno.Arreglo;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
+import analizador.ast.expresion.Casteo;
 import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Identificador;
 import java.util.ArrayList;
@@ -64,22 +65,29 @@ public class AsignacionArreglo extends Instruccion {
                                         if (tipValor != null) {
                                             if (tipValor.tipo != Tipo.type.ARRAY) {
                                                 if (tipValor.tipo == aux.getTipo().subtipo) {
-                                                    Object valor = this.valor.getValor(e, salida, this_, errores);
-                                                    if (valor != null) {
-                                                        aux.setValor(dim, valor);
+                                                    Object valor1 = this.valor.getValor(e, salida, this_, errores);
+                                                    if (valor1 != null) {
+                                                        aux.setValor(dim, valor1);
                                                         return null;
                                                     }
                                                     System.err.println("Error en valor");
                                                     return null;
+                                                } else {
+                                                    Casteo cast = new Casteo(new Tipo(aux.getTipo().subtipo), valor, this.getLinea(), this.getColumna());
+                                                    Object valCast = cast.getValor(e, salida, this_, errores);
+                                                    if (valCast != null) {
+                                                        aux.setValor(dim, valCast);
+                                                        return null;
+                                                    }
                                                 }
                                                 System.err.println("No son del mismo tipo");
                                                 return null;
                                             } else {
                                                 if (tipValor.subtipo == tipValor.subtipo) {
-                                                    Object valor = this.valor.getValor(e, salida, this_, errores);
-                                                    if (valor != null) {
+                                                    Object valor1 = this.valor.getValor(e, salida, this_, errores);
+                                                    if (valor1 != null) {
                                                         /*verificar tamaños*/
-                                                        aux.setValor(dim, valor);
+                                                        aux.setValor(dim, valor1);
                                                         return null;
                                                     }
                                                     System.err.println("error en valor");

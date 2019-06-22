@@ -11,6 +11,7 @@ import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
+import analizador.ast.expresion.Casteo;
 import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Identificador;
 import java.util.ArrayList;
@@ -69,15 +70,20 @@ public class Asignacion extends Instruccion {
                             tmp.setValor(valValor);
                             return null;
                         }
+                    } else {
+                        Casteo cast = new Casteo(tmp.getTipo(), valor, this.getLinea(), this.getColumna());
+                        Object valCast = cast.getValor(e, salida, this_, errores);
+                        if(valCast != null){
+                            tmp.setValor(valCast);
+                            return null;
+                        }
                     }
                     System.err.println("*Error Semántico, no se puede asignar el valor. ");
                 } else {
                     tmp.setValor(new Null());
                     return null;
                 }
-            }
-            
-
+            } 
         } else {
             System.err.println("*Error Semántico, no se ha declarado la variable: " + this.id.getId() + ". ");
         }

@@ -12,6 +12,7 @@ import analizador.ast.entorno.Modificador;
 import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
+import analizador.ast.expresion.Casteo;
 import analizador.ast.expresion.Expresion;
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class Declaracion extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Declaracion Variables");
-        
+
         for (Asignacion asigna : this.asignaciones) {
             String id = asigna.getId().getId();
             Simbolo tmp = e.getLocal(id);
@@ -55,7 +56,7 @@ public class Declaracion extends Instruccion {
                         if (valValor != null) {
                             if (asigna.getId().getDim() == 0) {
                                 if (!(valValor instanceof Arreglo)) {
-                                    if (!(valValor instanceof Null)) { 
+                                    if (!(valValor instanceof Null)) {
                                         if (this.tipo.tipo == tipValor.tipo) {
                                             if (this.tipo.tipo == Tipo.type.OBJECT) {
                                                 if (!this.tipo.objeto.equals(tipValor.objeto)) {
@@ -65,14 +66,24 @@ public class Declaracion extends Instruccion {
                                             }
                                             tmp = new Simbolo(this.tipo, id, valValor);
                                         } else {
-                                            ErrorC error = new ErrorC();
-                                            error.setTipo("Semántico");
-                                            error.setValor(asigna.getId().getId());
-                                            error.setDescripcion("El valor no corresponde al tipo declarado.");
-                                            error.setLinea(this.getLinea());
-                                            error.setColumna(this.getColumna());
-                                            errores.add(error);
-                                            continue;
+                                            if (this.tipo.tipo != Tipo.type.OBJECT) {
+                                                Casteo cast = new Casteo(this.tipo, valor, this.getLinea(), this.getColumna());
+                                                Object valCast = cast.getValor(e, salida, this_, errores);
+                                                if (valCast != null) {
+                                                    tmp = new Simbolo(this.tipo, id, valCast);
+                                                } else {
+                                                    ErrorC error = new ErrorC();
+                                                    error.setTipo("Semántico");
+                                                    error.setValor(asigna.getId().getId());
+                                                    error.setDescripcion("El valor no corresponde al tipo declarado.");
+                                                    error.setLinea(this.getLinea());
+                                                    error.setColumna(this.getColumna());
+                                                    errores.add(error);
+                                                    continue;
+                                                }
+                                            } else {
+                                                /*CASTEO OBJETO*/
+                                            }
                                         }
                                     } else {
                                         /*ASIGNACION NULL*/
