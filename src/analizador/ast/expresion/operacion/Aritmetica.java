@@ -51,7 +51,13 @@ public class Aritmetica extends Operacion {
         if (tipDominante != null) {
             switch (tipDominante.tipo) {
                 case STRING:
-                    return this.getOp1().getValor(e, salida, this_, errores).toString() + this.getOp2().getValor(e, salida, this_, errores).toString();
+                    Object val1 = this.getOp1().getValor(e, salida, this_, errores).toString();
+                    Object val2 = this.getOp2().getValor(e, salida, this_, errores).toString();
+                    if (val1 != null && val2 != null) {
+                        return val1.toString() + val2.toString();
+                    }
+                    System.err.println("nulos");
+                    return null;
                 case DOUBLE: {
                     Double valOp1 = this.getDouble(this.getOp1().getTipo(e, salida, this_, errores), this.getOp1().getValor(e, salida, this_, errores));
                     Double valOp2 = this.getDouble(this.getOp2().getTipo(e, salida, this_, errores), this.getOp2().getValor(e, salida, this_, errores));
@@ -74,19 +80,21 @@ public class Aritmetica extends Operacion {
                 case INT: {
                     Integer valOp1 = this.getInt(this.getOp1().getTipo(e, salida, this_, errores), this.getOp1().getValor(e, salida, this_, errores));
                     Integer valOp2 = this.getInt(this.getOp2().getTipo(e, salida, this_, errores), this.getOp2().getValor(e, salida, this_, errores));
-                    switch (this.getOperador()) {
-                        case SUMA:
-                            return valOp1 + valOp2;
-                        case RESTA:
-                            return valOp1 - valOp2;
-                        case MULTIPLICACION:
-                            return valOp1 * valOp2;
-                        case DIVISION:
-                            return valOp1 / valOp2;
-                        case MODULO:
-                            return valOp1 % valOp2;
+                    if (valOp1 != null && valOp2 != null) {
+                        switch (this.getOperador()) {
+                            case SUMA:
+                                return valOp1 + valOp2;
+                            case RESTA:
+                                return valOp1 - valOp2;
+                            case MULTIPLICACION:
+                                return valOp1 * valOp2;
+                            case DIVISION:
+                                return valOp1 / valOp2;
+                            case MODULO:
+                                return valOp1 % valOp2;
+                        }
+                        break;
                     }
-                    break;
                 }
                 default:
                     break;
