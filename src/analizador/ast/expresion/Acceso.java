@@ -30,7 +30,7 @@ public class Acceso extends Expresion {
 
     @Override
     public Tipo getTipo(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
-        Object obj = acceso.ejecutar(e, salida, false, false, false, this_, errores);
+        Object obj = getAcceso().ejecutar(e, salida, false, false, false, this_, errores);
         if (obj != null) {
             valor = ((Expresion) obj).getValor(e, salida, this_, errores);
             return ((Expresion) obj).getTipo(e, salida, this_, errores);
@@ -43,11 +43,18 @@ public class Acceso extends Expresion {
         if(valor != null)
             return valor;
         
-        Object obj = acceso.ejecutar(e, salida, false, false, false, this_, errores);
+        Object obj = getAcceso().ejecutar(e, salida, false, false, false, this_, errores);
         if (obj != null) {
             tipo = ((Expresion) obj).getTipo(e, salida, this_, errores);
             return ((Expresion) obj).getValor(e, salida, this_, errores);
         }
         return null;    }
+
+    /**
+     * @return the acceso
+     */
+    public AccesoObjeto getAcceso() {
+        return acceso;
+    }
 
 }
