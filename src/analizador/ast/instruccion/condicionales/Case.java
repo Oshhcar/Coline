@@ -9,6 +9,9 @@ import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
+import analizador.ast.expresion.Literal;
+import analizador.ast.expresion.operacion.Operacion;
+import analizador.ast.expresion.operacion.Relacional;
 import analizador.ast.instruccion.Bloque;
 import analizador.ast.instruccion.Instruccion;
 import java.util.ArrayList;
@@ -54,10 +57,23 @@ public class Case extends Instruccion {
                 if (tipExp != null) {
                     Object valExp = expresion.getValor(e, salida, this_, errores);
                     if (valExp != null) {
-                        if (tipExp.tipo == this.tipExp.tipo) {
-                            if (valExp.toString().equals(this.valorExp.toString())) {
-                                setContinuar(true);
+                        Expresion op1 = new Literal(this.tipExp, this.valorExp, this.getLinea(), this.getColumna());
+                        Expresion op2 = new Literal(tipExp, valExp, this.getLinea(), this.getColumna());
+                        Relacional rel = new Relacional(op1, op2, Operacion.Operador.IGUAL, this.getLinea(), this.getColumna());
+
+                        Tipo tipRes = rel.getTipo(e, salida, this_, errores);
+                        if (tipRes != null) {
+                            if (tipRes.tipo == Tipo.type.BOOLEAN) {
+                                Object valRes = rel.getValor(e, salida, this_, errores);
+                                if (valRes != null) {
+                                    System.out.println(this.valorExp + " == "+valExp);
+                                    if (Boolean.valueOf(valRes.toString())) {
+                                        setContinuar(true);
+                                    }
+                                }
                             }
+                        } else {
+                            System.err.println("Error en la expresion");
                         }
                     } else {
                         System.err.println("Error valor en case.");
@@ -71,9 +87,8 @@ public class Case extends Instruccion {
         if (isContinuar()) {
             if (bloque != null) {
                 this.debug(e, this_, "Case");
-                
-                Entorno local = new Entorno(e);
-                return bloque.ejecutar(local, salida, metodo, ciclo, switch_, this_, errores);
+
+                return bloque.ejecutar(e, salida, metodo, ciclo, switch_, this_, errores);
             }
         }
 

@@ -35,6 +35,7 @@ public class Switch extends Instruccion {
             Object valExp = this.expSwitch.getValor(e, salida, this_, errores);
             if (valExp != null) {
                 if (cases != null) {
+                    Entorno local = new Entorno(e);
                     boolean isContinuar = false;
                     
                     for (Case caso : cases) {
