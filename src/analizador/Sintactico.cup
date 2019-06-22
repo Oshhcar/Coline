@@ -286,7 +286,8 @@ ACCESO_OBJETO ::= ACCESO_OBJETO:a punto ACCESO:b {: RESULT = a; RESULT.getAcceso
                 | OBJETO:a {: RESULT = a; :};
 
 OBJETO ::= id:a DIM:b punto ACCESO:c {: RESULT = new AccesoObjeto(a, b, aleft, aright); RESULT.getAccesos().add(c); :}
-                | this_:a punto ACCESO:c {: RESULT = new AccesoObjeto("this", null, aleft, aright); RESULT.getAccesos().add(c); :};
+          | this_:a punto ACCESO:c {: RESULT = new AccesoObjeto("this", null, aleft, aright); RESULT.getAccesos().add(c); :}
+          | super_:a punto ACCESO:c {: RESULT = new AccesoObjeto("super", null, aleft, aright); RESULT.getAccesos().add(c); :};
 
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class LlamadaMetodo extends Instruccion {
 
     private final String id;
-    private final ArrayList<Expresion> parametros;
+    private ArrayList<Expresion> parametros;
     private boolean funcion;
 
     public LlamadaMetodo(String id, ArrayList<Expresion> parametros, int linea, int columna) {
@@ -35,7 +35,7 @@ public class LlamadaMetodo extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "LlamadaMetodo");
-        
+
         Metodo m = null;
         Entorno local = new Entorno(e.getGlobal());
         String firma = this.getId();
@@ -49,9 +49,9 @@ public class LlamadaMetodo extends Instruccion {
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, this_, errores);
                     if (valor != null) {
-                        if(tipo.tipo == Tipo.type.ARRAY){
-                            firma += "_ARRAY-"+ tipo.subtipo;
-                        }else {
+                        if (tipo.tipo == Tipo.type.ARRAY) {
+                            firma += "_ARRAY-" + tipo.subtipo;
+                        } else {
                             firma += "_" + tipo.tipo.toString();
                         }
                         parm.add(new Simbolo(tipo, "parm", valor));
@@ -131,6 +131,13 @@ public class LlamadaMetodo extends Instruccion {
      */
     public ArrayList<Expresion> getParametros() {
         return parametros;
+    }
+
+    /**
+     * @param parametros the parametros to set
+     */
+    public void setParametros(ArrayList<Expresion> parametros) {
+        this.parametros = parametros;
     }
 
 }

@@ -40,136 +40,83 @@ public class AccesoObjeto extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Acceso");
-        
-        Simbolo sim = e.get(id);
-        if (sim != null) {
-            if (sim.getTipo().tipo == Tipo.type.OBJECT) {
-                Object obj = sim.getValor();
-                if (obj != null) {
-                    if (obj instanceof Objeto) {
-                        Objeto objeto = (Objeto) obj;
 
-                        Entorno tmp = new Entorno(null);
-                        tmp.setPadre(tmp);
-                        tmp.setTabla(e.getTabla());
+        Tipo tipoObjeto = null;
+        Object valorObjeto = null;
+        Simbolo simObjeto = null;
 
-                        tmp.setPadre(e.getPadre());
-                        tmp.setGlobal(objeto.getE());
-                        
-                        /*arreglar todo esto*/
-                        
-                        for (Expresion acceso : this.accesos) {
-                            Tipo tipAcceso = acceso.getTipo(objeto.getE(), salida, objeto, errores);
-                            if (tipAcceso != null) {
-                                Object valor = acceso.getValor(objeto.getE(), salida, objeto, errores);
-                                if(valor != null)
-                                    return new Literal(tipAcceso, valor, this.getLinea(), this.getColumna());
-                            }
+        if (this.id.equals("this") || this.id.equals("super")) {
+            valorObjeto = this_;
+        } else {
+            simObjeto = e.get(id);
+            if (simObjeto != null) {
+                valorObjeto = simObjeto.getValor();
+            }
+        }
+
+        try {
+            for (Expresion acceso_0 : this.accesos) {
+                if (valorObjeto instanceof Objeto) {
+                    Objeto obj = (Objeto) valorObjeto;
+
+                    if (acceso_0 instanceof Identificador) {
+                        Identificador thisId = (Identificador) acceso_0;
+                        if (!this.id.equals("super")) {
+                            tipoObjeto = thisId.getTipo(obj.getE(), salida, obj, errores);
+                            valorObjeto = thisId.getValor(obj.getE(), salida, obj, errores);
+                            simObjeto = obj.getE().get(thisId.getId());
+                        } else {
+                            tipoObjeto = thisId.getTipo(obj.getE().getPadre(), salida, obj, errores);
+                            valorObjeto = thisId.getValor(obj.getE().getPadre(), salida, obj, errores);
+                            simObjeto = obj.getE().getPadre().get(thisId.getId());
                         }
                     } else {
-                        System.err.println("Es arreglo o string o objeto");
-                        if (sim.getTipo().objeto.equals("String")) {
-                            for (Expresion acceso : this.accesos) {
-                                if (acceso instanceof LlamadaFuncion) {
-                                    LlamadaFuncion llamada = (LlamadaFuncion) acceso;
+                        /*LLamada metodo*/
+                        LlamadaFuncion thisFuncion = ((LlamadaFuncion) acceso_0);
 
-                                    switch (llamada.getId()) {
-                                        case "toString":
-                                            System.out.println("" + obj.toString());
+                        if (thisFuncion.getParametros() != null) {
+                            ArrayList<Expresion> parmForm = new ArrayList<>();
+                            for (Expresion parametro : thisFuncion.getParametros()) {
+                                Tipo tipoParm = parametro.getTipo(e, salida, this_, errores);
+                                if (tipoParm != null) {
+                                    Object valorParm = parametro.getValor(e, salida, this_, errores);
+                                    if (valorParm != null) {
+                                        parmForm.add(new Literal(tipoParm, valorParm, this.getLinea(), this.getColumna()));
+                                        continue;
                                     }
                                 }
-                            }
-                        } else {
-                            System.err.println("Error fatal acceso objeto.");
-                        }
-                    }
-                } else {
-                    System.err.println("No se ha inicializado la variable " + id);
-                }
-            } else if (sim.getTipo().tipo == Tipo.type.ARRAY) {
-                Object obj = sim.getValor();
-                if (obj != null) {
-                    if (obj instanceof Arreglo) {
-
-                        Object ret = null;
-                        Arreglo aux = (Arreglo) obj;
-
-                        if (this.dimensiones != null) {
-                            int i = 0;
-                            while (i < this.dimensiones.size()) {
-                                Expresion exp = this.dimensiones.get(i++);
-                                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
-                                if (tipExp.tipo == Tipo.type.INT) {
-                                    Object valExp = exp.getValor(e, salida, this_, errores);
-                                    if (valExp != null) {
-                                        try {
-                                            int pos = Integer.valueOf(valExp.toString());
-                                            ret = aux.get(pos);
-                                            if (ret instanceof Arreglo) {
-                                                aux = (Arreglo) ret;
-                                            }
-                                            if (i == this.dimensiones.size()) {
-                                                if (ret instanceof Arreglo) {
-                                                    return new Literal(new Tipo(Tipo.type.INT), ((Arreglo) ret).getTamaño(), this.getLinea(), this.getColumna());
-                                                }
-                                                System.err.println("error dimensiones");
-                                            } else {
-                                                continue;
-                                            }
-                                        } catch (Exception ex) {
-                                            System.err.println("" + ex);
-                                        }
-                                    }
-                                }
+                                System.err.println("error en parametros");
                                 return null;
                             }
+                            thisFuncion.setParametros(parmForm);
                         }
-                        return new Literal(new Tipo(Tipo.type.INT), aux.getTamaño(), this.getLinea(), this.getColumna());
-                    } else {
-                        System.err.println("No es un arreglo. ");
-                    }
-                }
 
-            } else {
-                System.err.println("La variable no es un objeto ni arreglo");
-            }
-        } else {
-            if (this.id.equals("this")) {
-                if (this_ != null) {
-                    if (this_ instanceof Objeto) {
-                        Objeto obj = (Objeto) this_;
-
-                        for (Expresion acceso : this.accesos) {
-                            if (!retSimbolo) {
-                                if (acceso instanceof Identificador) {
-                                    Identificador ident = (Identificador) acceso;
-                                    Tipo identTipo = ident.getTipo(obj.getE(), salida, this_, errores);
-                                    if (identTipo != null) {
-                                        Object valTipo = ident.getValor(obj.getE(), salida, this_, errores);
-                                        if (valTipo != null) {
-                                            return new Literal(identTipo, valTipo, this.getLinea(), this.getColumna());
-                                        }
-                                    }
-                                }
-                            } else {
-                                if(acceso instanceof Identificador){
-                                    Simbolo ret = obj.getE().get(((Identificador) acceso).getId());
-                                    if(ret != null){
-                                        return ret;
-                                    }
-                                    System.err.println("no se encontro el simbolo en this");
-                                    return null;
-                                }
-                            }
+                        if (!this.id.equals("super")) {
+                            tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
+                            valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
+                        } else {
+                            Entorno tmp = obj.getE().getGlobal();
+                            obj.getE().setGlobal(obj.getE().getPadre());
+                            tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
+                            valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
+                            obj.getE().setGlobal(tmp);
                         }
-                        System.err.println("ocurrioi un problema this");
-                        return null;
+
                     }
+                } else {
+                    System.err.println("no se ha instanciado el objeto " + id);
+                    return null;
                 }
             }
-            System.err.println("no se ha declarado una variable " + id);
+        } catch (Exception ex) {
+            System.err.println("Error fatal acceso arreglos");
         }
-        return null;
+
+        if (retSimbolo) {
+            return simObjeto;
+        } else {
+            return new Literal(tipoObjeto, valorObjeto, this.getLinea(), this.getColumna());
+        }
     }
 
     /**

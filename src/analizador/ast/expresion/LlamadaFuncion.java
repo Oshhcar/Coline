@@ -77,4 +77,11 @@ public class LlamadaFuncion extends Expresion {
     public ArrayList<Expresion> getParametros() {
         return funcion.getParametros();
     }
+    
+    /**
+     * @set the parametros
+     */
+    public void setParametros(ArrayList<Expresion>  parametros) {
+        this.funcion.setParametros(parametros);
+    }
 }

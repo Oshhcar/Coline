@@ -752,6 +752,13 @@ OBJETO ::= id:a DIM:b punto ACCESO:c {:
                     tmp.setValor("this");
                     tmp.addHijo((Nodo) c);
                     RESULT = tmp;
+        :}
+        | super_ punto ACCESO:c {: 
+                    Nodo tmp = new Nodo("ACCESO_MIEMBRO");
+                    tmp.setNumNodo(parser.contador++);
+                    tmp.setValor("super");
+                    tmp.addHijo((Nodo) c);
+                    RESULT = tmp;
         :};
 
 DIM ::= {: RESULT = null; :}
