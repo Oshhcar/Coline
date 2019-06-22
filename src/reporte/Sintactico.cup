@@ -580,6 +580,34 @@ UNARIO ::=  id:a masmas:x {:
                 tmp.addHijo(x1);
                 tmp.addHijo(a1);
                 RESULT = tmp;
+            :}
+           | ACCESO_OBJETO:a masmas:x {: 
+                Nodo tmp = new Nodo("UNARIO");
+                tmp.setValor("++");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp;
+            :}
+           | ACCESO_OBJETO:a menosmenos:x {: 
+                Nodo tmp = new Nodo("UNARIO");
+                tmp.setValor("--");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp;
+            :}
+           | masmas:x ACCESO_OBJETO:a {: 
+                Nodo tmp = new Nodo("UNARIO");
+                tmp.setValor("++");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp;
+            :}
+           | menosmenos:x ACCESO_OBJETO:a {: 
+                Nodo tmp = new Nodo("UNARIO");
+                tmp.setValor("--");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo)a);
+                RESULT = tmp;
             :};
 
 PARAMETROS ::= {: RESULT = null; :}
