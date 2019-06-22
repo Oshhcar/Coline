@@ -120,8 +120,10 @@ public class Aritmetica extends Operacion {
         if (tipo != null && valor != null) {
             switch (tipo.tipo) {
                 case INT:
-                case DOUBLE:
                     return new Integer(valor.toString());
+                case DOUBLE:
+                    Double d = new Double(valor.toString());
+                    return d.intValue();
                 case CHAR:
                     return new Integer(valor.toString().charAt(0));
             }

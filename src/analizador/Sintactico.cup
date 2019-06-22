@@ -101,6 +101,7 @@ non terminal Expresion ACCESO;
 non terminal ArrayList<Expresion> DIMENSION; 
 non terminal ArrayList<Expresion> ARREGLO;
 non terminal AsignacionArreglo ASIGNA_ARREGLO;
+non terminal Tipo TIPO_PRIMITIVO;
 
 non terminal Expresion E;
 
@@ -192,6 +193,11 @@ TIPO ::= int_ {: RESULT = new Tipo(Tipo.type.INT); :}
             if(a.equals("String")){ RESULT = new Tipo(Tipo.type.STRING); } 
             else { RESULT = new Tipo(Tipo.type.OBJECT, a);} 
             :};
+
+TIPO_PRIMITIVO ::= int_ {: RESULT = new Tipo(Tipo.type.INT); :}
+                |double_ {: RESULT = new Tipo(Tipo.type.DOUBLE); :}
+                |char_ {: RESULT = new Tipo(Tipo.type.CHAR); :}
+                |boolean_ {: RESULT = new Tipo(Tipo.type.BOOLEAN); :};
 
 BLOQUES ::= {: RESULT = null; :}
         |BLOQUES_L:a {: RESULT = new Bloque(a, aleft, aright); :};
@@ -327,6 +333,8 @@ E ::= E:a mas:x E:b {: RESULT = new Aritmetica(a, b, Operacion.Operador.SUMA, xl
     | E:a interrogacion:x E:b dospuntos E:c{:RESULT = new Ternario(a, b, c, xleft, xright);:}
 
     | parIzquierda E:a parDerecha {: RESULT = a; :}
+
+    | parIzquierda:x TIPO_PRIMITIVO:a parDerecha E:b {: RESULT = new Casteo(a, b, xleft, xright); :}    
 
     | id:a DIMENSION:b {: RESULT = new AccesoArreglo(a, b, aleft, aright); :}
     | ACCESO_OBJETO:a  {: RESULT = new Acceso(a); :}
