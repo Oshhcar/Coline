@@ -292,7 +292,9 @@ OBJETO ::= id:a DIM:b punto ACCESO:c {: RESULT = new AccesoObjeto(a, b, aleft, a
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};
 
-ACCESO ::= id:a {: RESULT = new Identificador(a, aleft, aright); :}
+ACCESO ::= id:a DIM:b {: 
+            if(b == null){ RESULT = new Identificador(a, aleft, aright); } 
+            else { RESULT = new AccesoArreglo(a, b, aleft, aright); } :}
         | id:a parIzquierda PARAMETROS:b parDerecha {: RESULT = new LlamadaFuncion(new LlamadaMetodo(a, b, aleft, aright)); :};
 
 ASIGNA_ARREGLO ::= id:a DIMENSION:b igual VALOR:c {: RESULT = new AsignacionArreglo(a, b, c, aleft, aright); :};

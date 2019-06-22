@@ -21,15 +21,24 @@ import java.util.ArrayList;
  */
 public class AsignacionArreglo extends Instruccion {
 
-    private final String id;
-    private final ArrayList<Expresion> dimensiones;
-    private final Expresion valor;
+    private String id;
+    private ArrayList<Expresion> dimensiones;
+    private Expresion valor;
+    private Entorno ejecucion;
 
     public AsignacionArreglo(String id, ArrayList<Expresion> dimensiones, Expresion valor, int linea, int columna) {
         super(linea, columna);
         this.id = id;
         this.dimensiones = dimensiones;
         this.valor = valor;
+    }
+
+    public AsignacionArreglo(String id, ArrayList<Expresion> dimensiones, Entorno ejecucion, int linea, int columna) {
+        super(linea, columna);
+        this.id = id;
+        this.dimensiones = dimensiones;
+        this.valor = null;
+        this.ejecucion = ejecucion;
     }
 
     @Override
@@ -39,81 +48,121 @@ public class AsignacionArreglo extends Instruccion {
         Simbolo sim = e.get(id);
         if (sim != null) {
             if (sim.getTipo().tipo == Tipo.type.ARRAY) {
-                Arreglo aux = (Arreglo) sim.getValor();
+                if (sim.getValor() != null) {
+                    Arreglo aux = (Arreglo) sim.getValor();
 
-                int i = 0;
-                while (i < this.dimensiones.size()) {
-                    Expresion exp = this.dimensiones.get(i++);
-                    Tipo tipExp = exp.getTipo(e, salida, this_, errores);
-                    if (tipExp != null) {
-                        if (tipExp.tipo == Tipo.type.INT) {
-                            Object valExp = exp.getValor(e, salida, this_, errores);
-                            if (valExp != null) {
-                                int dim = Integer.valueOf(valExp.toString());
+                    int i = 0;
+                    while (i < this.dimensiones.size()) {
+                        Expresion exp = this.dimensiones.get(i++);
+                        Tipo tipExp = exp.getTipo(e, salida, this_, errores);
+                        if (tipExp != null) {
+                            if (tipExp.tipo == Tipo.type.INT) {
+                                Object valExp = exp.getValor(e, salida, this_, errores);
+                                if (valExp != null) {
+                                    int dim = Integer.valueOf(valExp.toString());
 
-                                if (dim >= 0) {
-                                    if (i != this.dimensiones.size()) {
-                                        Object posDim = aux.get(dim);
-                                        if (posDim instanceof Arreglo) {
-                                            aux = (Arreglo) posDim;
-                                            continue;
-                                        }
-                                        System.err.println("Error, ya no hay mas dimensiones");
-                                        return null;
-                                    } else {
-                                        Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
-                                        if (tipValor != null) {
-                                            if (tipValor.tipo != Tipo.type.ARRAY) {
-                                                if (tipValor.tipo == aux.getTipo().subtipo) {
-                                                    Object valor1 = this.valor.getValor(e, salida, this_, errores);
-                                                    if (valor1 != null) {
-                                                        aux.setValor(dim, valor1);
+                                    if (dim >= 0) {
+                                        if (i != this.dimensiones.size()) {
+                                            Object posDim = aux.get(dim);
+                                            if (posDim instanceof Arreglo) {
+                                                aux = (Arreglo) posDim;
+                                                continue;
+                                            }
+                                            System.err.println("Error, ya no hay mas dimensiones");
+                                            return null;
+                                        } else {
+                                            Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
+                                            if (tipValor != null) {
+                                                if (tipValor.tipo != Tipo.type.ARRAY) {
+                                                    if (tipValor.tipo == aux.getTipo().subtipo) {
+                                                        Object valor1 = this.valor.getValor(e, salida, this_, errores);
+                                                        if (valor1 != null) {
+                                                            aux.setValor(dim, valor1);
+                                                            return null;
+                                                        }
+                                                        System.err.println("Error en valor");
                                                         return null;
+                                                    } else {
+                                                        Casteo cast = new Casteo(new Tipo(aux.getTipo().subtipo), valor, this.getLinea(), this.getColumna());
+                                                        Object valCast = cast.getValor(e, salida, this_, errores);
+                                                        if (valCast != null) {
+                                                            aux.setValor(dim, valCast);
+                                                            return null;
+                                                        }
                                                     }
-                                                    System.err.println("Error en valor");
+                                                    System.err.println("No son del mismo tipo");
                                                     return null;
                                                 } else {
-                                                    Casteo cast = new Casteo(new Tipo(aux.getTipo().subtipo), valor, this.getLinea(), this.getColumna());
-                                                    Object valCast = cast.getValor(e, salida, this_, errores);
-                                                    if (valCast != null) {
-                                                        aux.setValor(dim, valCast);
+                                                    if (tipValor.subtipo == tipValor.subtipo) {
+                                                        Object valor1 = this.valor.getValor(e, salida, this_, errores);
+                                                        if (valor1 != null) {
+                                                            /*verificar tamaños*/
+                                                            aux.setValor(dim, valor1);
+                                                            return null;
+                                                        }
+                                                        System.err.println("error en valor");
                                                         return null;
                                                     }
-                                                }
-                                                System.err.println("No son del mismo tipo");
-                                                return null;
-                                            } else {
-                                                if (tipValor.subtipo == tipValor.subtipo) {
-                                                    Object valor1 = this.valor.getValor(e, salida, this_, errores);
-                                                    if (valor1 != null) {
-                                                        /*verificar tamaños*/
-                                                        aux.setValor(dim, valor1);
-                                                        return null;
-                                                    }
-                                                    System.err.println("error en valor");
-                                                    return null;
                                                 }
                                             }
+                                            System.err.println("Error en valor");
+                                            return null;
                                         }
-                                        System.err.println("Error en valor");
+                                    } else {
+                                        System.err.println("Las posiciones deben ser positivas");
                                         return null;
                                     }
-                                } else {
-                                    System.err.println("Las posiciones deben ser positivas");
-                                    return null;
                                 }
                             }
                         }
+                        return null;
                     }
+                } else {
+                    System.err.println("arreglo no inicializado");
                     return null;
                 }
-            } else {
-                System.err.println("No es arreglo");
-                return null;
             }
+            System.err.println("No es arreglo");
+            return null;
+
         }
         System.err.println("no se econtro el arreglo");
         return null;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @param dimensiones the dimensiones to set
+     */
+    public void setDimensiones(ArrayList<Expresion> dimensiones) {
+        this.dimensiones = dimensiones;
+    }
+
+    /**
+     * @param valor the valor to set
+     */
+    public void setValor(Expresion valor) {
+        this.valor = valor;
+    }
+
+    /**
+     * @param ejecucion the ejecucion to set
+     */
+    public void setEjecucion(Entorno ejecucion) {
+        this.ejecucion = ejecucion;
+    }
+
+    /**
+     * @return the ejecucion
+     */
+    public Entorno getEjecucion() {
+        return ejecucion;
     }
 
 }

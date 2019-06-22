@@ -12,6 +12,7 @@ import analizador.ast.entorno.Metodo;
 import analizador.ast.entorno.Objeto;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
+import analizador.ast.expresion.AccesoArreglo;
 import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Identificador;
 import analizador.ast.expresion.Literal;
@@ -43,14 +44,63 @@ public class AccesoObjeto extends Instruccion {
 
         Tipo tipoObjeto = null;
         Object valorObjeto = null;
-        Simbolo simObjeto = null;
+        Object simObjeto = null;
 
         if (this.id.equals("this") || this.id.equals("super")) {
             valorObjeto = this_;
         } else {
             simObjeto = e.get(id);
             if (simObjeto != null) {
-                valorObjeto = simObjeto.getValor();
+                valorObjeto = ((Simbolo) simObjeto).getValor();
+
+                if (((Simbolo) simObjeto).getTipo().tipo == Tipo.type.ARRAY) {
+                    if (this.dimensiones != null) {
+                        if (valorObjeto != null) {
+                            Object ret = null;
+                            Arreglo aux = (Arreglo) valorObjeto;
+
+                            int i = 0;
+                            while (i < this.dimensiones.size()) {
+                                Expresion exp = this.dimensiones.get(i++);
+                                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
+                                if (tipExp.tipo == Tipo.type.INT) {
+                                    Object valExp = exp.getValor(e, salida, this_, errores);
+                                    if (valExp != null) {
+                                        try {
+                                            int pos = Integer.valueOf(valExp.toString());
+
+                                            if (pos >= 0) {
+                                                ret = aux.get(pos);
+                                                if (ret instanceof Arreglo) {
+                                                    aux = (Arreglo) ret;
+                                                }
+                                                if (i == this.dimensiones.size()) {
+                                                    if (!(ret instanceof Arreglo)) {
+                                                        valorObjeto = ret;
+                                                    } else {
+                                                        System.err.println("error, no es un objeto");
+                                                        return null;
+                                                    }
+                                                }
+                                            } else {
+                                                System.err.println("Error, dimension incorrecta");
+                                                return null;
+                                            }
+                                        } catch (Exception ex) {
+                                            System.err.println("" + ex);
+                                            return null;
+                                        }
+                                    }
+                                }
+                            }
+
+                        } else {
+                            System.err.println("error, vacio no está inicializado");
+                        }
+                    } else {
+                        System.err.println("Error, es un arreglo no objeto.");
+                    }
+                }
             }
         }
 
@@ -70,6 +120,39 @@ public class AccesoObjeto extends Instruccion {
                             valorObjeto = thisId.getValor(obj.getE().getPadre(), salida, obj, errores);
                             simObjeto = obj.getE().getPadre().get(thisId.getId());
                         }
+                    } else if (acceso_0 instanceof AccesoArreglo) {
+                        AccesoArreglo thisAcceso = (AccesoArreglo) acceso_0;
+
+                        if (thisAcceso.getDimensiones() != null) {
+                            ArrayList<Expresion> dimForm = new ArrayList<>();
+                            
+                            int i = 0;
+                            while (i < thisAcceso.getDimensiones().size()) {
+                                Expresion exp = thisAcceso.getDimensiones().get(i++);
+                                Tipo tipExp = exp.getTipo(e, salida, this_, errores);
+                                if (tipExp.tipo == Tipo.type.INT) {
+                                    Object valExp = exp.getValor(e, salida, this_, errores);
+                                    if (valExp != null) {
+                                        dimForm.add(new Literal(tipExp, valExp, this.getLinea(), this.getColumna()));
+                                        continue;
+                                    }
+                                }
+                                System.err.println("error en posisiciones dim");
+                                return null;
+                            }
+                            thisAcceso.setDimensiones(dimForm);
+                        }
+
+                        if (!this.id.equals("super")) {
+                            tipoObjeto = thisAcceso.getTipo(obj.getE(), salida, obj, errores);
+                            valorObjeto = thisAcceso.getValor(obj.getE(), salida, obj, errores);
+                            simObjeto = new AsignacionArreglo(thisAcceso.getId(), thisAcceso.getDimensiones(), obj.getE(), this.getLinea(), this.getColumna());
+                        } else {
+                            tipoObjeto = thisAcceso.getTipo(obj.getE().getPadre(), salida, obj, errores);
+                            valorObjeto = thisAcceso.getValor(obj.getE().getPadre(), salida, obj, errores);
+                            simObjeto = new AsignacionArreglo(thisAcceso.getId(), thisAcceso.getDimensiones(), obj.getE().getPadre(), this.getLinea(), this.getColumna());
+                        }
+
                     } else {
                         /*LLamada metodo*/
                         LlamadaFuncion thisFuncion = ((LlamadaFuncion) acceso_0);

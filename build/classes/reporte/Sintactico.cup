@@ -764,10 +764,13 @@ OBJETO ::= id:a DIM:b punto ACCESO:c {:
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};
 
-ACCESO ::= id:a {:  
+ACCESO ::= id:a DIMENSION:b{:  
             Nodo tmp = new Nodo("ID");
             tmp.setNumNodo(parser.contador++);
             tmp.setValor(a);
+            if(b != null){
+                tmp.addHijo((Nodo) b);
+            }
             RESULT = tmp;
         :}
         | id:a parIzquierda PARAMETROS:b parDerecha {:  
