@@ -92,6 +92,7 @@ COMENT_MULTI ="/*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*/"
 <YYINITIAL> "this"                      { return symbol(ReporteSym.this_);}
 <YYINITIAL> "super"                     { return symbol(ReporteSym.super_);}
 <YYINITIAL> "instanceof"                { return symbol(ReporteSym.instanceof_);}
+<YYINITIAL> "pow"                       { return symbol(ReporteSym.pow_);}
 
 <YYINITIAL>{
 

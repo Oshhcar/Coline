@@ -46,7 +46,7 @@ terminal igual;
 terminal public_, protected_, private_, abstract_, static_, final_, extends_, class_;
 terminal int_, double_, char_, boolean_;
 terminal print_, println_, printTabla_, void_, return_, if_, else_, break_, continue_, while_, do_, for_;
-terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_, instanceof_;
+terminal switch_, case_, default_, import_, new_, read_file_, write_file_, graph_, this_, super_, instanceof_, pow_;
 
 non terminal INICIO;
 
@@ -802,6 +802,13 @@ E ::= E:a mas:x E:b {:
          :}
     | E:a modulo:x E:b {: 
             Nodo tmp = new Nodo("%");
+            tmp.setNumNodo(parser.contador++);
+            tmp.addHijo((Nodo) a);
+            tmp.addHijo((Nodo) b);
+            RESULT=tmp;
+        :}
+    | pow_:x parIzquierda E:a coma E:b parDerecha {: 
+            Nodo tmp = new Nodo("pow");
             tmp.setNumNodo(parser.contador++);
             tmp.addHijo((Nodo) a);
             tmp.addHijo((Nodo) b);

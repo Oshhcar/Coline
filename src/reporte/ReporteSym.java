@@ -53,6 +53,7 @@ public class ReporteSym {
   public static final int and = 38;
   public static final int default_ = 69;
   public static final int xor = 41;
+  public static final int pow_ = 78;
   public static final int void_ = 58;
   public static final int EOF = 0;
   public static final int if_ = 60;
@@ -164,7 +165,8 @@ public class ReporteSym {
   "graph_",
   "this_",
   "super_",
-  "instanceof_"
+  "instanceof_",
+  "pow_"
   };
 }
 
