@@ -7,6 +7,7 @@ package analizador.ast.instruccion;
 
 import analizador.ErrorC;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
@@ -31,7 +32,7 @@ public class AsignacionObjeto extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Asignacion");
-
+        
         acceso.setRetSimbolo(true);
         Object var = acceso.ejecutar(e, salida, metodo, ciclo, switch_, this_, errores);
 
@@ -42,48 +43,53 @@ public class AsignacionObjeto extends Instruccion {
 
                 Tipo tipValor = valor.getTipo(e, salida, this_, errores);
                 if (tipValor != null) {
-                    if (sim.getTipo().tipo == tipValor.tipo) {
-                        if (sim.getTipo().tipo == Tipo.type.OBJECT) {
-                            if (sim.getTipo().subtipo != null && tipValor.subtipo != null) {
-                                if (sim.getTipo().subtipo.equals(tipValor.subtipo)) {
-                                    Object valValor = valor.getValor(e, salida, this_, errores);
-                                    if (valValor != null) {
-                                        sim.setValor(valValor);
+                    if (tipValor.tipo != Tipo.type.NULL) {
+                        if (sim.getTipo().tipo == tipValor.tipo) {
+                            if (sim.getTipo().tipo == Tipo.type.OBJECT) {
+                                if (sim.getTipo().objeto != null && tipValor.objeto != null) {
+                                    if (sim.getTipo().objeto.equals(tipValor.objeto)) {
+                                        Object valValor = valor.getValor(e, salida, this_, errores);
+                                        if (valValor != null) {
+                                            sim.setValor(valValor);
+                                            return null;
+                                        }
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        //error.setValor(thisAcceso.getId());
+                                        error.setDescripcion("El valor tiene errores.");
+                                        error.setLinea(this.getLinea());
+                                        error.setColumna(this.getColumna());
+                                        errores.add(error);
                                         return null;
                                     }
-                                    ErrorC error = new ErrorC();
-                                    error.setTipo("Semántico");
-                                    //error.setValor(thisAcceso.getId());
-                                    error.setDescripcion("El valor tiene errores.");
-                                    error.setLinea(this.getLinea());
-                                    error.setColumna(this.getColumna());
-                                    errores.add(error);
+                                }
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                //error.setValor(thisAcceso.getId());
+                                error.setDescripcion("Error al asignar al objeto.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
+                                return null;
+                            } else {
+                                Object valValor = valor.getValor(e, salida, this_, errores);
+                                if (valValor != null) {
+                                    sim.setValor(valValor);
                                     return null;
                                 }
-                            }
-                            ErrorC error = new ErrorC();
-                            error.setTipo("Semántico");
-                            //error.setValor(thisAcceso.getId());
-                            error.setDescripcion("Error al asignar al objeto.");
-                            error.setLinea(this.getLinea());
-                            error.setColumna(this.getColumna());
-                            errores.add(error);
-                            return null;
-                        } else {
-                            Object valValor = valor.getValor(e, salida, this_, errores);
-                            if (valValor != null) {
-                                sim.setValor(valValor);
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                //error.setValor(thisAcceso.getId());
+                                error.setDescripcion("Error en el valor.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
-                            ErrorC error = new ErrorC();
-                            error.setTipo("Semántico");
-                            //error.setValor(thisAcceso.getId());
-                            error.setDescripcion("Error en el valor.");
-                            error.setLinea(this.getLinea());
-                            error.setColumna(this.getColumna());
-                            errores.add(error);
-                            return null;
                         }
+                    } else {
+                        sim.setValor(new Null());
+                        return null;
                     }
                 }
             } else if (var instanceof AsignacionArreglo) {
