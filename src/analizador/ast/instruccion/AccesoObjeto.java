@@ -17,6 +17,7 @@ import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Identificador;
 import analizador.ast.expresion.Literal;
 import analizador.ast.expresion.LlamadaFuncion;
+import analizador.ast.expresion.Return;
 import java.util.ArrayList;
 
 /**
@@ -204,9 +205,9 @@ public class AccesoObjeto extends Instruccion {
                             Object ret = thisFuncion.getFuncion().ejecutar(obj.getE(), salida, true, false, false, obj, errores);
 
                             if (ret != null) {
-                                if (ret instanceof Literal) {
-                                    tipoObjeto = ((Literal) ret).getTipo(e, salida, this_, errores);
-                                    valorObjeto = ((Literal) ret).getValor(e, salida, this_, errores);
+                                if (ret instanceof Return) {
+                                    tipoObjeto = ((Return) ret).getTipo(e, salida, this_, errores);
+                                    valorObjeto = ((Return) ret).getValor(e, salida, this_, errores);
                                 }
                             }
                             //tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
@@ -218,9 +219,9 @@ public class AccesoObjeto extends Instruccion {
                             Object ret = thisFuncion.getFuncion().ejecutar(obj.getE().getPadre(), salida, true, false, false, obj, errores);
 
                             if (ret != null) {
-                                if (ret instanceof Literal) {
-                                    tipoObjeto = ((Literal) ret).getTipo(e, salida, this_, errores);
-                                    valorObjeto = ((Literal) ret).getValor(e, salida, this_, errores);
+                                if (ret instanceof Return) {
+                                    tipoObjeto = ((Return) ret).getTipo(e, salida, this_, errores);
+                                    valorObjeto = ((Return) ret).getValor(e, salida, this_, errores);
                                 }
                             }
                             //tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
