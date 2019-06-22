@@ -43,12 +43,19 @@ public class MetodoDec extends Instruccion {
 
         if (this.parametros != null) {
             for (Simbolo parm : this.parametros) {
-                firma += "_" + parm.getTipo().tipo.toString();
+                if (parm.getTamaño() != 0) {
+                    firma += "_ARRAY-"+parm.getTipo().tipo.toString();
+                    Tipo t = new Tipo(Tipo.type.ARRAY);
+                    t.subtipo = parm.getTipo().tipo;
+                    parm.setTipo(t);
+                } else {
+                    firma += "_" + parm.getTipo().tipo.toString();
+                }
             }
         }
 
         if (e.getMetodo(firma) == null) {
-            if(this.dimensiones != 0){
+            if (this.dimensiones != 0) {
                 Tipo t = new Tipo(Tipo.type.ARRAY);
                 t.subtipo = this.tipo.tipo;
                 Metodo m = new Metodo(t, this.id, firma, this.parametros, this.bloque);

@@ -49,7 +49,11 @@ public class LlamadaMetodo extends Instruccion {
                 if (tipo != null) {
                     Object valor = parametro.getValor(e, salida, this_, errores);
                     if (valor != null) {
-                        firma += "_" + tipo.tipo.toString();
+                        if(tipo.tipo == Tipo.type.ARRAY){
+                            firma += "_ARRAY-"+ tipo.subtipo;
+                        }else {
+                            firma += "_" + tipo.tipo.toString();
+                        }
                         parm.add(new Simbolo(tipo, "parm", valor));
                         continue;
                     }

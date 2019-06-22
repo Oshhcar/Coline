@@ -11,7 +11,7 @@ package analizador.ast.entorno;
  */
 public class Simbolo {
 
-    private final Tipo tipo;
+    private Tipo tipo;
     private final String id;
     private Object valor;
     private int tamaño;
@@ -29,6 +29,15 @@ public class Simbolo {
         this.valor = valor;
         this.tamaño = 0;
     }
+
+    public Simbolo(Tipo tipo, String id, int tamaño) {
+        this.tipo = tipo;
+        this.id = id;
+        this.valor = null;
+        this.tamaño = tamaño;
+    }
+    
+    
     
     /**
      * @return the tipo
@@ -70,6 +79,13 @@ public class Simbolo {
      */
     public void setTamaño(int tamaño) {
         this.tamaño = tamaño;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
     }
 
 }
