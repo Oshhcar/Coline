@@ -44,7 +44,7 @@ public class Literal extends Expresion {
     public Literal(ArrayList<Expresion> valores, int linea, int columna) {
         super(linea, columna);
         this.tipo = new Tipo(Tipo.type.ARRAY);
-        
+
         this.valor = null;
         this.dimensiones = null;
         this.valores = valores;
@@ -59,7 +59,7 @@ public class Literal extends Expresion {
     public Object getValor(Entorno e, Object salida, Object this_, ArrayList<ErrorC> errores) {
         if (this.dimensiones != null) {
             /*new TYPE[num]*/
-           
+
             Arreglo aux = null;
 
             int i = this.dimensiones.size() - 1;
@@ -72,24 +72,30 @@ public class Literal extends Expresion {
                         if (valExp != null) {
                             try {
                                 int tamExp = Integer.valueOf(valExp.toString());
-                                if (i == this.dimensiones.size() - 1) {
-                                    aux = new Arreglo(this.tipo);
-                                    if(this.tipo.objeto != null){
-                                        aux.setObjeto(this.tipo.objeto);
+
+                                if (tamExp >= 0) {
+                                    if (i == this.dimensiones.size() - 1) {
+                                        aux = new Arreglo(this.tipo);
+                                        if (this.tipo.objeto != null) {
+                                            aux.setObjeto(this.tipo.objeto);
+                                        }
+                                        aux.setTamaño(tamExp);
+                                        aux.inicializar();
+                                    } else {
+                                        Arreglo padre = new Arreglo(this.tipo);
+                                        if (this.tipo.objeto != null) {
+                                            aux.setObjeto(this.tipo.objeto);
+                                        }
+                                        padre.setTamaño(tamExp);
+                                        padre.inicializar(aux);
+                                        aux = padre;
                                     }
-                                    aux.setTamaño(tamExp);
-                                    aux.inicializar();
+                                    i--;
+                                    continue;
                                 } else {
-                                    Arreglo padre = new Arreglo(this.tipo);
-                                    if(this.tipo.objeto != null){
-                                        aux.setObjeto(this.tipo.objeto);
-                                    }
-                                    padre.setTamaño(tamExp);
-                                    padre.inicializar(aux);
-                                    aux = padre;
+                                    System.err.println("Dimensiones deben ser postiivas");
+                                    return null;
                                 }
-                                i--;
-                                continue;
                             } catch (Exception ex) {
                                 System.err.println("" + ex.toString());
                                 return null;
@@ -111,17 +117,17 @@ public class Literal extends Expresion {
             array.setTamaño(this.valores.size());
             boolean multi = false;
             int dimension = 1;
-            
+
             for (int i = 0; i <= this.valores.size() - 1; i++) {
                 Expresion exp = this.valores.get(i);
                 Tipo tipExp = exp.getTipo(e, salida, this_, errores);
                 if (tipExp != null) {
-                    
-                    if(this.tipo.subtipo == null){
+
+                    if (this.tipo.subtipo == null) {
                         this.tipo.subtipo = tipExp.tipo;
                         tmp = tipExp;
                     }
-                    
+
                     if (tipExp.tipo == this.tipo.subtipo) {
                         Object valExp = exp.getValor(e, salida, this_, errores);
                         if (valExp != null) {
@@ -148,11 +154,12 @@ public class Literal extends Expresion {
                 dimension++;
             }
             array.setDimensiones(dimension);
-            if(tmp.subtipo != null)
+            if (tmp.subtipo != null) {
                 this.tipo.subtipo = tmp.subtipo;
+            }
             array.getTipo().subtipo = this.tipo.subtipo;
             return array;
-            
+
             /*array vacio {}*/
         } else {
             return this.valor;

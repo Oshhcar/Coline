@@ -34,7 +34,7 @@ public class AsignacionArreglo extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Asignacion");
-        
+
         Simbolo sim = e.get(id);
         if (sim != null) {
             if (sim.getTipo().tipo == Tipo.type.ARRAY) {
@@ -50,43 +50,48 @@ public class AsignacionArreglo extends Instruccion {
                             if (valExp != null) {
                                 int dim = Integer.valueOf(valExp.toString());
 
-                                if (i != this.dimensiones.size()) {
-                                    Object posDim = aux.get(dim);
-                                    if (posDim instanceof Arreglo) {
-                                        aux = (Arreglo) posDim;
-                                        continue;
-                                    }
-                                    System.err.println("Error, ya no hay mas dimensiones");
-                                    return null;
-                                } else {
-                                    Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
-                                    if (tipValor != null) {
-                                        if (tipValor.tipo != Tipo.type.ARRAY) {
-                                            if (tipValor.tipo == aux.getTipo().subtipo) {
-                                                Object valor = this.valor.getValor(e, salida, this_, errores);
-                                                if (valor != null) {
-                                                    aux.setValor(dim, valor);
+                                if (dim >= 0) {
+                                    if (i != this.dimensiones.size()) {
+                                        Object posDim = aux.get(dim);
+                                        if (posDim instanceof Arreglo) {
+                                            aux = (Arreglo) posDim;
+                                            continue;
+                                        }
+                                        System.err.println("Error, ya no hay mas dimensiones");
+                                        return null;
+                                    } else {
+                                        Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
+                                        if (tipValor != null) {
+                                            if (tipValor.tipo != Tipo.type.ARRAY) {
+                                                if (tipValor.tipo == aux.getTipo().subtipo) {
+                                                    Object valor = this.valor.getValor(e, salida, this_, errores);
+                                                    if (valor != null) {
+                                                        aux.setValor(dim, valor);
+                                                        return null;
+                                                    }
+                                                    System.err.println("Error en valor");
                                                     return null;
                                                 }
-                                                System.err.println("Error en valor");
+                                                System.err.println("No son del mismo tipo");
                                                 return null;
-                                            }
-                                            System.err.println("No son del mismo tipo");
-                                            return null;
-                                        } else {
-                                            if(tipValor.subtipo == tipValor.subtipo){
-                                                Object valor = this.valor.getValor(e, salida, this_, errores);
-                                                if(valor != null){
-                                                    /*verificar tamaños*/
-                                                    aux.setValor(dim, valor);
+                                            } else {
+                                                if (tipValor.subtipo == tipValor.subtipo) {
+                                                    Object valor = this.valor.getValor(e, salida, this_, errores);
+                                                    if (valor != null) {
+                                                        /*verificar tamaños*/
+                                                        aux.setValor(dim, valor);
+                                                        return null;
+                                                    }
+                                                    System.err.println("error en valor");
                                                     return null;
                                                 }
-                                                System.err.println("error en valor");
-                                                return null;
                                             }
                                         }
+                                        System.err.println("Error en valor");
+                                        return null;
                                     }
-                                    System.err.println("Error en valor");
+                                } else {
+                                    System.err.println("Las posiciones deben ser positivas");
                                     return null;
                                 }
                             }

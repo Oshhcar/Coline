@@ -39,8 +39,8 @@ public class AccesoArreglo extends Expresion {
             } else {
                 Object val = s.getValor();
                 if (val != null) {
-                    if(val instanceof Arreglo) {
-                        return new Tipo(Tipo.type.OBJECT,((Arreglo) val).getObjeto()); 
+                    if (val instanceof Arreglo) {
+                        return new Tipo(Tipo.type.OBJECT, ((Arreglo) val).getObjeto());
                     }
                 }
             }
@@ -69,14 +69,18 @@ public class AccesoArreglo extends Expresion {
                             if (valExp != null) {
                                 try {
                                     int pos = Integer.valueOf(valExp.toString());
-                                    ret = aux.get(pos);
-                                    if (ret instanceof Arreglo) {
-                                        aux = (Arreglo) ret;
-                                    }
-                                    if (i == this.dimensiones.size()) {
-                                        return ret;
+                                    if (pos >= 0) {
+                                        ret = aux.get(pos);
+                                        if (ret instanceof Arreglo) {
+                                            aux = (Arreglo) ret;
+                                        }
+                                        if (i == this.dimensiones.size()) {
+                                            return ret;
+                                        } else {
+                                            continue;
+                                        }
                                     } else {
-                                        continue;
+                                        System.err.println("Las posiciones deben ser positivas");
                                     }
                                 } catch (Exception ex) {
                                     System.err.println("" + ex);
