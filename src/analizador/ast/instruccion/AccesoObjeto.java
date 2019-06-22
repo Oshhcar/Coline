@@ -75,18 +75,7 @@ public class AccesoObjeto extends Instruccion {
                                                     aux = (Arreglo) ret;
                                                 }
                                                 if (i == this.dimensiones.size()) {
-                                                    if (!(ret instanceof Arreglo)) {
                                                         valorObjeto = ret;
-                                                    } else {
-                                                        ErrorC error = new ErrorC();
-                                                        error.setTipo("Semántico");
-                                                        //error.setValor(thisAcceso.getId());
-                                                        error.setDescripcion("Error el arreglo no contiene un objeto.");
-                                                        error.setLinea(this.getLinea());
-                                                        error.setColumna(this.getColumna());
-                                                        errores.add(error);
-                                                        return null;
-                                                    }
                                                 }
                                             } else {
                                                 ErrorC error = new ErrorC();
@@ -116,13 +105,14 @@ public class AccesoObjeto extends Instruccion {
                             errores.add(error);
                         }
                     } else {
+                        /*
                         ErrorC error = new ErrorC();
                         error.setTipo("Semántico");
                         //error.setValor(thisAcceso.getId());
                         error.setDescripcion("Error no es un objeto, es un arreglo.");
                         error.setLinea(this.getLinea());
                         error.setColumna(this.getColumna());
-                        errores.add(error);
+                        errores.add(error);*/
                     }
                 }
             }
@@ -222,15 +212,15 @@ public class AccesoObjeto extends Instruccion {
                         }
 
                     }
-                } else {
-                    ErrorC error = new ErrorC();
-                    error.setTipo("Semántico");
-                    error.setValor(id);
-                    error.setDescripcion("No se ha instanciado el objeto. ");
-                    error.setLinea(this.getLinea());
-                    error.setColumna(this.getColumna());
-                    errores.add(error);
-                    return null;
+                } else if (valorObjeto instanceof Arreglo) {
+                    if (acceso_0 instanceof Identificador) {
+                        Identificador thisId = (Identificador) acceso_0;
+                        
+                        switch(thisId.getId()){
+                            case "length":
+                                return new Literal(new Tipo(Tipo.type.INT), ((Arreglo) valorObjeto).getTamaño(), this.getLinea(), this.getColumna());
+                        }
+                    }
                 }
             }
         } catch (Exception ex) {
