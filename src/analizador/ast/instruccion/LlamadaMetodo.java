@@ -9,6 +9,7 @@ import analizador.ErrorC;
 import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
 import analizador.ast.entorno.Metodo;
+import analizador.ast.entorno.Null;
 import analizador.ast.entorno.Simbolo;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
@@ -51,6 +52,8 @@ public class LlamadaMetodo extends Instruccion {
                     if (valor != null) {
                         if (tipo.tipo == Tipo.type.ARRAY) {
                             firma += "_ARRAY-" + tipo.subtipo;
+                        } else if (tipo.tipo == Tipo.type.NULL) {
+                            firma += "_OBJECT";
                         } else {
                             firma += "_" + tipo.tipo.toString();
                         }
@@ -72,9 +75,15 @@ public class LlamadaMetodo extends Instruccion {
 
             if (m != null) {
                 for (int i = 0; i <= parm.size() - 1; i++) {
-                    Simbolo simNuevo = new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor());
-                    simNuevo.setTamaño(m.getParametros().get(i).getTamaño());
-                    local.add(simNuevo);
+                    if (parm.get(i).getTipo().tipo != Tipo.type.NULL) {
+                        Simbolo simNuevo = new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor());
+                        simNuevo.setTamaño(m.getParametros().get(i).getTamaño());
+                        local.add(simNuevo);
+                    } else {
+                        Simbolo simNuevo = new Simbolo(m.getParametros().get(i).getTipo(), m.getParametros().get(i).getId(), new Null());
+                        simNuevo.setTamaño(m.getParametros().get(i).getTamaño());
+                        local.add(simNuevo);
+                    }
                 }
             }
         }
