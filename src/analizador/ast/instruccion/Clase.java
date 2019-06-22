@@ -53,10 +53,10 @@ public class Clase extends Instruccion {
         if (!this.id.equals("String") && !this.id.equals("Object")) {
 
             Entorno global = new Entorno(null);
-            
+
             ClaseSim clase = new ClaseSim(this.modificadores, this.id);
             global.add(clase);
-            
+
             if (this.imports != null) {
 
                 for (Import i : this.imports) {
@@ -93,7 +93,13 @@ public class Clase extends Instruccion {
                             constructores.add(simbolo);
                             continue;
                         }
-                        System.err.println("Error, constructor no es del mismo nombre " + m.getId());
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor(m.getId());
+                        error.setDescripcion("Error, ya se ha declarado un constructor con la misma firma.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     }
                 }
 
@@ -109,11 +115,10 @@ public class Clase extends Instruccion {
 
             }
 
-            
             if (!constructores.isEmpty()) {
                 clase.setConstructores(constructores);
-             }
-            
+            }
+
             clase.setE(local);
             clase.setMain(main);
 
@@ -123,17 +128,35 @@ public class Clase extends Instruccion {
                     if (ext != null) {
                         clase.setPadre(ext);
                     } else {
-                        System.err.println("Error, no se ha importado la clase " + extiende);
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor(extiende);
+                        error.setDescripcion("Error, no se ha importado la clase.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     }
                 } else {
-                    System.err.println("No puede heredar de ella misma");
+                    ErrorC error = new ErrorC();
+                    error.setTipo("Semántico");
+                    error.setValor(this.id);
+                    error.setDescripcion("No se puede ederar ella misma.");
+                    error.setLinea(this.getLinea());
+                    error.setColumna(this.getColumna());
+                    errores.add(error);
                 }
             }
-            
+
             e.add(clase);
             return null;
         }
-        System.err.println("Error no se puede declarar la clase.");
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        error.setValor(this.id);
+        error.setDescripcion("No se puede declarar la clase.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
         return null;
     }
 

@@ -35,7 +35,7 @@ public class WriteFile extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "write_file");
-        
+
         Tipo tipRuta = ruta.getTipo(e, salida, this_, errores);
         if (tipRuta != null) {
             if (tipRuta.tipo == Tipo.type.STRING) {
@@ -66,19 +66,24 @@ public class WriteFile extends Instruccion {
 
                                     archivo = new FileWriter(dirRuta);
                                     pw = new PrintWriter(archivo);
-                                    
-                                    
+
                                     String textoArray[] = texto.split("\n");
-                                    
-                                    for(String t: textoArray){
+
+                                    for (String t : textoArray) {
                                         pw.println(t);
                                     }
-                                    
+
                                     archivo.close();
                                     return null;
 
                                 } catch (Exception ex) {
-                                    System.err.println("Error, intentando abrir el archivo \"" + direccion + "\". Línea: " + this.getLinea());
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    error.setValor("write_file");
+                                    error.setDescripcion("Error, intentando abrir el archivo \"" + direccion + "\".");
+                                    error.setLinea(this.getLinea());
+                                    error.setColumna(this.getColumna());
+                                    errores.add(error);
                                 }
                             }
                         }

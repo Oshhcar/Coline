@@ -58,7 +58,13 @@ public class LlamadaMetodo extends Instruccion {
                         continue;
                     }
                 }
-                System.err.println("error en parametros");
+                ErrorC error = new ErrorC();
+                error.setTipo("Semántico");
+                //error.setValor("import");
+                error.setDescripcion("Erroes en los parametros.");
+                error.setLinea(this.getLinea());
+                error.setColumna(this.getColumna());
+                errores.add(error);
                 return null;
             }
 
@@ -85,11 +91,23 @@ public class LlamadaMetodo extends Instruccion {
                         if (m.getTipo().tipo == ((Return) obj).getTipo(local, salida, this_, errores).tipo) {
                             return obj;
                         } else {
-                            System.err.println("No son del mismo tipo. LLamada funcion");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            //error.setValor("import");
+                            error.setDescripcion("No son del mismo tipo.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         }
 
                     } else if (((Return) obj).getToReturn() != null && m.getTipo().tipo == Tipo.type.VOID) {
-                        System.err.println("No debe retornar algo.");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        //error.setValor("import");
+                        error.setDescripcion("Erro, no debe retornar valor.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     }
                 }
             }

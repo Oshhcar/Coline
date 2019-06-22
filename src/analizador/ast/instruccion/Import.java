@@ -96,20 +96,44 @@ public class Import extends Instruccion {
                                     clase.ejecutar(e, salida, metodo, ciclo, switch_, this_, errores);
                                 }
                             } catch (Exception ex) {
-                                System.err.println("El archivo importado contiene errores.");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor("import");
+                                error.setDescripcion("El Archivo importado contiene erroes.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                             }
 
                         } catch (Exception ex) {
-                            System.err.println("Error, intentando abrir el archivo \"" + rutaImport + "\". Línea: " + this.getLinea());
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor("import");
+                            error.setDescripcion("Error en la ruta " + rutaImport);
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         }
                     } else {
-                        System.err.println("No es .coline import");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor(rutaImport);
+                        error.setDescripcion("Solo se pueden importar clases .coline.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     }
                     return null;
                 }
             }
         }
-        System.err.println("Error en valor, import.");
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        error.setValor("import");
+        error.setDescripcion("El parametro contiene erroes.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
         return null;
     }
 

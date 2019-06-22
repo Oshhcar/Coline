@@ -40,17 +40,35 @@ public class Bloque extends Instruccion {
                             if (metodo) {
                                 return obj;
                             }
-                            System.err.println("no esta dentro de metodo");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor("return");
+                            error.setDescripcion("No esta dentro de un metodo.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         } else if (obj instanceof Break) {
                             if (ciclo || switch_) {
                                 return obj;
                             }
-                            System.err.println("No esta dentro de un ciclo o swittch, BREAK.");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor("break");
+                            error.setDescripcion("No esta dentro de un ciclo o swittch.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         } else if (obj instanceof Continue) {
                             if (ciclo) {
                                 return obj;
                             }
-                            System.err.println("No esta dentro de un ciclo1, CONTINUE.");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor("continue");
+                            error.setDescripcion("No esta dentro de un ciclo.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         }
                     }
                 } else {
@@ -65,22 +83,46 @@ public class Bloque extends Instruccion {
                                         return new Return(new Literal(tipRet, valRet, ret.getLinea(), ret.getColumna()), ret.getLinea(), ret.getColumna());
                                     }
                                 }
-                                System.err.println("Error resolviendo return");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor("return");
+                                error.setDescripcion("Error en el return.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 continue;
                             }
                             return ret;
                         }
-                        System.err.println("No esta dentro de un metodo return");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor("return");
+                        error.setDescripcion("No esta dentro de un metodo.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     } else if (bloque instanceof Break) {
                         if (ciclo || switch_) {
                             return bloque;
                         }
-                        System.err.println("No esta dentro de un ciclo o swittch, BREAK.");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor("break");
+                        error.setDescripcion("No esta dentro de un ciclo o swittch.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     } else if (bloque instanceof Continue) {
                         if (ciclo) {
                             return bloque;
                         }
-                        System.err.println("No esta dentro de un ciclo2, CONTINUE.");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        error.setValor("continue");
+                        error.setDescripcion("No esta dentro de un ciclo.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     } else {
                         ((Expresion) bloque).getValor(e, salida, this_, errores);
                     }

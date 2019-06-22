@@ -35,7 +35,7 @@ public class Graph extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "graph");
-        
+
         Tipo tipRuta = ruta.getTipo(e, salida, this_, errores);
         if (tipRuta != null) {
             if (tipRuta.tipo == Tipo.type.STRING) {
@@ -64,7 +64,7 @@ public class Graph extends Instruccion {
                                     direccion = direccion.replaceAll("/", "\\\\");
 
                                     String rutaImagen = actual.getParent() + "\\" + direccion;
-                                    String ext = rutaImagen.substring(rutaImagen.lastIndexOf('.')+1);
+                                    String ext = rutaImagen.substring(rutaImagen.lastIndexOf('.') + 1);
                                     String rutaDot = rutaImagen.substring(0, rutaImagen.lastIndexOf('.')) + ".dot";
                                     archivo = new FileWriter(rutaDot);
                                     pw = new PrintWriter(archivo);
@@ -80,7 +80,7 @@ public class Graph extends Instruccion {
                                     try {
                                         String cmd = "dot -T" + ext + " " + rutaDot + " -o " + rutaImagen;
                                         Runtime.getRuntime().exec(cmd);
-                                        
+
                                         try {
                                             File objetofile = new File(rutaImagen);
                                             Desktop.getDesktop().open(objetofile);
@@ -102,7 +102,13 @@ public class Graph extends Instruccion {
             }
         }
 
-        System.err.println("Error en parametros.");
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        error.setValor("graph");
+        error.setDescripcion("Error en el parametro.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
 
         return null;
     }

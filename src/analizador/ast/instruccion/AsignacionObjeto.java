@@ -51,11 +51,23 @@ public class AsignacionObjeto extends Instruccion {
                                         sim.setValor(valValor);
                                         return null;
                                     }
-                                    System.err.println("error en valor");
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    //error.setValor(thisAcceso.getId());
+                                    error.setDescripcion("El valor tiene errores.");
+                                    error.setLinea(this.getLinea());
+                                    error.setColumna(this.getColumna());
+                                    errores.add(error);
                                     return null;
                                 }
                             }
-                            System.err.println("error asignar objetos");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            //error.setValor(thisAcceso.getId());
+                            error.setDescripcion("Error al asignar al objeto.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                             return null;
                         } else {
                             Object valValor = valor.getValor(e, salida, this_, errores);
@@ -63,27 +75,39 @@ public class AsignacionObjeto extends Instruccion {
                                 sim.setValor(valValor);
                                 return null;
                             }
-                            System.err.println("Error en valor");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            //error.setValor(thisAcceso.getId());
+                            error.setDescripcion("Error en el valor.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                             return null;
                         }
                     }
                 }
             } else if (var instanceof AsignacionArreglo) {
                 AsignacionArreglo asigArr = (AsignacionArreglo) var;
-                
+
                 Tipo tipValor = valor.getTipo(e, salida, this_, errores);
-                if(tipValor != null){
+                if (tipValor != null) {
                     Object valValor = valor.getValor(e, salida, this_, errores);
-                    if(valValor != null){
+                    if (valValor != null) {
                         asigArr.setValor(new Literal(tipValor, valValor, this.getLinea(), this.getColumna()));
                         asigArr.ejecutar(asigArr.getEjecucion(), salida, metodo, ciclo, switch_, this_, errores);
                         return null;
                     }
                 }
-                
+
             }
         }
-        System.err.println("Ocurrio un error en la asignación. " + this.getLinea());
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        //error.setValor(thisAcceso.getId());
+        error.setDescripcion("No se pudo realizar la asignacion.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
         return null;
     }
 

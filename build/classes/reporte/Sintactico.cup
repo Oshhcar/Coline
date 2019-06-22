@@ -764,7 +764,7 @@ OBJETO ::= id:a DIM:b punto ACCESO:c {:
 DIM ::= {: RESULT = null; :}
       | DIMENSION:a {: RESULT = a; :};
 
-ACCESO ::= id:a DIMENSION:b{:  
+ACCESO ::= id:a DIM:b{:  
             Nodo tmp = new Nodo("ID");
             tmp.setNumNodo(parser.contador++);
             tmp.setValor(a);

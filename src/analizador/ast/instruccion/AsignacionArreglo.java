@@ -68,7 +68,13 @@ public class AsignacionArreglo extends Instruccion {
                                                 aux = (Arreglo) posDim;
                                                 continue;
                                             }
-                                            System.err.println("Error, ya no hay mas dimensiones");
+                                            ErrorC error = new ErrorC();
+                                            error.setTipo("Semántico");
+                                            //error.setValor(thisAcceso.getId());
+                                            error.setDescripcion("Error en las dimensiones del arreglo.");
+                                            error.setLinea(this.getLinea());
+                                            error.setColumna(this.getColumna());
+                                            errores.add(error);
                                             return null;
                                         } else {
                                             Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
@@ -80,7 +86,13 @@ public class AsignacionArreglo extends Instruccion {
                                                             aux.setValor(dim, valor1);
                                                             return null;
                                                         }
-                                                        System.err.println("Error en valor");
+                                                        ErrorC error = new ErrorC();
+                                                        error.setTipo("Semántico");
+                                                        //error.setValor(thisAcceso.getId());
+                                                        error.setDescripcion("Error en el valor.");
+                                                        error.setLinea(this.getLinea());
+                                                        error.setColumna(this.getColumna());
+                                                        errores.add(error);
                                                         return null;
                                                     } else {
                                                         Casteo cast = new Casteo(new Tipo(aux.getTipo().subtipo), valor, this.getLinea(), this.getColumna());
@@ -90,7 +102,13 @@ public class AsignacionArreglo extends Instruccion {
                                                             return null;
                                                         }
                                                     }
-                                                    System.err.println("No son del mismo tipo");
+                                                    ErrorC error = new ErrorC();
+                                                    error.setTipo("Semántico");
+                                                    //error.setValor(thisAcceso.getId());
+                                                    error.setDescripcion("No son del mismo tipo.");
+                                                    error.setLinea(this.getLinea());
+                                                    error.setColumna(this.getColumna());
+                                                    errores.add(error);
                                                     return null;
                                                 } else {
                                                     if (tipValor.subtipo == tipValor.subtipo) {
@@ -100,16 +118,34 @@ public class AsignacionArreglo extends Instruccion {
                                                             aux.setValor(dim, valor1);
                                                             return null;
                                                         }
-                                                        System.err.println("error en valor");
+                                                        ErrorC error = new ErrorC();
+                                                        error.setTipo("Semántico");
+                                                        //error.setValor(thisAcceso.getId());
+                                                        error.setDescripcion("Error en el valor.");
+                                                        error.setLinea(this.getLinea());
+                                                        error.setColumna(this.getColumna());
+                                                        errores.add(error);
                                                         return null;
                                                     }
                                                 }
                                             }
-                                            System.err.println("Error en valor");
+                                            ErrorC error = new ErrorC();
+                                            error.setTipo("Semántico");
+                                            //error.setValor(thisAcceso.getId());
+                                            error.setDescripcion("Error en el valor.");
+                                            error.setLinea(this.getLinea());
+                                            error.setColumna(this.getColumna());
+                                            errores.add(error);
                                             return null;
                                         }
                                     } else {
-                                        System.err.println("Las posiciones deben ser positivas");
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        //error.setValor(thisAcceso.getId());
+                                        error.setDescripcion("Las posiciones del arrglo deben ser positivas.");
+                                        error.setLinea(this.getLinea());
+                                        error.setColumna(this.getColumna());
+                                        errores.add(error);
                                         return null;
                                     }
                                 }
@@ -118,15 +154,33 @@ public class AsignacionArreglo extends Instruccion {
                         return null;
                     }
                 } else {
-                    System.err.println("arreglo no inicializado");
+                    ErrorC error = new ErrorC();
+                    error.setTipo("Semántico");
+                    //error.setValor(thisAcceso.getId());
+                    error.setDescripcion("Arreglo no inicializado");
+                    error.setLinea(this.getLinea());
+                    error.setColumna(this.getColumna());
+                    errores.add(error);
                     return null;
                 }
             }
-            System.err.println("No es arreglo");
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            //error.setValor(thisAcceso.getId());
+            error.setDescripcion("El simbolo no es un arreglo.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
             return null;
 
         }
-        System.err.println("no se econtro el arreglo");
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        //error.setValor(thisAcceso.getId());
+        error.setDescripcion("Arreglo no declarado.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
         return null;
     }
 

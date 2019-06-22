@@ -28,7 +28,7 @@ public class Print extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Print");
-        
+
         Object valor = toPrint.getValor(e, salida, this_, errores);
         if (valor != null) {
             if (valor instanceof Arreglo) {
@@ -38,7 +38,13 @@ public class Print extends Instruccion {
                 ((JTextArea) salida).append(valor.toString());
             }
         } else {
-            System.err.println("No se econtro el valor,Println.");
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            //error.setValor("import");
+            error.setDescripcion("Erroes en los parametros.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
         }
         return null;
     }

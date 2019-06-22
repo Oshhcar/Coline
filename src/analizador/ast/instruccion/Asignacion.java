@@ -40,7 +40,7 @@ public class Asignacion extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Asignacion");
-        
+
         Simbolo tmp = e.get(this.id.getId());
         if (tmp != null) {
             Tipo tipValor = this.valor.getTipo(e, salida, this_, errores);
@@ -54,16 +54,34 @@ public class Asignacion extends Instruccion {
                                     Arreglo a = (Arreglo) valValor;
 
                                     if (tmp.getTamaño() != a.getDimensiones()) {
-                                        System.err.println("Arreglos no son de las mismas dimensiones");
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        //error.setValor(thisAcceso.getId());
+                                        error.setDescripcion("Los arreglos son de diferentes dimensiones.");
+                                        error.setLinea(this.getLinea());
+                                        error.setColumna(this.getColumna());
+                                        errores.add(error);
                                         return null;
                                     }
                                     if (tmp.getTipo().subtipo != tipValor.subtipo) {
-                                        System.err.println("Arreglos no son del mismo tipo");
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        //error.setValor(thisAcceso.getId());
+                                        error.setDescripcion("Los arreglos no son del mismo tipo.");
+                                        error.setLinea(this.getLinea());
+                                        error.setColumna(this.getColumna());
+                                        errores.add(error);
                                         return null;
                                     }
 
                                 } else {
-                                    System.err.println("no se está asignando arreglo");
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    //error.setValor(thisAcceso.getId());
+                                    error.setDescripcion("No es un arreglo lo que se está asignando.");
+                                    error.setLinea(this.getLinea());
+                                    error.setColumna(this.getColumna());
+                                    errores.add(error);
                                     return null;
                                 }
                             }
@@ -73,19 +91,31 @@ public class Asignacion extends Instruccion {
                     } else {
                         Casteo cast = new Casteo(tmp.getTipo(), valor, this.getLinea(), this.getColumna());
                         Object valCast = cast.getValor(e, salida, this_, errores);
-                        if(valCast != null){
+                        if (valCast != null) {
                             tmp.setValor(valCast);
                             return null;
                         }
                     }
-                    System.err.println("*Error Semántico, no se puede asignar el valor. ");
+                    ErrorC error = new ErrorC();
+                    error.setTipo("Semántico");
+                    //error.setValor(thisAcceso.getId());
+                    error.setDescripcion("No se puede asignar el valor.");
+                    error.setLinea(this.getLinea());
+                    error.setColumna(this.getColumna());
+                    errores.add(error);
                 } else {
                     tmp.setValor(new Null());
                     return null;
                 }
-            } 
+            }
         } else {
-            System.err.println("*Error Semántico, no se ha declarado la variable: " + this.id.getId() + ". ");
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            error.setValor(this.id.getId());
+            error.setDescripcion("La variable no se ha declarado.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
         }
         return null;
     }

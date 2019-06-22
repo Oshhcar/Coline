@@ -32,7 +32,7 @@ public class ConstructorInv extends Instruccion {
     @Override
     public Object ejecutar(Entorno e, Object salida, boolean metodo, boolean ciclo, boolean switch_, Object this_, ArrayList<ErrorC> errores) {
         this.debug(e, this_, "Invocacion Constructor");
-        
+
         if (this_ != null) {
             if (this_ instanceof Objeto) {
                 Objeto obj = (Objeto) this_;
@@ -54,7 +54,13 @@ public class ConstructorInv extends Instruccion {
                                         continue;
                                     }
                                 }
-                                System.err.println("error en parametros");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(this.id);
+                                error.setDescripcion("Los parametros tienen errores.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
                         }
@@ -78,13 +84,25 @@ public class ConstructorInv extends Instruccion {
                         }
 
                         if (!ejecuto) {
-                            System.err.println("Error, no se definio el constructor. 2");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor(this.id);
+                            error.setDescripcion("No se definió el constructor.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                             return null;
                         }
 
                     } else {
                         if (this.parametros != null) {
-                            System.err.println("Error, no se definio el constructor. 1");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            error.setValor(this.id);
+                            error.setDescripcion("No se definió el constructor.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                             return null;
                         }
                     }
@@ -92,7 +110,7 @@ public class ConstructorInv extends Instruccion {
                 } else {
                     /*SUPER*/
                     if (obj.getClase().getPadre() != null) {
-                        
+
                         if (obj.getClase().getPadre().getConstructores() != null) {
                             Entorno local = new Entorno(obj.getE().getPadre());//no sé aún
                             String firma = obj.getClase().getPadre().getId();
@@ -109,7 +127,13 @@ public class ConstructorInv extends Instruccion {
                                             continue;
                                         }
                                     }
-                                    System.err.println("error en parametros");
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    error.setValor(this.id);
+                                    error.setDescripcion("Error en parametros.");
+                                    error.setLinea(this.getLinea());
+                                    error.setColumna(this.getColumna());
+                                    errores.add(error);
                                     return null;
                                 }
                             }
@@ -133,24 +157,48 @@ public class ConstructorInv extends Instruccion {
                             }
 
                             if (!ejecuto) {
-                                System.err.println("Error, no se definio el constructor. 2");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(this.id);
+                                error.setDescripcion("No se definió el constructor.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
 
                         } else {
                             if (this.parametros != null) {
-                                System.err.println("Error, no se definio el constructor. 1");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(this.id);
+                                error.setDescripcion("No se definió el constructor.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
                         }
                         return null;
                     }
-                    System.err.println("No tine padre. ");
+                    ErrorC error = new ErrorC();
+                    error.setTipo("Semántico");
+                    error.setValor(this.id);
+                    error.setDescripcion("La clase no es heredada.");
+                    error.setLinea(this.getLinea());
+                    error.setColumna(this.getColumna());
+                    errores.add(error);
                     return null;
                 }
             }
         }
-        System.err.println("No se ha instanciado el objeto. ");
+        ErrorC error = new ErrorC();
+        error.setTipo("Semántico");
+        error.setValor(this.id);
+        error.setDescripcion("No se ha instanciado la clase.");
+        error.setLinea(this.getLinea());
+        error.setColumna(this.getColumna());
+        errores.add(error);
         return null;
     }
 

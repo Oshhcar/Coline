@@ -60,7 +60,13 @@ public class Declaracion extends Instruccion {
                                         if (this.tipo.tipo == tipValor.tipo) {
                                             if (this.tipo.tipo == Tipo.type.OBJECT) {
                                                 if (!this.tipo.objeto.equals(tipValor.objeto)) {
-                                                    System.err.println("objetos de diferente tipo");
+                                                    ErrorC error = new ErrorC();
+                                                    error.setTipo("Semántico");
+                                                    error.setValor(asigna.getId().getId());
+                                                    error.setDescripcion("Objetos de diferente tipo: " + this.tipo.objeto);
+                                                    error.setLinea(asigna.getLinea());
+                                                    error.setColumna(asigna.getColumna());
+                                                    errores.add(error);
                                                     continue;
                                                 }
                                             }
@@ -90,7 +96,13 @@ public class Declaracion extends Instruccion {
                                         tmp = new Simbolo(this.tipo, id, valValor);
                                     }
                                 } else {
-                                    System.err.println("se esta intentando asignar un arreglo");
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    error.setValor(asigna.getId().getId());
+                                    error.setDescripcion("Error asignando a arreglo.");
+                                    error.setLinea(asigna.getLinea());
+                                    error.setColumna(asigna.getColumna());
+                                    errores.add(error);
                                     continue;
                                 }
                             } else {/*ARREGLO*/
@@ -103,15 +115,33 @@ public class Declaracion extends Instruccion {
                                             tmp = new Simbolo(t, id, valValor);
                                             tmp.setTamaño(asigna.getId().getDim());
                                         } else {
-                                            System.err.println("las dimensiones no son iguales");
+                                            ErrorC error = new ErrorC();
+                                            error.setTipo("Semántico");
+                                            error.setValor(asigna.getId().getId());
+                                            error.setDescripcion("Las dimensiones del arreglo no son las mismas. ");
+                                            error.setLinea(asigna.getLinea());
+                                            error.setColumna(asigna.getColumna());
+                                            errores.add(error);
                                             continue;
                                         }
                                     } else {
-                                        System.err.println("Arreglos de diferente tipo");
+                                        ErrorC error = new ErrorC();
+                                        error.setTipo("Semántico");
+                                        error.setValor(asigna.getId().getId());
+                                        error.setDescripcion("Los arreglos son de diferente tipo.  ");
+                                        error.setLinea(asigna.getLinea());
+                                        error.setColumna(asigna.getColumna());
+                                        errores.add(error);
                                         continue;
                                     }
                                 } else {
-                                    System.err.println("No se esta asignando arreglo");
+                                    ErrorC error = new ErrorC();
+                                    error.setTipo("Semántico");
+                                    error.setValor(asigna.getId().getId());
+                                    error.setDescripcion("El valor no es un arreglo.");
+                                    error.setLinea(asigna.getLinea());
+                                    error.setColumna(asigna.getColumna());
+                                    errores.add(error);
                                     continue;
                                 }
                             }
@@ -119,7 +149,6 @@ public class Declaracion extends Instruccion {
                             continue;
                         }
                     }
-                    System.err.println("error calculando el valor");
                 } else {
                     if (asigna.getId().getDim() != 0) {
                         Tipo t = new Tipo(Tipo.type.ARRAY);
@@ -134,7 +163,13 @@ public class Declaracion extends Instruccion {
                             if (e.getClase(this.tipo.objeto) != null) {
                                 tmp = new Simbolo(this.tipo, id);
                             } else {
-                                System.err.println("Error, no se ha importado la clase: " + this.tipo.objeto);
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(asigna.getId().getId());
+                                error.setDescripcion("Error, no se ha importado la clase: " + this.tipo.objeto);
+                                error.setLinea(asigna.getLinea());
+                                error.setColumna(asigna.getColumna());
+                                errores.add(error);
                                 continue;
                             }
                         }

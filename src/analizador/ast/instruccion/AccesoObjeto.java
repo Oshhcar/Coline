@@ -78,12 +78,24 @@ public class AccesoObjeto extends Instruccion {
                                                     if (!(ret instanceof Arreglo)) {
                                                         valorObjeto = ret;
                                                     } else {
-                                                        System.err.println("error, no es un objeto");
+                                                        ErrorC error = new ErrorC();
+                                                        error.setTipo("Semántico");
+                                                        //error.setValor(thisAcceso.getId());
+                                                        error.setDescripcion("Error el arreglo no contiene un objeto.");
+                                                        error.setLinea(this.getLinea());
+                                                        error.setColumna(this.getColumna());
+                                                        errores.add(error);
                                                         return null;
                                                     }
                                                 }
                                             } else {
-                                                System.err.println("Error, dimension incorrecta");
+                                                ErrorC error = new ErrorC();
+                                                error.setTipo("Semántico");
+                                                //error.setValor(thisAcceso.getId());
+                                                error.setDescripcion("Dimension incorrecta del arreglo.");
+                                                error.setLinea(this.getLinea());
+                                                error.setColumna(this.getColumna());
+                                                errores.add(error);
                                                 return null;
                                             }
                                         } catch (Exception ex) {
@@ -95,10 +107,22 @@ public class AccesoObjeto extends Instruccion {
                             }
 
                         } else {
-                            System.err.println("error, vacio no está inicializado");
+                            ErrorC error = new ErrorC();
+                            error.setTipo("Semántico");
+                            //error.setValor(thisAcceso.getId());
+                            error.setDescripcion("El arreglo no se ha inicializado.");
+                            error.setLinea(this.getLinea());
+                            error.setColumna(this.getColumna());
+                            errores.add(error);
                         }
                     } else {
-                        System.err.println("Error, es un arreglo no objeto.");
+                        ErrorC error = new ErrorC();
+                        error.setTipo("Semántico");
+                        //error.setValor(thisAcceso.getId());
+                        error.setDescripcion("Error no es un objeto, es un arreglo.");
+                        error.setLinea(this.getLinea());
+                        error.setColumna(this.getColumna());
+                        errores.add(error);
                     }
                 }
             }
@@ -125,7 +149,7 @@ public class AccesoObjeto extends Instruccion {
 
                         if (thisAcceso.getDimensiones() != null) {
                             ArrayList<Expresion> dimForm = new ArrayList<>();
-                            
+
                             int i = 0;
                             while (i < thisAcceso.getDimensiones().size()) {
                                 Expresion exp = thisAcceso.getDimensiones().get(i++);
@@ -137,7 +161,13 @@ public class AccesoObjeto extends Instruccion {
                                         continue;
                                     }
                                 }
-                                System.err.println("error en posisiciones dim");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                error.setValor(thisAcceso.getId());
+                                error.setDescripcion("Error en las dimensiones del arreglo.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
                             thisAcceso.setDimensiones(dimForm);
@@ -168,7 +198,13 @@ public class AccesoObjeto extends Instruccion {
                                         continue;
                                     }
                                 }
-                                System.err.println("error en parametros");
+                                ErrorC error = new ErrorC();
+                                error.setTipo("Semántico");
+                                //error.setValor(thisAcceso.getId());
+                                error.setDescripcion("Error en parametros.");
+                                error.setLinea(this.getLinea());
+                                error.setColumna(this.getColumna());
+                                errores.add(error);
                                 return null;
                             }
                             thisFuncion.setParametros(parmForm);
@@ -187,12 +223,24 @@ public class AccesoObjeto extends Instruccion {
 
                     }
                 } else {
-                    System.err.println("no se ha instanciado el objeto " + id);
+                    ErrorC error = new ErrorC();
+                    error.setTipo("Semántico");
+                    error.setValor(id);
+                    error.setDescripcion("No se ha instanciado el objeto. ");
+                    error.setLinea(this.getLinea());
+                    error.setColumna(this.getColumna());
+                    errores.add(error);
                     return null;
                 }
             }
         } catch (Exception ex) {
-            System.err.println("Error fatal acceso arreglos");
+            ErrorC error = new ErrorC();
+            error.setTipo("Semántico");
+            //error.setValor(thisAcceso.getId());
+            error.setDescripcion("Error en el arreglo.");
+            error.setLinea(this.getLinea());
+            error.setColumna(this.getColumna());
+            errores.add(error);
         }
 
         if (retSimbolo) {
