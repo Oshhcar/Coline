@@ -66,7 +66,9 @@ public class LlamadaMetodo extends Instruccion {
 
             if (m != null) {
                 for (int i = 0; i <= parm.size() - 1; i++) {
-                    local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
+                    Simbolo simNuevo = new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor());
+                    simNuevo.setTamaño(m.getParametros().get(i).getTamaño());
+                    local.add(simNuevo);
                 }
             }
         }

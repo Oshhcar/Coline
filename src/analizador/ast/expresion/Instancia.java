@@ -52,10 +52,12 @@ public class Instancia extends Expresion {
                 if (sim instanceof Metodo) {
                     Metodo m = (Metodo) sim;
                     Metodo nuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
+                    nuevo.setTamaño(m.getTamaño());
                     eNuevo.add(nuevo);
                     eClase.add(nuevo);
                 } else {
                     Simbolo nuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
+                    nuevo.setTamaño(sim.getTamaño());
                     eNuevo.add(nuevo);
                     eClase.add(nuevo);
                 }
@@ -76,16 +78,20 @@ public class Instancia extends Expresion {
                     if (aux != null) {
                         Entorno nuevo = new Entorno(null);
                         Objeto objPadre = new Objeto(clasePadre, nuevo);
-                        
+
                         for (Simbolo sim : clasePadre.getE().getTabla()) {
                             if (sim instanceof Metodo) {
                                 Metodo m = (Metodo) sim;
-                                nuevo.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                                Metodo mNuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
+                                mNuevo.setTamaño(m.getTamaño());
+                                nuevo.add(mNuevo);
                             } else {
-                                nuevo.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                                Simbolo simNuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
+                                simNuevo.setTamaño(sim.getTamaño());
+                                nuevo.add(simNuevo);
                             }
                         }
-                        
+
                         /*Verifico si hay constructores*/
                         if (clasePadre.getConstructores() != null) {
                             Entorno local = new Entorno(nuevo);
@@ -102,20 +108,24 @@ public class Instancia extends Expresion {
                             }
 
                         }
-                        
+
                         nuevo.setPadre(aux.getPadre());
                         obj.getHeredadas().add(objPadre);
                         aux.setPadre(nuevo);
                         aux = nuevo;
                     } else {
                         Objeto objPadre = new Objeto(clasePadre, ePadre);
-                        
+
                         for (Simbolo sim : clasePadre.getE().getTabla()) {
                             if (sim instanceof Metodo) {
                                 Metodo m = (Metodo) sim;
-                                ePadre.add(new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque()));
+                                Metodo mNuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
+                                mNuevo.setTamaño(m.getTamaño());
+                                ePadre.add(mNuevo);
                             } else {
-                                ePadre.add(new Simbolo(sim.getTipo(), sim.getId(), sim.getValor()));
+                                Simbolo simNuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
+                                simNuevo.setTamaño(sim.getTamaño());
+                                ePadre.add(simNuevo);
                             }
                         }
 
@@ -159,7 +169,11 @@ public class Instancia extends Expresion {
                         if (tipo != null) {
                             Object valor = parametro.getValor(e, salida, this_, errores);
                             if (valor != null) {
-                                firma += "_" + tipo.tipo.toString();
+                                if (tipo.tipo == Tipo.type.ARRAY) {
+                                    firma += "_ARRAY-" + tipo.subtipo;
+                                } else {
+                                    firma += "_" + tipo.tipo.toString();
+                                }
                                 parm.add(new Simbolo(tipo, "parm", valor));
                                 continue;
                             }
@@ -176,7 +190,9 @@ public class Instancia extends Expresion {
                     if (m.getFirma().equals(firma)) {
                         if (this.parametros != null) {
                             for (int i = 0; i <= parm.size() - 1; i++) {
-                                local.add(new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor()));
+                                Simbolo simNuevo = new Simbolo(parm.get(i).getTipo(), m.getParametros().get(i).getId(), parm.get(i).getValor());
+                                simNuevo.setTamaño(m.getParametros().get(i).getTamaño());
+                                local.add(simNuevo);
                             }
                         }
                         if (m.getBloque() != null) {
