@@ -56,6 +56,7 @@ non terminal CLASE;
 non terminal MODIFICADORES;
 non terminal MODIFICADOR;
 non terminal MOD;
+non terminal Integer DIM_METODO;
 non terminal CUERPO_CLASE;
 non terminal CUERPO_CLASE_LISTA;
 non terminal CUERPO_CLASE_DEC;
@@ -242,6 +243,26 @@ CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
                                 tmp.addHijo((Nodo) e);
                             RESULT = tmp;
                          :}
+                    |MOD:a TIPO:b DIM_METODO:c id:d parIzquierda PARAMETROS_DEC:e parDerecha llaveIzquierda BLOQUES:f llaveDerecha
+                        {: 
+                            Nodo tmp = new Nodo("DECLARACION_METODO");
+                            tmp.setValor(d);
+
+                            Nodo dim = new Nodo("Dimensiones");
+                            dim.setNumNodo(parser.contador++);
+                            dim.setValor(c+"");
+
+                            tmp.setNumNodo(parser.contador++);
+                            if(a != null)
+                                tmp.addHijo((Nodo) a);
+                            tmp.addHijo((Nodo) b);
+                            tmp.addHijo((Nodo) dim);
+                            if(e != null)
+                                tmp.addHijo((Nodo) e);
+                            if(f != null)
+                                tmp.addHijo((Nodo) f);
+                            RESULT = tmp;
+                         :}
                     |MOD:a id:b parIzquierda PARAMETROS_DEC:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha
                         {: 
                             Nodo tmp = new Nodo("CONSTRUCTOR");
@@ -255,6 +276,9 @@ CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
                                 tmp.addHijo((Nodo) d);
                             RESULT = tmp;
                          :};
+
+DIM_METODO ::= DIM_METODO:a corcheteIzquierda corcheteDerecha {: RESULT = a+1; :}
+              | corcheteIzquierda corcheteDerecha {: RESULT = 1; :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; ((Nodo)RESULT).addHijo((Nodo)b); :}
                         |DECLARACION_VARIABLE:a {: RESULT = a;  :};

@@ -66,6 +66,7 @@ non terminal Clase CLASE;
 non terminal ArrayList<Modificador> MODIFICADORES;
 non terminal Modificador MODIFICADOR;
 non terminal ArrayList<Modificador> MOD;
+non terminal Integer DIM_METODO;
 non terminal ArrayList<NodoAst> CUERPO_CLASE;
 non terminal ArrayList<NodoAst> CUERPO_CLASE_LISTA;
 non terminal NodoAst CUERPO_CLASE_DEC;
@@ -162,9 +163,14 @@ CUERPO_CLASE_LISTA ::= CUERPO_CLASE_LISTA:a CUERPO_CLASE_DEC:b {: RESULT = a; RE
 CUERPO_CLASE_DEC ::= CLASE:a {: RESULT = a; :}
                     |MOD:a TIPO:b DECLARACION_VARIABLES:c puntoycoma {: RESULT = new Declaracion(a, b, c, bleft, bright); :}
                     |MOD:a TIPO:b id:c parIzquierda PARAMETROS_DEC:d parDerecha llaveIzquierda BLOQUES:e llaveDerecha
-                        {: RESULT = new MetodoDec(a, b, c, d, e, bleft, bright); :}
+                        {: RESULT = new MetodoDec(a, b, 0, c, d, e, bleft, bright); :}
+                    |MOD:a TIPO:b DIM_METODO:c id:d parIzquierda PARAMETROS_DEC:e parDerecha llaveIzquierda BLOQUES:f llaveDerecha
+                        {: RESULT = new MetodoDec(a, b, c, d, e, f, bleft, bright); :}
                     |MOD:a id:b parIzquierda PARAMETROS_DEC:c parDerecha llaveIzquierda BLOQUES:d llaveDerecha
                         {: RESULT = new Constructor(a, b, c, d, bleft, bright); :};
+
+DIM_METODO ::= DIM_METODO:a corcheteIzquierda corcheteDerecha {: RESULT = a+1; :}
+              | corcheteIzquierda corcheteDerecha {: RESULT = 1; :};
 
 DECLARACION_VARIABLES ::= DECLARACION_VARIABLES:a coma DECLARACION_VARIABLE:b {: RESULT = a; RESULT.add(b); :}
                         |DECLARACION_VARIABLE:a {: RESULT = new ArrayList<>(); RESULT.add(a); :};

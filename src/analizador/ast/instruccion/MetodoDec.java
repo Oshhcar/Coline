@@ -22,14 +22,16 @@ public class MetodoDec extends Instruccion {
 
     private final ArrayList<Modificador> modificadores;
     private final Tipo tipo;
+    private final int dimensiones;
     private final String id;
     public final ArrayList<Simbolo> parametros;
     public final Bloque bloque;
 
-    public MetodoDec(ArrayList<Modificador> modificadores, Tipo tipo, String id, ArrayList<Simbolo> parametros, Bloque bloque, int linea, int columna) {
+    public MetodoDec(ArrayList<Modificador> modificadores, Tipo tipo, int dimensiones, String id, ArrayList<Simbolo> parametros, Bloque bloque, int linea, int columna) {
         super(linea, columna);
         this.modificadores = modificadores;
         this.tipo = tipo;
+        this.dimensiones = dimensiones;
         this.id = id;
         this.parametros = parametros;
         this.bloque = bloque;
@@ -46,7 +48,15 @@ public class MetodoDec extends Instruccion {
         }
 
         if (e.getMetodo(firma) == null) {
-            e.add(new Metodo(this.tipo, this.id, firma, this.parametros, this.bloque));
+            if(this.dimensiones != 0){
+                Tipo t = new Tipo(Tipo.type.ARRAY);
+                t.subtipo = this.tipo.tipo;
+                Metodo m = new Metodo(t, this.id, firma, this.parametros, this.bloque);
+                m.setTamaño(dimensiones);
+                e.add(m);
+            } else {
+                e.add(new Metodo(this.tipo, this.id, firma, this.parametros, this.bloque));
+            }
         } else {
             ErrorC error = new ErrorC();
             error.setTipo("Semántico");
