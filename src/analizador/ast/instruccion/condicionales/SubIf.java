@@ -8,6 +8,7 @@ package analizador.ast.instruccion.condicionales;
 import analizador.ErrorC;
 import analizador.ast.NodoAst;
 import analizador.ast.entorno.Entorno;
+import analizador.ast.entorno.Excepcion;
 import analizador.ast.entorno.Tipo;
 import analizador.ast.expresion.Expresion;
 import analizador.ast.expresion.Literal;
@@ -54,8 +55,14 @@ public class SubIf extends Instruccion {
                         Object valCond = this.condicion.getValor(e, salida, this_, errores);
                         if (valCond != null) {
                             this.entra = Boolean.valueOf(valCond.toString());
+                        } else {
+                            return new Excepcion("Logic");
                         }
+                    } else {
+                        return new Excepcion("Logic");
                     }
+                } else{
+                    return new Excepcion("Arithmetic");
                 }
             }
 
