@@ -93,6 +93,7 @@ non terminal DIMENSION;
 non terminal ARREGLO;
 non terminal ASIGNA_ARREGLO;
 non terminal TIPO_PRIMITIVO;
+non terminal ID_OBJETO;
 
 non terminal E;
 
@@ -860,6 +861,10 @@ DIMENSION ::= DIMENSION:a corcheteIzquierda E:b corcheteDerecha {: RESULT = a; (
 ARREGLO ::= ARREGLO:a coma VALOR:b {: RESULT = a; ((Nodo) RESULT).addHijo((Nodo)b); :}
         | VALOR:a {: RESULT = a; :};
 
+ID_OBJETO ::= {: RESULT = null; :}
+            | E:a {: RESULT = a; :};
+
+
 E ::= E:a mas:x E:b {:  
             Nodo tmp = new Nodo("+");
             tmp.setNumNodo(parser.contador++);
@@ -1028,7 +1033,17 @@ E ::= E:a mas:x E:b {:
             RESULT=tmp;
         :}
 
-    | parIzquierda E:a parDerecha {: RESULT = a; :}
+    | parIzquierda E:a parDerecha ID_OBJETO:b {: 
+            if(b == null){
+                RESULT = a;
+            } else {
+                Nodo tmp = new Nodo("()");
+                tmp.setNumNodo(parser.contador++);
+                tmp.addHijo((Nodo) a);
+                tmp.addHijo((Nodo) b);
+                RESULT=tmp;
+            }
+        :}
 
     | parIzquierda:x TIPO_PRIMITIVO:a parDerecha E:b {:
             Nodo tmp = new Nodo("CASTEO");
