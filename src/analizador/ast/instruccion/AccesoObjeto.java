@@ -75,7 +75,7 @@ public class AccesoObjeto extends Instruccion {
                                                     aux = (Arreglo) ret;
                                                 }
                                                 if (i == this.dimensiones.size()) {
-                                                        valorObjeto = ret;
+                                                    valorObjeto = ret;
                                                 }
                                             } else {
                                                 ErrorC error = new ErrorC();
@@ -201,13 +201,30 @@ public class AccesoObjeto extends Instruccion {
                         }
 
                         if (!this.id.equals("super")) {
-                            tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
-                            valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
+                            Object ret = thisFuncion.getFuncion().ejecutar(obj.getE(), salida, true, false, false, obj, errores);
+
+                            if (ret != null) {
+                                if (ret instanceof Literal) {
+                                    tipoObjeto = ((Literal) ret).getTipo(e, salida, this_, errores);
+                                    valorObjeto = ((Literal) ret).getValor(e, salida, this_, errores);
+                                }
+                            }
+                            //tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
+                            //valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
                         } else {
                             Entorno tmp = obj.getE().getGlobal();
                             obj.getE().setGlobal(obj.getE().getPadre());
-                            tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
-                            valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
+
+                            Object ret = thisFuncion.getFuncion().ejecutar(obj.getE().getPadre(), salida, true, false, false, obj, errores);
+
+                            if (ret != null) {
+                                if (ret instanceof Literal) {
+                                    tipoObjeto = ((Literal) ret).getTipo(e, salida, this_, errores);
+                                    valorObjeto = ((Literal) ret).getValor(e, salida, this_, errores);
+                                }
+                            }
+                            //tipoObjeto = thisFuncion.getTipo(obj.getE(), salida, obj, errores);
+                            //valorObjeto = thisFuncion.getValor(obj.getE(), salida, obj, errores);
                             obj.getE().setGlobal(tmp);
                         }
 
@@ -215,8 +232,8 @@ public class AccesoObjeto extends Instruccion {
                 } else if (valorObjeto instanceof Arreglo) {
                     if (acceso_0 instanceof Identificador) {
                         Identificador thisId = (Identificador) acceso_0;
-                        
-                        switch(thisId.getId()){
+
+                        switch (thisId.getId()) {
                             case "length":
                                 return new Literal(new Tipo(Tipo.type.INT), ((Arreglo) valorObjeto).getTamaño(), this.getLinea(), this.getColumna());
                         }
