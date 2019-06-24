@@ -55,6 +55,13 @@ public class Instancia extends Expresion {
                     nuevo.setTamaño(m.getTamaño());
                     eNuevo.add(nuevo);
                     eClase.add(nuevo);
+                } else if (sim instanceof ClaseSim) {
+                    ClaseSim c = (ClaseSim) sim;
+                    ClaseSim nuevo = new ClaseSim(c.getModificadores(), c.getConstructores(), c.getId(), c.getE());
+                    nuevo.setMain(c.getMain());
+                    nuevo.setPadre(c.getPadre());
+                    eNuevo.add(nuevo);
+                    eClase.add(nuevo);
                 } else {
                     Simbolo nuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
                     nuevo.setTamaño(sim.getTamaño());
@@ -85,6 +92,12 @@ public class Instancia extends Expresion {
                                 Metodo mNuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
                                 mNuevo.setTamaño(m.getTamaño());
                                 nuevo.add(mNuevo);
+                            } else if (sim instanceof ClaseSim) {
+                                ClaseSim c = (ClaseSim) sim;
+                                ClaseSim cNuevo = new ClaseSim(c.getModificadores(), c.getConstructores(), c.getId(), c.getE());
+                                cNuevo.setMain(c.getMain());
+                                cNuevo.setPadre(c.getPadre());
+                                nuevo.add(cNuevo);
                             } else {
                                 Simbolo simNuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
                                 simNuevo.setTamaño(sim.getTamaño());
@@ -122,6 +135,12 @@ public class Instancia extends Expresion {
                                 Metodo mNuevo = new Metodo(m.getTipo(), m.getId(), m.getFirma(), m.getParametros(), m.getBloque());
                                 mNuevo.setTamaño(m.getTamaño());
                                 ePadre.add(mNuevo);
+                            } else if (sim instanceof ClaseSim) {
+                                ClaseSim c = (ClaseSim) sim;
+                                ClaseSim cNuevo = new ClaseSim(c.getModificadores(), c.getConstructores(), c.getId(), c.getE());
+                                cNuevo.setMain(c.getMain());
+                                cNuevo.setPadre(c.getPadre());
+                                ePadre.add(cNuevo);
                             } else {
                                 Simbolo simNuevo = new Simbolo(sim.getTipo(), sim.getId(), sim.getValor());
                                 simNuevo.setTamaño(sim.getTamaño());
